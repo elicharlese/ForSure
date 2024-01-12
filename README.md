@@ -1,10 +1,13 @@
-ForSure Language (FS)
+# ForSure Language (FS)
+
 ForSure is a language designed to describe and document file structures in a clear and concise manner. It uses a simple, human-readable syntax to represent directories, files, and their relationships. This document serves as an introductory guide to the main features of ForSure and how to utilize them in your projects.
 
-Getting Started
+## Getting Started
+
 To get started with ForSure, clone this repository and review the sample .fs files included. You can write your ForSure definitions using any text editor.
 
-Features
+## Features
+
 Hierarchical Structure: Mimics the natural file system's hierarchy.
 
 Comments and Annotations: Offers inline commenting and metadata association.
@@ -15,7 +18,8 @@ Custom Attributes: Extends elements with user-defined attributes like permission
 
 Readable and Simple: A clean syntax that prioritizes user understanding and ease of use.
 
-Writing Your First ForSure File
+## Writing Your First ForSure File
+
 Here is a basic example of what a .fs file looks like:
 
 Diff
@@ -38,18 +42,24 @@ root:
           - theme.css
   # Documentation file
   - README.md
-Contributing
+
+## Contributing
+
 Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make to improve ForSure are greatly appreciated.
 
-Fork the Project
+## Fork the Project
+
 Create your Feature Branch (git checkout -b feature/AmazingFeature)
 Commit your Changes (git commit -m 'Add some AmazingFeature')
 Push to the Branch (git push origin feature/AmazingFeature)
 Open a Pull Request
-License
+
+## License
+
 Distributed under the MIT License. See LICENSE for more information.
 
-Contact
+## Contact
+
 Your Name - @your_twitter
 Project Link: https://github.com/your_repo/ForSure
 
