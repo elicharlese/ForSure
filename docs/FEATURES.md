@@ -54,30 +54,38 @@ ForSure continues to evolve through user feedback and adherence to industry best
 Certainly, to enhance ForSure's ability to reduce set-up time for developers, the following features could be added:
 
 ## Quick-Start Templates
+
 - **Project Templates**: Provide a library of customizable project templates for common use cases and frameworks, allowing developers to initiate projects with a pre-defined directory and file structure tailored to their needs.
 
 ## Automated Setup Tools
+
 - **Bootstrap Command**: Introduce a bootstrap command in the CLI that generates necessary files and directories from a ForSure definition, setting up the project in one step.
   
 ## Configuration Wizards
+
 - **Interactive CLI Wizard**: Implement a guided wizard in the CLI that prompts users for project specifications and auto-generates ForSure configuration files accordingly.
   
 ## Integration with Build Tools & Package Managers
+
 - **Build Tool Integration**: Automate integration with build systems like Make, Gradle, or Webpack based on the project type, to streamline the initial build setup process.
 - **Dependency Management**: Auto-detect and suggest necessary dependencies for the project, optionally integrating with package managers like npm or pip to install them automatically.
 
 ## Smart Contextual Assistance
+
 - **Contextual Suggestions**: Develop intelligent assistance that suggests the next logical file or folder based on the current project context and developer actions within the IDE.
 - **Auto-Completion of Scaffolding Code**: Extend IntelliSense capabilities to not only complete code but also to scaffold out classes, methods, or modules based on the ForSure definitions.
 
 ## Real-Time Collaboration Features
+
 - **Collaborative Editing**: Enable real-time collaboration on ForSure files, helping distributed teams to work together on project setup simultaneously.
   
 ## Seamless Version Control Integration
+
 - **Version Control Templates**: Automatically generate version control configuration files (such as .gitignore) tailored to the project's structure and technologies used.
 - **Pre-configured Commit Hooks**: Include optional commit hooks that enforce style checks or run tests before changes are committed, ensuring a smooth workflow.
 
 ## Continuous Integration (CI) & Continuous Deployment (CD) Hooks
+
 - **CI/CD Configuration Generation**: Auto-generate configuration files for CI/CD platforms like Jenkins, Travis CI, or GitHub Actions, based on the ForSure project structure.
 
 By implementing these features, ForSure could significantly expedite the process of setting up a new project environment, making it easier for developers to go from concept to working codebase.
