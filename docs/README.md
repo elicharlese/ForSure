@@ -1,4 +1,4 @@
-# ForSure Language (FS)
+# ForSure Language (FSH)
 
 ForSure is a language designed to describe and document file structures in a clear and concise manner. It uses a simple, human-readable syntax to represent directories, files, and their relationships. This document serves as an introductory guide to the main features of ForSure and how to utilize them in your projects.
 
