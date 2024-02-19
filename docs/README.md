@@ -27,26 +27,31 @@ Copy
 Insert
 New
 root:
-  # Main source code directory
-  - src:
-      - main.js { entry: true }
-      - utils:
-          # Utility scripts
-          - helpers.js
-          - date.js { timezone: "UTC" }
-  # Assets for front-end design
-  - assets:
-      - logo.svg
-      - css:
-          # Style sheets
-          - theme.css
-  # Documentation file
-  - README.md
+
+# Main source code directory
+
+- src:
+  - main.js { entry: true }
+  - utils:
+    # Utility scripts
+    - helpers.js
+    - date.js { timezone: "UTC" }
+
+# Assets for front-end design
+
+- assets:
+  - logo.svg
+  - css:
+    # Style sheets
+    - theme.css
+
+# Documentation file
+
+- README.md
 
 ## Contributing
 
 Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make to improve ForSure are greatly appreciated. Refer to the CODE_OF_CONDUCT.md file for more information about contributing to this project.
-
 
 ## Fork the Project
 

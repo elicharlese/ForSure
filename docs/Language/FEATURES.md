@@ -60,11 +60,11 @@ Certainly, to enhance ForSure's ability to reduce set-up time for developers, th
 ## Automated Setup Tools
 
 - **Bootstrap Command**: Introduce a bootstrap command in the CLI that generates necessary files and directories from a ForSure definition, setting up the project in one step.
-  
+
 ## Configuration Wizards
 
 - **Interactive CLI Wizard**: Implement a guided wizard in the CLI that prompts users for project specifications and auto-generates ForSure configuration files accordingly.
-  
+
 ## Integration with Build Tools & Package Managers
 
 - **Build Tool Integration**: Automate integration with build systems like Make, Gradle, or Webpack based on the project type, to streamline the initial build setup process.
@@ -78,7 +78,7 @@ Certainly, to enhance ForSure's ability to reduce set-up time for developers, th
 ## Real-Time Collaboration Features
 
 - **Collaborative Editing**: Enable real-time collaboration on ForSure files, helping distributed teams to work together on project setup simultaneously.
-  
+
 ## Seamless Version Control Integration
 
 - **Version Control Templates**: Automatically generate version control configuration files (such as .gitignore) tailored to the project's structure and technologies used.

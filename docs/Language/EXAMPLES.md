@@ -9,23 +9,23 @@ The bare-minimum notation is the most concise form of expressing the `ForSure` l
 ```typescript
 // Bare-Minimum notation for a .gitignore example
 root: [
-  'pages/index.ts',
-  'pages/_app.ts',
-  'pages/_document.ts',
-  'src/blockchain/rust/Cargo.toml',
-  'src/blockchain/rust/src/mod.rs',
-  'src/blockchain/rust/src/blockchain_and_transaction.rs',
-  'src/api/user.ts',
-  'src/api/transaction.ts',
-  'tsconfig.json',
-  'configurations.json',
-  'package.json',
-  'yarn.lock',
-  'DOCS.md',
-  '.env.local',
-  '.env.production',
-  '.gitignore'
-]
+  "pages/index.ts",
+  "pages/_app.ts",
+  "pages/_document.ts",
+  "src/blockchain/rust/Cargo.toml",
+  "src/blockchain/rust/src/mod.rs",
+  "src/blockchain/rust/src/blockchain_and_transaction.rs",
+  "src/api/user.ts",
+  "src/api/transaction.ts",
+  "tsconfig.json",
+  "configurations.json",
+  "package.json",
+  "yarn.lock",
+  "DOCS.md",
+  ".env.local",
+  ".env.production",
+  ".gitignore",
+];
 ```
 
 ## Short-Hand Notation

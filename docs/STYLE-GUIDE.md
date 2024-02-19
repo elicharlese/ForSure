@@ -1,6 +1,7 @@
 # Style Guide for ForSure
 
 1. Naming Conventions:
+
    - **Variables**: Follow camelCase naming convention.
    - **Functions**: Follow camelCase naming convention.
    - **Constants**: Use all uppercase letters with underscores to separate words.
@@ -8,12 +9,14 @@
    - **Files**: Use kebab-case (lowercase letters separated by hyphens) for file names.
 
 2. Formatting Rules:
+
    - Use consistent indentation with 2 or 4 spaces.
    - Use meaningful whitespace to enhance readability.
    - Limit line length to 80-120 characters to maintain readability.
    - Use comments to explain non-obvious code sections or provide additional context.
 
 3. Code Structure Guidelines:
+
    - Organize code using a hierarchical structure.
    - Group related files and directories logically.
    - Use objects or dictionaries to represent nested structures with descriptive keys.
