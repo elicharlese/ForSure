@@ -45,7 +45,8 @@ root:
 
 ## Contributing
 
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make to improve ForSure are greatly appreciated.
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make to improve ForSure are greatly appreciated. Refer to the CODE_OF_CONDUCT.md file for more information about contributing to this project.
+
 
 ## Fork the Project
 
