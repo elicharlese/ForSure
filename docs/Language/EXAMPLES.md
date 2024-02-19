@@ -1,9 +1,11 @@
 # ForSure Loop Notation
 
 ## Bare-Minimum Notation
+
 The bare-minimum notation is the most concise form of expressing the `ForSure` loop, omitting all optional syntax and focusing solely on the necessary components for iteration.
 
 ### Code Example
+
 ```typescript
 // Bare-Minimum notation for a .gitignore example
 root: [
@@ -27,9 +29,11 @@ root: [
 ```
 
 ## Short-Hand Notation
+
 Short-hand notation introduces inline comments or annotations that provide additional context but are not as verbose as long-hand notation.
 
 ### Code Example
+
 ```typescript
 // Short-Hand notation for a .gitignore example with basic comments
 root: {
@@ -46,9 +50,11 @@ root: {
 ```
 
 ## Long-Hand Notation
+
 Long-hand notation is the most descriptive form. It uses a more structured format with detailed comments explaining each item’s purpose.
 
 ### Code Example
+
 ```typescript
 // Long-Hand Notation providing detailed comments for each file and directory.
 root: {
