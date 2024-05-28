@@ -11,7 +11,7 @@ The ForSure language provides a user-friendly and readable syntax for managing a
 - **Import Directives**: Facilitates inclusion of reusable structures.
 - **Custom Attributes**: Extends elements with user-defined metadata.
 - **Readable Syntax**: Easy to understand and use.
-- 
+
 ## Setup
 
 To start using the ForSure language, follow the setup instructions below:

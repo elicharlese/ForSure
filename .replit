@@ -1,5 +1,5 @@
 hidden = ["target", ".cargo"]
-modules = ["rust-stable:v4-20240117-0bd73cd"]
+modules = ["nodejs-20:v8-20230920-bd784b9", "rust-stable:v4-20240117-0bd73cd"]
 run = "npm run start"
 
 [nix]
