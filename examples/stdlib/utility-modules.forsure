@@ -1,0 +1,14 @@
+root: {
+  'utility-modules': {
+    'logger.js': [ 
+      size: '2KB', 
+      type: 'javascript', 
+      description: 'Utility for logging messages.' 
+    ],
+    'formatter.js': [ 
+      size: '2KB', 
+      type: 'javascript', 
+      description: 'Utility for formatting strings and data.' 
+    ]
+  }
+}

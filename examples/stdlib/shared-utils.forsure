@@ -1,0 +1,11 @@
+  `root: {
+  'shared': {
+    'utils': {
+      'math.js': [ size: '3KB', type: 'javascript' ],
+      'string.js': [ size: '2KB', type: 'javascript' ],
+    },
+    'config': {
+      'shared-config.json': [ size: '1KB', type: 'json' ]
+    }
+  }
+}

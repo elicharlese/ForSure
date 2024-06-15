@@ -1,0 +1,19 @@
+root: {
+  'config-templates': {
+    'development.json': [ 
+      size: '1KB', 
+      type: 'json', 
+      description: 'Development environment configuration template.' 
+    ],
+    'production.json': [ 
+      size: '1KB', 
+      type: 'json', 
+      description: 'Production environment configuration template.' 
+    ],
+    'test.json': [ 
+      size: '1KB', 
+      type: 'json', 
+      description: 'Test environment configuration template.' 
+    ]
+  }
+}

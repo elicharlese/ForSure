@@ -1,27 +1,27 @@
-pub fn add(a: i32, b: i32) -> i32 {
-  a + b
-}
-
-pub fn subtract(a: i32, b: i32) -> i32 {
-  a - b
-}
-
-pub fn multiply(a: i32, b: i32) -> i32 {
-  a * b
-}
-
-pub fn divide(a: i32, b: i32) -> Option<i32> {
-  if b != 0 {
-      Some(a / b)
+pub fn mean(numbers: &[f64]) -> Option<f64> {
+  let sum: f64 = numbers.iter().sum();
+  let count = numbers.len();
+  if count > 0 {
+      Some(sum / count as f64)
   } else {
       None
   }
 }
 
-pub fn factorial(n: u32) -> u32 {
-  (1..=n).product()
+pub fn median(numbers: &mut [f64]) -> Option<f64> {
+  numbers.sort_by(|a, b| a.partial_cmp(b).unwrap());
+  let len = numbers.len();
+  if len > 0 {
+      if len % 2 == 0 {
+          Some((numbers[len / 2 - 1] + numbers[len / 2]) / 2.0)
+      } else {
+          Some(numbers[len / 2])
+      }
+  } else {
+      None
+  }
 }
 
-pub fn power(base: i32, exp: u32) -> i32 {
-  (0..exp).fold(1, |acc, _| acc * base)
+pub fn factorial(n: u64) -> u64 {
+  (1..=n).product()
 }

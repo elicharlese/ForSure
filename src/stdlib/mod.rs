@@ -1,3 +1,7 @@
+pub mod collections;
 pub mod math;
 pub mod string;
-pub mod collections;
+
+pub use collections::*;
+pub use math::*;
+pub use string::*;

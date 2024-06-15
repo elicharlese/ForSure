@@ -1,138 +1,175 @@
-# OFFICIAL-LANGUAGE-DOCUMENTATION.md
+# ForSure Documentation
+
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Getting Started](#getting-started)
+  - [Installation](#installation)
+  - [Basic Usage](#basic-usage)
+- [Understanding the File Structure](#understanding-the-file-structure)
+- [Core Features](#core-features)
+  - [Hierarchical Structure](#hierarchical-structure)
+  - [Comments and Annotations](#comments-and-annotations)
+  - [Custom Attributes](#custom-attributes)
+- [Advanced Features](#advanced-features)
+  - [@import Directives](#import-directives)
+  - [Modularization](#modularization)
+  - [Error Handling](#error-handling)
+- [Configuration](#configuration)
+- [Best Practices](#best-practices)
+- [Additional Resources](#additional-resources)
 
 ## Introduction
 
-The ForSure language provides a user-friendly and readable syntax for managing and manipulating project structures. It is designed to be easy to use, extensible, and reliable, making it suitable for developers and non-developers alike. This document covers the setup process, syntax guide, and a reference for the standard library.
+ForSure is a CLI tool designed to manage and visualize project structures and metadata. It enables developers to define, visualize, and validate project structures, ensuring that files and directories conform to a specified format. By maintaining a consistent project structure, ForSure simplifies project management and reduces errors.
 
-## Features
-
-- **Hierarchical Structure**: Represents file systems as a collection of folders and files.
-- **Comments and Annotations**: Allows for descriptive purposes.
-- **Import Directives**: Facilitates inclusion of reusable structures.
-- **Custom Attributes**: Extends elements with user-defined metadata.
-- **Readable Syntax**: Easy to understand and use.
-
-## Setup
-
-To start using the ForSure language, follow the setup instructions below:
+## Getting Started
 
 ### Installation
 
-1. **Install ForSure CLI**: The ForSure command-line interface (CLI) can be installed via npm or another package manager. Run the following command:
-    ```sh
-    npm install -g forsure-cli
-    ```
-2. **Verify Installation**: Ensure the installation was successful by checking the version:
-    ```sh
-    forsure --version
-    ```
-3. **Create a New ForSure Project**: Use the CLI to create a new project:
-    ```sh
-    forsure new my-project
-    ```
-4. **Navigate to Project Directory**: Move to your project directory:
-    ```sh
-    cd my-project
-    ```
-5. **Run ForSure**: Start using the ForSure language in your project:
-    ```sh
-    forsure run
-    ```
-With these steps, you should be ready to define and manage your project structures using ForSure.
+To install ForSure globally via npm, use the following command:
+```sh
+npm install -g forsure-cli
+To verify the installation:
 
-## Syntax Guide
+Shell Script
+Copy
+Insert
+forsure --version
+Basic Usage
+Initialize a New Project:
 
-The ForSure language uses a concise and readable syntax for defining file systems. Below are the core syntax elements:
+Shell Script
+Copy
+Insert
+forsure new <project-name>
+Run ForSure:
 
-### File System Representation
+Shell Script
+Copy
+Insert
+forsure run <filename.forsure>
+List All Commands:
 
-The root of the file system is defined using the `root` keyword, followed by a hierarchical representation of folders and files enclosed in curly braces `{}`.
+Shell Script
+Copy
+Insert
+forsure --help
+Understanding the File Structure
+A ForSure file (
+.forsure
+) defines the structure of a project using a clean, human-readable syntax. The structure is defined hierarchically, allowing for nested directories and files. Here is an example:
 
-```forsure
-root: {
-  // folder and file definitions
-}
-```
-## Folder and File Definitions
-
-Folders and files are defined within the root. Each folder and file is a key-value pair where the key is the name and the value is either another folder definition or a list of file names.
-
-root: {
-  'folder1': {
-    'file1.txt',
-    'file2.txt'
-  },
-  'folder2': {
-    'subfolder1': {
-      'file3.txt'
-    },
-    'file4.txt'
-  }
-}
-
-## Attributes
-
-Attributes provide metadata for files and folders such as size, type, and permissions. They are enclosed in square brackets [] and are attached to the file or folder name.
-
-'file1.txt': [ size: '10KB', type: 'text' ]
-Importing External File Systems
-For modular project structures, use the @import directive to include files and folders from other ForSure files.
-
-@import 'external.fs';
-root: {
-  // folder and file definitions
-}
-
-## Comments and Annotations
-
-ForSure allows inline comments using the // syntax for descriptive purposes.
-
-root: {
-  'folder1': { // Main folder
-    'file1.txt', // Text file
-    'file2.txt': [ size: '5KB', type: 'text' ] // Another text file with attributes
-  }
-}
-
-## Standard Library Reference
-
-The ForSure standard library includes several built-in attributes and directives for common use cases.
-
-Attributes
-size
-Specifies the size of a file.
-
-'file1.txt': [ size: '10KB' ]
-type
-Specifies the type of a file.
-
-'file1.txt': [ type: 'text' ]
-permissions
-Specifies permissions for a file or folder.
-
-'file1.txt': [ permissions: 'read-only' ]
-Directives
-@import
-Imports an external file system definition.
-
-@import 'external.fs';
-Example
-Bringing it all together, here’s a final example showcasing various features:
-
-@import 'common.fs';
+Copy
+Insert
 root: {
   'src': {
-    'main': {
-      'app.js': [ size: '15KB', type: 'javascript' ],
-      'index.html': [ size: '5KB', type: 'html' ]
-    },
+    'index.js': [ size: '2KB', type: 'javascript' ],
     'styles': {
-      'style.css': [ size: '3KB', type: 'css' ]
+      'main.css': [ size: '1KB', type: 'css' ]
     }
   },
-  'README.md': [ size: '2KB', type: 'markdown' ]
+  'README.md': [ size: '1KB', type: 'markdown' ]
+}
+Core Features
+Hierarchical Structure
+ForSure uses a hierarchical structure to represent files and directories:
+
+Copy
+Insert
+root: {
+  'index.html': [ size: '5KB', type: 'html' ],
+  'style.css': [ size: '2KB', type: 'css' ],
+  'script.js': [ size: '3KB', type: 'javascript' ]
+}
+Comments and Annotations
+You can add comments and annotations in 
+.forsure
+ files for documentation purposes:
+
+Copy
+Insert
+root: {
+  'styles': {
+    'main.css': [ size: '3KB', type: 'css', description: 'Main stylesheet' ] # Main stylesheet for the project
+  }
+}
+Custom Attributes
+Extend elements with user-defined attributes like permissions, sizes, and types:
+
+Copy
+Insert
+root: {
+  'index.html': [ size: '5KB', type: 'html', permissions: 'rw-r--r--' ]
+}
+Advanced Features
+@import Directives
+Use @import directives to include reusable structures:
+
+Copy
+Insert
+@import 'common.forsure';
+root: {
+  'src': {
+    'index.js': [ size: '10KB', type: 'javascript' ]
+    }
+  }
+}
+Modularization
+For large projects, break down your ForSure definitions into modular files:
+
+Copy
+Insert
+common.forsure
+root: {
+  'common': {
+    'config.json': [ size: '2KB', type: 'json' ]
+  }
 }
 
-## Conclusion
+project.forsure
+@import 'common.forsure';
+root: {
+  'src': {
+    'main.js': [ size: '3KB', type: 'javascript' ]
+  }
+}
+Error Handling
+ForSure provides error handling mechanisms such as customizable error messages and input validation:
 
-With this guide, you should have a comprehensive understanding of the ForSure language's setup, syntax, and standard library. For more advanced topics, refer to the official documentation and community resources.
+Shell Script
+Copy
+Insert
+# Custom error message for missing file
+Error: File 'src/main.js' not found in defined structure.
+Configuration
+ForSure can be configured via a configuration file (
+forsure.config.json
+):
+
+JSON
+Copy
+Insert
+{
+  "maxFileSize": "10MB",
+  "allowedFileTypes": ["javascript", "html", "css"]
+}
+Place the 
+forsure.config.json
+ file in the root directory of your project to apply custom configurations.
+
+Best Practices
+Verify before committing: Always verify your project structure definitions before committing.
+Consistency: Use clear and consistent naming conventions.
+Modularity: Modularize structures into separate files for larger projects.
+Documentation: Document attributes and their expected values at the beginning of your files.
+Additional Resources
+Official Documentation
+Community Forums
+GitHub Repository
+Tutorial Videos
+Community Support
+Copy
+Insert
+
+This `DOCUMENTATION.md` file provides a comprehensive overview of the ForSure project, including core and advanced features, configuration, best practices, and additional resources. Use this guide to get started, understand the ForSure language, and effectively manage your project structures.

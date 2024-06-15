@@ -1,19 +1,18 @@
-pub fn sum(vec: &[i32]) -> i32 {
-  vec.iter().sum()
+pub fn find_max<T: Ord>(list: &[T]) -> Option<&T> {
+  list.iter().max()
 }
 
-pub fn product(vec: &[i32]) -> i32 {
-  vec.iter().product()
+pub fn find_min<T: Ord>(list: &[T]) -> Option<&T> {
+  list.iter().min()
 }
 
-pub fn find_max(vec: &[i32]) -> Option<i32> {
-  vec.iter().copied().max()
+pub fn sort_vector<T: Ord>(list: &mut [T]) {
+  list.sort();
 }
 
-pub fn find_min(vec: &[i32]) -> Option<i32> {
-  vec.iter().copied().min()
-}
-
-pub fn sort(vec: &mut [i32]) {
-  vec.sort();
+pub fn unique_elements<T: Ord + Clone>(list: &[T]) -> Vec<T> {
+  let mut unique_list = list.to_vec();
+  unique_list.sort();
+  unique_list.dedup();
+  unique_list
 }

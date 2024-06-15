@@ -1,0 +1,72 @@
+@import 'common-shared-utils.forsure';
+@import 'advanced-shared-modules.forsure';
+
+root: {
+  'src': {
+    'app': {
+      'components': {
+        'header': {
+          'header.js': [ size: '4KB', type: 'javascript', permissions: 'rw-r--r--', author: 'dev1' ],
+          'header.module.css': [ size: '2KB', type: 'css', permissions: 'rw-r--r--', author: 'dev1' ]
+        },
+        'footer': {
+          'footer.js': [ size: '3KB', type: 'javascript', permissions: 'rw-r--r--', author: 'dev2' ],
+          'footer.module.css': [ size: '1KB', type: 'css', permissions: 'rw-r--r--', author: 'dev2' ]
+        },
+        'navbar': {
+          'navbar.jsx': [ size: '5KB', type: 'javascript', permissions: 'rw-r--r--', author: 'dev3' ],
+          'navbar.module.css': [ size: '2KB', type: 'css', permissions: 'rw-r--r--', author: 'dev3' ]
+        }
+      },
+      'utils': {
+        'helpers.js': [ size: '2KB', type: 'javascript', permissions: 'rw-r--r--', author: 'dev4' ],
+        'logger.js': [ size: '3KB', type: 'javascript', permissions: 'rw-r--r--', author: 'dev4' ]
+      },
+      'config': {
+        'app-config.json': [ size: '1KB', type: 'json', permissions: 'rw-r--r--', author: 'dev5' ],
+        'db-config.yaml': [ size: '1KB', type: 'yaml', permissions: 'rw-r--r--', author: 'dev5' ]
+      }
+    },
+    'styles': {
+      'global.css': [ size: '3KB', type: 'css', permissions: 'rw-r--r--', author: 'stylist' ],
+      'theme.css': [ size: '3KB', type: 'css', permissions: 'rw-r--r--', author: 'stylist' ]
+    }
+  },
+  'docs': {
+    'README.md': [ size: '2KB', type: 'markdown', permissions: 'rw-r--r--', author: 'docwriter' ],
+    'CONTRIBUTING.md': [ size: '1KB', type: 'markdown', permissions: 'rw-r--r--', author: 'docwriter' ],
+    'API': {
+      'endpoints.md': [ size: '3KB', type: 'markdown', permissions: 'rw-r--r--', author: 'docwriter' ],
+      'authentication.md': [ size: '2KB', type: 'markdown', permissions: 'rw-r--r--', author: 'docwriter' ]
+    }
+  },
+  'tests': {
+    'unit': {
+      'components': {
+        'header.test.js': [ size: '2KB', type: 'javascript', permissions: 'rw-r--r--', author: 'tester1' ],
+        'footer.test.js': [ size: '2KB', type: 'javascript', permissions: 'rw-r--r--', author: 'tester2' ],
+        'navbar.test.js': [ size: '3KB', type: 'javascript', permissions: 'rw-r--r--', author: 'tester3' ]
+      },
+      'utils': {
+        'helpers.test.js': [ size: '2KB', type: 'javascript', permissions: 'rw-r--r--', author: 'tester4' ],
+        'logger.test.js': [ size: '2KB', type: 'javascript', permissions: 'rw-r--r--', author: 'tester4' ]
+      }
+    },
+    'integration': {
+      'app.integration.test.js': [ size: '4KB', type: 'javascript', permissions: 'rw-r--r--', author: 'tester5' ]
+    }
+  },
+  'public': {
+    'index.html': [ size: '2KB', type: 'html', permissions: 'rw-r--r--', author: 'frontend' ],
+    'favicon.ico': [ size: '1KB', type: 'icon', permissions: 'rw-r--r--', author: 'frontend' ],
+    'assets': {
+      'images': {
+        'logo.png': [ size: '10KB', type: 'image/png', permissions: 'rw-r--r--', author: 'designer' ],
+        'background.jpg': [ size: '20KB', type: 'image/jpeg', permissions: 'rw-r--r--', author: 'designer' ]
+      },
+      'fonts': {
+        'OpenSans.ttf': [ size: '30KB', type: 'font/ttf', permissions: 'rw-r--r--', author: 'designer' ]
+      }
+    }
+  }
+}

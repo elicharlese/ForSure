@@ -1,0 +1,31 @@
+root: {
+  'common-structures': {
+    'web-app': {
+      'src': {
+        'components': { '_': [] },
+        'assets': { '_': [] },
+        'index.js': [ size: '2KB', type: 'javascript' ],
+        'App.js': [ size: '2KB', type: 'javascript' ]
+      },
+      'public': {
+        'index.html': [ size: '2KB', type: 'html' ],
+        'favicon.ico': [ size: '1KB', type: 'icon' ]
+      },
+      'package.json': [ size: '1KB', type: 'json' ],
+      'README.md': [ size: '2KB', type: 'markdown' ]
+    },
+    'api-service': {
+      'src': {
+        'controllers': { '_': [] },
+        'models': { '_': [] },
+        'routes': { '_': [] },
+        'middlewares': { '_': [] },
+        'index.js': [ size: '2KB', type: 'javascript' ],
+        'app.js': [ size: '2KB', type: 'javascript' ]
+      },
+      'config': { '_': [] },
+      'package.json': [ size: '1KB', type: 'json' ],
+      'README.md': [ size: '2KB', type: 'markdown' ]
+    }
+  }
+}

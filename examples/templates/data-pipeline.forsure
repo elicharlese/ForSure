@@ -1,0 +1,14 @@
+root: {
+  'etl': {
+    'extract.py': [ size: '2KB', type: 'python', description: 'Data extraction script' ],
+    'transform.py': [ size: '3KB', type: 'python', description: 'Data transformation script' ],
+    'load.py': [ size: '2KB', type: 'python', description: 'Data loading script' ]
+  },
+  'configs': {
+    'etl_config.yml': [ size: '1KB', type: 'yaml', description: 'ETL configuration file' ]
+  },
+  'logs': {
+    'etl.log': [ size: '1KB', type: 'log', description: 'Log file for ETL process' ]
+  },
+  'README.md': [ size: '2KB', type: 'markdown', description: 'Project documentation' ]
+}

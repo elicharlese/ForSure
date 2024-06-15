@@ -1,0 +1,17 @@
+root: {
+  'src': {
+    'components': {
+      'HelloWorld.js': [ size: '2KB', type: 'javascript', description: 'Component that displays a Hello World message' ]
+    },
+    'App.js': [ size: '2KB', type: 'javascript', description: 'Main application component' ],
+    'index.js': [ size: '2KB', type: 'javascript', description: 'Entry point for the React application' ],
+    'App.css': [ size: '1KB', type: 'css', description: 'CSS for the main application component' ],
+    'index.css': [ size: '1KB', type: 'css', description: 'CSS for the index file' ]
+  },
+  'public': {
+    'index.html': [ size: '2KB', type: 'html', description: 'HTML template for the React application' ],
+    'favicon.ico': [ size: '1KB', type: 'icon', description: 'Favicon for the React application' ]
+  },
+  'package.json': [ size: '1KB', type: 'json', description: 'Node.js project configuration for the React application' ],
+  'README.md': [ size: '2KB', type: 'markdown', description: 'Project documentation and setup guide' ]
+}

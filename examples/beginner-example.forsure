@@ -1,0 +1,19 @@
+// Import external definitions for shared utilities
+@import 'shared-utils.forsure';
+
+root: {
+  'src': {
+    'components': {
+      'header.js': [ size: '4KB', type: 'javascript' ],
+      'footer.js': [ size: '3KB', type: 'javascript' ]
+    },
+    'utils': {
+      'helpers.js': [ size: '2KB', type: 'javascript' ]
+    },
+    'config.json': [ size: '1KB', type: 'json' ]
+  },
+  'docs': {
+    'readme.md': [ size: '1KB', type: 'markdown' ],
+    'shared-utils': @import 'shared-utils.forsure'
+  }
+}
