@@ -88,7 +88,7 @@ version = "0.4"
 optional = true
 
 [dependencies.tokio]
-version = "1.6"
+version = "1.20"
 features = ["sync"]
 optional = true
 
