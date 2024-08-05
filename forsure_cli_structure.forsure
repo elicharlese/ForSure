@@ -1,0 +1,13 @@
+root: {
+  'src': {
+    'cli': {
+      'mod.rs': [ type: 'rust', description: 'Module declaration for CLI' ],
+      'cli.rs': [ type: 'rust', description: 'CLI logic and functions' ],
+      'converter.rs': [ type: 'rust', description: 'Conversion logic' ]
+    },
+    'main.rs': [ type: 'rust', description: 'Entry point for the application' ],
+    'lib.rs': [ type: 'rust', description: 'Library functions and modules' ]
+  },
+  'Cargo.toml': [ type: 'toml', description: 'Rust project configuration' ],
+  'README.md': [ type: 'markdown', description: 'Project documentation' ]
+}
