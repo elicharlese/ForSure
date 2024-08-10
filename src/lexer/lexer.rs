@@ -1,6 +1,6 @@
 use crate::utils::logger::Logger;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Token {
     Number(i64),
     Plus,
@@ -16,7 +16,19 @@ pub enum Token {
     EOF,
 }
 
+pub struct Lexer {
+    input: Vec<char>,
+    position: usize,
+}
+
 impl Lexer {
+    pub fn new(input: &str) -> Self {
+        Lexer {
+            input: input.chars().collect(),
+            position: 0,
+        }
+    }
+
     pub fn next_token(&mut self) -> Token {
         self.skip_whitespace();
         if self.position >= self.input.len() {

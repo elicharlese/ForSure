@@ -95,13 +95,14 @@ impl<'a> Parser<'a> {
                 Ok(expr)
             },
             Token::Identifier(ref name) => {
+                let name_cloned = name.clone();
                 self.next_token();
                 if self.current_token == Token::LParen {
                     self.next_token();
                     let args = self.parse_call_args()?;
-                    Ok(Expr::FnCall(name.clone(), args))
+                    Ok(Expr::FnCall(name_cloned, args))
                 } else {
-                    Ok(Expr::FnCall(name.clone(), vec![]))  // Default behavior; assuming call without args 
+                    Ok(Expr::FnCall(name_cloned, vec![]))  // Use cloned name here
                 }
             },
             _ => Err(ParseError::UnexpectedToken(self.current_token.clone(), "Expected a term".to_string())),
@@ -131,8 +132,8 @@ impl<'a> Parser<'a> {
             self.next_token();
             Ok(())
         } else {
-            Logger::error(&format!("Expected token: {:?}, got: {:?}", token, self.current_token));
-            Err(ParseError::UnexpectedToken(token, format!("Expected token: {:?}, got: {:?}", token, self.current_token)))
+            Logger::error(&format!("Expected token: {:?}, got: {:?}", token.clone(), self.current_token));
+            Err(ParseError::UnexpectedToken(token.clone(), format!("Expected token: {:?}, got: {:?}", token.clone(), self.current_token)))
         }
     }
 }
