@@ -1,4 +1,5 @@
-# ForSure Language (FSH) 🚀
+# <img src="https://github.com/user-attachments/assets/92590dcb-cfcd-41c7-a030-0c42f2062f23" height="35" width="35" align-items="center" justify-content="center" /> ForSure 
+
 ForSure is a language designed to simplify projects by using a flat-file-like structured language/compiler/cli/converter system. It allows you to describe and document file structures in a clear and concise manner, similar to how you would write a Dockerfile for a container. ForSure uses a simple, human-readable syntax to represent directories, files, and their relationships.
 
 ## Getting Started 🎉
