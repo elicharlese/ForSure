@@ -3,7 +3,7 @@
 ForSure is a language designed to simplify projects by using a flat-file-like structured language/compiler/cli/converter system. It allows you to describe and document file structures in a clear and concise manner, similar to how you would write a Dockerfile for a container. ForSure uses a simple, human-readable syntax to represent directories, files, and their relationships.
 
 ## Getting Started 🎉
-To start using ForSure, clone this repository and review the sample `.fs` files included. You can write your ForSure definitions using any text editor.
+To start using ForSure, clone this repository and review the sample `.forsure` files included. You can write your ForSure definitions using any text editor.
 
 ## Features ✨
 - **Hierarchical Structure:** Mimics the natural file system's hierarchy.
@@ -16,7 +16,7 @@ To start using ForSure, clone this repository and review the sample `.fs` files 
 
 ### Basic Example
 
-Here's a basic example of what a `.fs` file looks like:
+Here's a basic example of what a `.forsure` file looks like:
 
 ```forsure
 root:
