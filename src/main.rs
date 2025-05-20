@@ -1,6 +1,6 @@
 use std::fs;
-use std::io::_Error; // Prefix with underscore
-use pulldown_cmark::{Parser, Event, Tag, _HeadingLevel, TagEnd, CodeBlockKind}; // Prefix with underscore
+use std::io::Error; // Corrected import from _Error
+use pulldown_cmark::{Parser, Event, Tag, TagEnd}; // Removed unused HeadingLevel
 
 // Basic struct to represent a file or directory item
 #[derive(Debug, Default)]
@@ -29,10 +29,16 @@ enum ListItemParsingState {
     Note,
     Example,
     ContentPattern,
+    // Add states for HTML tags within list items
+    HtmlDescription,
+    HtmlPurpose,
+    HtmlNote,
+    HtmlExample,
+    HtmlContentPattern,
 }
 
 
-fn main() -> Result<(), _Error> { // Use _Error here as well
+fn main() -> Result<(), Error> { // Use Error here as well
     println!("ForSure CLI is running!");
 
     let forsure_file_path = "example.forsure";
@@ -45,10 +51,10 @@ fn main() -> Result<(), _Error> { // Use _Error here as well
 
     println!("\nParsing markdown events and building structure:");
 
-    let mut current_heading_level: Option<pulldown_cmark::HeadingLevel> = None; // Use full path or keep as is if _HeadingLevel is used below
+    let mut current_heading_level: Option<pulldown_cmark::HeadingLevel> = None;
     let mut in_list_item = false;
     let mut current_item = ProjectItem::default();
-    let mut current_tag: Option<String> = None;
+    let mut current_tag: Option<String> = None; // This is now primarily for HTML tags
     let mut tag_content = String::new();
     let mut project_structure: Vec<ProjectItem> = Vec::new();
     let mut item_stack: Vec<ProjectItem> = Vec::new();
@@ -111,10 +117,31 @@ fn main() -> Result<(), _Error> { // Use _Error here as well
                 in_list_item = true;
                 current_item = ProjectItem::default(); // Reset for a new item
                  list_item_state = ListItemParsingState::None; // Reset state for a new list item
+                 tag_content.clear(); // Clear tag content for the new list item
                 // println!("  Entering List Item");
             }
             Event::End(TagEnd::Item) => {
                 in_list_item = false;
+                // Before ending item, assign any accumulated tag_content if a state was active
+                match list_item_state {
+                    ListItemParsingState::Description |
+                    ListItemParsingState::Purpose |
+                    ListItemParsingState::Note |
+                    ListItemParsingState::Example |
+                    ListItemParsingState::ContentPattern => {
+                        match list_item_state {
+                           ListItemParsingState::Description => current_item.description = Some(Some(tag_content.trim().to_string())),
+                           ListItemParsingState::Purpose => current_item.purpose = Some(Some(tag_content.trim().to_string())),
+                           ListItemParsingState::Note => current_item.note = Some(Some(tag_content.trim().to_string())),
+                           ListItemParsingState::Example => current_item.example = Some(Some(tag_content.trim().to_string())),
+                           ListItemParsingState::ContentPattern => current_item.content_pattern = Some(Some(tag_content.trim().to_string())),
+                            _ => {} // Should not reach here
+                        }
+                        tag_content.clear(); // Clear content after assigning
+                    }
+                    _ => {} // Do nothing for other states or None
+                }
+
                 // println!("  Parsed Item: {:?}\n", current_item); // Print parsed item for now
                 // Add the parsed item to the current scope (which should be the last item on the stack, typically a heading)
                 if let Some(parent) = item_stack.last_mut() {
@@ -125,35 +152,60 @@ fn main() -> Result<(), _Error> { // Use _Error here as well
                 }
                 current_item = ProjectItem::default(); // Reset after processing
                  list_item_state = ListItemParsingState::None; // Reset state after processing item
+                 tag_content.clear(); // Clear tag content after processing item
                 // println!("  Exiting List Item");
             }
             Event::Text(text) => {
                 if in_list_item {
                     let line = text.trim();
-                    if line.starts_with("Type:") {
-                        current_item.item_type = line.replace("Type:", "").trim().to_string();
-                         list_item_state = ListItemParsingState::Type;
-                    } else if line.starts_with("Name:") {
-                        current_item.name = line.replace("Name:", "").trim().to_string();
-                         list_item_state = ListItemParsingState::Name;
-                    } else if line.starts_with("Path:") {
-                        current_item.path = Some(line.replace("Path:", "").trim().to_string());
-                         list_item_state = ListItemParsingState::Path;
-                    } else if let Some(_current) = &current_tag { // Fixed unused variable
+                    // Check for list item property prefixes if no state is active
+                    if list_item_state == ListItemParsingState::None {
+                        if line.starts_with("Type:") {
+                            current_item.item_type = line.replace("Type:", "").trim().to_string();
+                             list_item_state = ListItemParsingState::Type;
+                        } else if line.starts_with("Name:") {
+                            current_item.name = line.replace("Name:", "").trim().to_string();
+                             list_item_state = ListItemParsingState::Name;
+                        } else if line.starts_with("Path:") {
+                            current_item.path = Some(line.replace("Path:", "").trim().to_string());
+                             list_item_state = ListItemParsingState::Path;
+                        } else if line.starts_with("Description:") {
+                             list_item_state = ListItemParsingState::Description;
+                             tag_content.push_str(&line.replace("Description:", "").trim()); // Capture content on the same line
+                        } else if line.starts_with("Purpose:") {
+                             list_item_state = ListItemParsingState::Purpose;
+                             tag_content.push_str(&line.replace("Purpose:", "").trim());
+                        } else if line.starts_with("Note:") {
+                             list_item_state = ListItemParsingState::Note;
+                             tag_content.push_str(&line.replace("Note:", "").trim());
+                        } else if line.starts_with("Example:") {
+                             list_item_state = ListItemParsingState::Example;
+                             tag_content.push_str(&line.replace("Example:", "").trim());
+                        } else if line.starts_with("Content Pattern:") {
+                             list_item_state = ListItemParsingState::ContentPattern;
+                             tag_content.push_str(&line.replace("Content Pattern:", "").trim());
+                        } else if current_tag.is_some() {
+                             // If no specific list item state and we are inside an HTML tag, append to tag_content
+                             tag_content.push_str(&text);
+                        } else {
+                            // Handle other text within list items if necessary (e.g., simple text lines)
+                            // For now, we can ignore or decide how to process
+                            // println!("  Ignoring text in list item with no state: {}", text);
+                        }
+                    } else {
+                        // If a list item state is active, append the text to tag_content
                          tag_content.push_str(&text);
-                    } else if list_item_state != ListItemParsingState::None {
-                         // If we are in a list item and the previous line set a state,
-                        // this text might be continuation of the previous tag content
-                         tag_content.push_str(&text); // Append text to tag_content
                     }
                 } else if let Some(last_item) = item_stack.last_mut() {
                     // If we are in a heading and encounter text, treat it as the heading name
                     if last_item.name.is_empty() && last_item.item_type.starts_with("Heading") {
                          last_item.name = text.trim().to_string();
-                    } else if let Some(_tag) = &current_tag { // Fixed unused variable
+                    } else if current_tag.is_some() {
+                         // If inside an HTML tag outside a list item, append to tag_content
                          tag_content.push_str(&text);
                     }
-                } else if let Some(_tag) = &current_tag { // Fixed unused variable
+                } else if current_tag.is_some() {
+                     // If inside an HTML tag at the root level, append to tag_content
                      tag_content.push_str(&text);
                 }
             }
@@ -166,6 +218,7 @@ fn main() -> Result<(), _Error> { // Use _Error here as well
                         let end_tag_name = tag_name[1..].to_string();
                          if let Some(current) = &current_tag {
                             if current == &end_tag_name {
+                                // Assign the accumulated tag_content based on the tag name
                                 match current.as_str() {
                                     "description" => {
                                          if in_list_item { current_item.description = Some(Some(tag_content.trim().to_string())); }
@@ -187,7 +240,7 @@ fn main() -> Result<(), _Error> { // Use _Error here as well
                                          if in_list_item { current_item.content_pattern = Some(Some(tag_content.trim().to_string())); }
                                          else if let Some(last_item) = item_stack.last_mut() { last_item.content_pattern = Some(Some(tag_content.trim().to_string())); }
                                     },
-                                    _ => {},
+                                    _ => {}, // Ignore unknown end tags
                                 }
                                 current_tag = None;
                                 tag_content.clear();
@@ -195,22 +248,80 @@ fn main() -> Result<(), _Error> { // Use _Error here as well
                             }
                         }
                     } else {
-                        // Start tag
-                        current_tag = Some(tag_name);
+                        // Start tag - set the current tag and clear content
+                        current_tag = Some(tag_name.clone()); // Clone tag_name to move into Option
                         tag_content.clear(); // Clear content for the new tag
-                         // Do NOT reset list_item_state here, it should be set by the preceding line in Event::Text
+
+                        // Set list item state based on HTML tag if inside a list item
+                         if in_list_item {
+                            match tag_name.as_str() {
+                                "description" => list_item_state = ListItemParsingState::HtmlDescription,
+                                "purpose" => list_item_state = ListItemParsingState::HtmlPurpose,
+                                "note" => list_item_state = ListItemParsingState::HtmlNote,
+                                "example" => list_item_state = ListItemParsingState::HtmlExample,
+                                "content_pattern" => list_item_state = ListItemParsingState::HtmlContentPattern,
+                                _ => list_item_state = ListItemParsingState::None, // Reset for unknown tags
+                            }
+                         } else {
+                             list_item_state = ListItemParsingState::None; // Reset if not in a list item
+                         }
                     }
                 }
             }
-            Event::CodeBlock(kind) => {
-                // Handle code blocks if needed
-                // println!("Code Block: {:?}", kind);
-                 list_item_state = ListItemParsingState::None; // Reset state on code block
+            // Handle code blocks using Start and End tags instead of the incorrect Event::CodeBlock
+            Event::Start(Tag::CodeBlock { .. }) => {
+                // Handle the start of a code block
+                list_item_state = ListItemParsingState::None; // Reset state on code block start
+                 current_tag = Some("CodeBlock".to_string()); // Treat CodeBlock as a tag to capture content
+                 tag_content.clear(); // Clear content for the new code block
+            }
+            Event::End(TagEnd::CodeBlock) => { // Corrected from Tag::CodeBlock
+                // Handle the end of a code block
+                // Assign the accumulated tag_content for the code block
+                 if current_tag.as_deref() == Some("CodeBlock") {
+                    // Decide where to put code block content, for now maybe as a note or example?
+                    // Or perhaps add a dedicated field to ProjectItem for code content.
+                    // For now, let's print it and clear state.
+                    println!("Code Block Content:\n{}", tag_content.trim());
+                    current_tag = None;
+                    tag_content.clear();
+                 }
+                 list_item_state = ListItemParsingState::None; // Reset state on code block end
             }
 
             // Handle other events like Start(Tag::Paragraph), End(Tag::Paragraph), etc. later
             _ => {
+                 // If we were in a list item state that expects content (e.g., Description:),
+                // and we encounter another event, finalize the content capture for that state.
+                 if in_list_item {
+                    match list_item_state {
+                        ListItemParsingState::Type | ListItemParsingState::Name | ListItemParsingState::Path => {
+                            // These states capture content on the same line, no multi-line content expected here.
+                        }
+                        ListItemParsingState::Description | ListItemParsingState::Purpose | ListItemParsingState::Note | ListItemParsingState::Example | ListItemParsingState::ContentPattern => {
+                            // Assign accumulated tag_content for the list item property
+                            match list_item_state {
+                                ListItemParsingState::Description => current_item.description = Some(Some(tag_content.trim().to_string())),
+                                ListItemParsingState::Purpose => current_item.purpose = Some(Some(tag_content.trim().to_string())),
+                                ListItemParsingState::Note => current_item.note = Some(Some(tag_content.trim().to_string())),
+                                ListItemParsingState::Example => current_item.example = Some(Some(tag_content.trim().to_string())),
+                                ListItemParsingState::ContentPattern => current_item.content_pattern = Some(Some(tag_content.trim().to_string())),
+                                _ => {} // Should not reach here
+                            }
+                            tag_content.clear(); // Clear content after assigning
+                        }
+                        ListItemParsingState::HtmlDescription | ListItemParsingState::HtmlPurpose | ListItemParsingState::HtmlNote | ListItemParsingState::HtmlExample | ListItemParsingState::HtmlContentPattern => {
+                            // Content is assigned when the corresponding HTML end tag is encountered.
+                        }
+                        ListItemParsingState::None => {
+                            // No specific state was active, ignore or handle general text/events
+                        }
+                    }
+                 }
+
                  list_item_state = ListItemParsingState::None; // Reset state on other events
+                 // Consider if current_tag should also be reset here depending on event type
+                 // For now, keep it active until an explicit end tag is found.
             },
         }
     }
