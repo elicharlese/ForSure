@@ -1,0 +1,290 @@
+ # ForSure Frontend Project Configuration
+
+This document defines the file structure and associated metadata for the frontend application built using Next.js, React, and TypeScript.
+
+## Root Directory
+
+- Type: Directory
+- Path: `./`
+  <description>
+  This is the root directory of the frontend project.
+  </description>
+
+### Contents
+
+- Type: File
+  - Name: `package.json`
+  <description>
+  Lists project dependencies, scripts, and metadata.
+  </description>
+  <purpose>
+  Manages project dependencies via npm or yarn.
+  </purpose>
+
+- Type: File
+  - Name: `tsconfig.json`
+  <description>
+  Configuration file for TypeScript.
+  </description>
+  <purpose>
+  Specifies compiler options for the TypeScript project.
+  </purpose>
+
+- Type: File
+  - Name: `next.config.js`
+  <description>
+  Configuration file for Next.js.
+  </description>
+  <purpose>
+  Customizes Next.js settings, like routing, webpack configuration, etc.
+  </purpose>
+
+- Type: Directory
+  - Name: `src/`
+  <description>
+  Contains the main source code for the Next.js application.
+  </description>
+
+#### Contents (src/)
+
+- Type: Directory
+  - Name: `app/`
+  <description>
+  Contains the app router structure for pages and layouts.
+  </description>
+
+##### Contents (app/)
+
+- Type: File
+  - Name: `page.tsx`
+  <description>
+  The main landing page component.
+  </description>
+  <purpose>
+  Serves as the entry point for the root route (/).
+  </purpose>
+
+- Type: File
+  - Name: `layout.tsx`
+  <description>
+  Root layout for the application.
+  </description>
+  <purpose>
+  Defines shared UI for all pages.
+  </purpose>
+
+- Type: Directory
+  - Name: `(marketing)/`
+  <description>
+  Directory for marketing-related pages (e.g., about, careers, etc.).
+  </description>
+
+- Type: Directory
+  - Name: `products/`
+  <description>
+  Directory for product-related pages.
+  </description>
+
+- Type: Directory
+  - Name: `app/`
+  <description>
+  Directory for the main application dashboard and its features.
+  </description>
+
+- Type: Directory
+  - Name: `components/`
+  <description>
+  Contains reusable React components.
+  </description>
+
+##### Contents (components/)
+
+- Type: File
+  - Name: `NavBar.tsx`
+  <description>
+  Navigation bar component with different variants.
+  </description>
+
+- Type: File
+  - Name: `Footer.tsx`
+  <description>
+  Footer component with different variants.
+  </description>
+
+- Type: File
+  - Name: `Card.tsx`
+  <description>
+  Reusable card component.
+  </description>
+
+- Type: File
+  - Name: `Button.tsx`
+  <description>
+  Reusable button component.
+  </description>
+
+- Type: File
+  - Name: `ThemeToggle.tsx`
+  <description>
+  Component for switching between light and dark modes.
+  </description>
+
+- Type: File
+  - Name: `WalletConnectButton.tsx`
+  <description>
+  Button component for connecting Solana wallets.
+  </description>
+
+- Type: File
+  - Name: `ProtectedRoute.tsx`
+  <description>
+  Component to protect routes requiring authentication.
+  </description>
+
+- Type: Directory
+  - Name: `auth/`
+  <description>
+  Contains components and pages related to authentication (sign-in, sign-up).
+  </description>
+
+##### Contents (auth/)
+
+- Type: File
+  - Name: `SignInPage.tsx`
+  <description>
+  Page component for user sign-in.
+  </description>
+
+- Type: File
+  - Name: `SignUpPage.tsx`
+  <description>
+  Page component for user sign-up with multiple options.
+  </description>
+
+- Type: File
+  - Name: `AuthContext.tsx`
+  <description>
+  React context for managing authentication state.
+  </description>
+
+- Type: Directory
+  - Name: `app/`
+  <description>
+  Contains the app-specific pages and components.
+  </description>
+
+##### Contents (app/)
+
+- Type: File
+  - Name: `page.tsx`
+  <description>
+  The main dashboard page for the app.
+  </description>
+
+- Type: Directory
+  - Name: `devices/`
+  <description>
+  Contains components and pages related to device management.
+  </description>
+
+###### Contents (devices/)
+
+- Type: File
+  - Name: `page.tsx`
+  <description>
+  Page listing and managing smart devices.
+  </description>
+
+- Type: File
+  - Name: `AddDeviceModal.tsx`
+  <description>
+  Modal component for adding new devices.
+  </description>
+
+- Type: Directory
+  - Name: `expressions/`
+  <description>
+  Contains pages for geospatial expressions.
+  </description>
+
+###### Contents (expressions/)
+
+- Type: File
+  - Name: `page.tsx`
+  <description>
+  Page listing and filtering geospatial expressions.
+  </description>
+
+- Type: File
+  - Name: `[id]/page.tsx`
+  <description>
+  Dynamic page for individual expression details.
+  </description>
+
+- Type: Directory
+  - Name: `expansions/`
+  <description>
+  Contains pages for platform expansions.
+  </description>
+
+###### Contents (expansions/)
+
+- Type: File
+  - Name: `page.tsx`
+  <description>
+  Page listing and filtering platform expansions.
+  </description>
+
+- Type: File
+  - Name: `[id]/page.tsx`
+  <description>
+  Dynamic page for individual expansion details.
+  </description>
+
+- Type: Directory
+  - Name: `extensions/`
+  <description>
+  Contains pages for developer extensions.
+  </description>
+
+###### Contents (extensions/)
+
+- Type: File
+  - Name: `page.tsx`
+  <description>
+  Page listing and filtering developer extensions.
+  </description>
+
+- Type: File
+  - Name: `[id]/page.tsx`
+  <description>
+  Dynamic page for individual extension details.
+  </description>
+
+- Type: Directory
+  - Name: `lib/`
+  <description>
+  Contains utility functions and helper modules.
+  </description>
+
+- Type: Directory
+  - Name: `styles/`
+  <description>
+  Contains global styles or Tailwind configuration.
+  </description>
+
+- Type: Directory
+  - Name: `public/`
+  <description>
+  Contains static assets like images and fonts.
+  </description>
+
+##### Contents (public/)
+
+- Type: Directory
+  - Name: `images/`
+  <description>
+  Contains image assets used throughout the application.
+  </description>
+
+```
