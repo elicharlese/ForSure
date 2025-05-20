@@ -1,0 +1,61 @@
+{
+    "Who are you working with?" : "Enter text",
+    "Project name" : "Enter text",
+    "Project scope" : "Add a brief description or overview of your project.",
+
+    "List the deliverables": "",
+    "List the deliverables you expect to be completed by the end of this project" : "",
+
+    "Select how you would like the client to pay" : "",
+    
+    "Frequency issued" : "",
+
+    "Rate" : "$",
+    "Start Date" : "Select Start Date",
+    "Due Date" : "Select Due Date",
+    "Issue invoice on" : "",
+    "First invoice date" : "",
+    "Next invoice data" : "",
+
+    Amount
+    Enter currency
+    Invoice due
+
+    HOURLY PAYMENTS
+
+
+    Frequency
+
+    Hourly-Rate
+    Enter currency
+    Estimated Hours
+
+    Start-Date
+
+
+    Select date
+    End-Date
+
+
+    Select date
+    Invoice Due
+
+    This agreement is valid for up to 1 year. Projects can be ended at any time.
+
+    Please review before proceeding:
+
+    For invoice billing projects with hourly submissions, clients will be billed for hours worked. This means that funds are not secured upfront and are instead paid once the freelancer submits hours for work completed. For new relationships, we recommend considering an escrow project instead, where funds are held in escrow and paid out at the end of the project. 
+
+    Switch to an escrow project.
+
+
+
+
+    "Do you want to add inclusive tax?" : "",
+    "Tax Type" : "",
+
+    "ID/Account #" : "Enter number",
+    "Tax Rate" : "Enter number",
+    
+    "Contract Signed" : "Drop your files here to upload"
+}

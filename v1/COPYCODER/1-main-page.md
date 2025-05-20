@@ -1,0 +1,135 @@
+Set up the frontend according to the following prompt:
+  <frontend-prompt>
+  Create detailed components with these requirements:
+  1. Use 'use client' directive for client-side components
+  2. Make sure to concatenate strings correctly using backslash
+  3. Style with Tailwind CSS utility classes for responsive design
+  4. Use Lucide React for icons (from lucide-react package). Do NOT use other UI libraries unless requested
+  5. Use stock photos from picsum.photos where appropriate, only valid URLs you know exist
+  6. Configure next.config.js image remotePatterns to enable stock photos from picsum.photos
+  7. Create root layout.tsx page that wraps necessary navigation items to all pages
+  8. MUST implement the navigation elements items in their rightful place i.e. Left sidebar, Top header
+  9. Accurately implement necessary grid layouts
+  10. Follow proper import practices:
+     - Use @/ path aliases
+     - Keep component imports organized
+     - Update current src/app/page.tsx with new comprehensive code
+     - Don't forget root route (page.tsx) handling
+     - You MUST complete the entire prompt before stopping
+  </frontend-prompt>
+
+  <summary_title>
+Modern SaaS Landing Page with Pricing and FAQ Sections
+</summary_title>
+
+<image_analysis>
+1. Navigation Elements:
+- Primary navigation: Pricing plan, FAQs, Contact, Features, Still have questions?
+- Navigation bar: 64px height, fixed top position
+- Logo positioned top-left
+- Sign in/Get started buttons aligned right
+- Clean white background with subtle shadow
+
+2. Layout Components:
+- Hero section: 600px height
+- Main content width: 1200px max
+- Pricing section: 3-column grid
+- Features grid: 2x3 layout
+- FAQ accordion section: full width
+- Footer: 4-column grid layout
+
+3. Content Sections:
+- Hero with headline and description
+- Pricing plans with feature lists
+- Feature highlights with icons
+- FAQ accordion components
+- Newsletter subscription form
+- Footer with multiple columns
+
+4. Interactive Controls:
+- Primary CTA buttons: Black background
+- Secondary buttons: White with border
+- FAQ accordion toggles
+- Email input field with submit button
+- Pricing toggle switches
+
+5. Colors:
+- Primary: #000000 (Black)
+- Secondary: #FFFFFF (White)
+- Text: #333333
+- Borders: #E5E5E5
+- Background: #F8F8F8
+- Accent: #0066FF
+
+6. Grid/Layout Structure:
+- 12-column grid system
+- 24px grid gap
+- Responsive breakpoints:
+  - Desktop: 1200px
+  - Tablet: 768px
+  - Mobile: 375px
+</image_analysis>
+
+<development_planning>
+1. Project Structure:
+```
+src/
+├── components/
+│   ├── layout/
+│   │   ├── Header
+│   │   ├── Footer
+│   │   └── Navigation
+│   ├── features/
+│   │   ├── PricingPlans
+│   │   ├── FeatureGrid
+│   │   └── FAQAccordion
+│   └── shared/
+├── assets/
+├── styles/
+├── hooks/
+└── utils/
+```
+
+2. Key Features:
+- Responsive navigation system
+- Pricing plan comparison
+- Interactive FAQ accordion
+- Newsletter subscription
+- Social proof section
+- Feature showcase grid
+
+3. State Management:
+```typescript
+interface AppState {
+  pricing: {
+    selectedPlan: string;
+    billingCycle: 'monthly' | 'yearly';
+  };
+  navigation: {
+    isMenuOpen: boolean;
+    activeSection: string;
+  };
+  faq: {
+    expandedItems: string[];
+  };
+}
+```
+
+4. Component Architecture:
+- Header (Navigation, Auth buttons)
+- Hero (Title, description, CTA)
+- PricingSection (Plan cards, features)
+- FeatureGrid (Feature cards)
+- FAQSection (Accordion items)
+- Footer (Links, newsletter)
+
+5. Responsive Breakpoints:
+```scss
+$breakpoints: (
+  'mobile': 375px,
+  'tablet': 768px,
+  'desktop': 1200px,
+  'large': 1440px
+);
+```
+</development_planning>
