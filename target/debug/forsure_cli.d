@@ -1,0 +1,1 @@
+/Users/elicharlese/Documents/Elias\ Estrada/Personal/Freelance\ Documents/ForSure/target/debug/forsure_cli: /Users/elicharlese/Documents/Elias\ Estrada/Personal/Freelance\ Documents/ForSure/src/main.rs

@@ -1,0 +1,42 @@
+ # ForSure Project Configuration
+
+This document defines the file structure and associated metadata for the project.
+
+## Root Directory
+
+- Type: Directory
+- Path: `./`
+  <description>
+  This is the root directory of the project.
+  </description>
+
+### Contents
+
+- Type: File
+  - Name: `Cargo.toml`
+  <description>
+  The manifest file for the Rust project, managed by Cargo.
+  </description>
+  <purpose>
+  Defines dependencies, project metadata, and build configuration.
+  </purpose>
+
+- Type: Directory
+  - Name: `src/`
+  <description>
+  Contains the main source code for the Rust application.
+  </description>
+
+#### Contents (src/)
+
+- Type: File
+  - Name: `main.rs`
+  <description>
+  The entry point of the Rust CLI application.
+  </description>
+
+- Type: File
+  - Name: `example.forsure`
+  <description>
+  A sample file demonstrating the .forsure language syntax.
+  </description>
