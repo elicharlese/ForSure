@@ -23,6 +23,7 @@ This document defines the file structure and associated metadata for the project
 
 - Type: Directory
   - Name: `src/`
+  Command: echo "Running source directory" # Added this line
   <description>
   Contains the main source code for the Rust application.
   </description>

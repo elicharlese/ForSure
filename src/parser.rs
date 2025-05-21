@@ -1,572 +1,814 @@
-use std::iter::Peekable;
-use std::vec::IntoIter;
-use std::io::{Error, ErrorKind};
-// Removed unused import: use std::path::PathBuf; // Removed as it's unused here
+use std::io::{self, Read};
+use std::collections::HashMap;
+use std::io::Cursor; // Import Cursor for tests
 
-use crate::models::{ProjectItem, Token, ListItemParsingState}; // Import necessary types
-use crate::lexer::Lexer;
+// Import necessary types from models and lexer modules
+use crate::models::{ProjectItem, ItemType, Token, ParsingState}; // Import Token and ParsingState
+use crate::lexer::Lexer; // Import Lexer
 
-// Define the Parser struct
-pub struct Parser {
-    tokens: Peekable<IntoIter<Token>>,
-    current_item: Option<ProjectItem>, // The item currently being built (e.g., a list item)
-    item_stack: Vec<ProjectItem>, // Stack for hierarchical items (headings, potentially nested lists)
-    list_item_state: ListItemParsingState, // State within a list item or content block
-    current_tag_content: String, // Accumulates content within custom tags or code blocks
+#[derive(Debug)]
+pub struct ParserState<'a> { // Add lifetime parameter 'a
+    pub project_root: ProjectItem, // Made public to be accessible from main.rs
+    // State for the custom parser
+    lexer: Lexer<'a>, // Instance of our custom Lexer
+    parent_stack: Vec<usize>, // Stack of indices pointing to the current parent in the hierarchy
+    current_parsing_state: ParsingState, // Track the current parsing state
+    // Temporary fields to build the current item before adding it to the tree
+    current_item_type: ItemType,
+    current_item_name: String,
+    current_item_content: String,
+    current_item_attributes: HashMap<String, String>,
+    current_custom_tag_name: Option<String>, // Store the name of the current custom tag
+    // A buffer to hold a token that needs to be re-processed
+    // This is a simple way to handle cases where a token signifies the end of a state
+    // but also needs to be the first token of the next state.
+    // A more sophisticated parser might use a token buffer or recursive parsing.
+    next_token_buffer: Option<Token>,
 }
 
-impl Parser {
-    /// Creates a new Parser instance from a vector of tokens.
-    pub fn new(tokens: Vec<Token>) -> Self {
-        Parser {
-            tokens: tokens.into_iter().peekable(),
-            current_item: None,
-            item_stack: Vec::new(),
-            list_item_state: ListItemParsingState::None,
-            current_tag_content: String::new(),
+impl<'a> ParserState<'a> { // Add lifetime parameter 'a to impl
+    pub fn new(project_name: String, input: &'a str) -> Self { // Add input parameter for Lexer
+        Self {
+            // The project_root itself will be the top-level Project item (from H1)
+            project_root: ProjectItem::new(ItemType::Project, project_name, None, Vec::new()),
+            // Initialize state for the custom parser
+            lexer: Lexer::new(input), // Create Lexer instance
+            parent_stack: Vec::new(), // Start with an empty stack, project_root is the implicit parent
+            current_parsing_state: ParsingState::ExpectingStructuralElement, // Start by expecting a structural element
+            current_item_type: ItemType::Unknown, // Default type
+            current_item_name: String::new(),
+            current_item_content: String::new(),
+            current_item_attributes: HashMap::new(),
+            current_custom_tag_name: None,
+            next_token_buffer: None,
         }
     }
 
-    /// Consumes the next token if it matches the expected type and returns it.
-    fn consume_token(&mut self, expected_type: &Token) -> Result<Token, Error> {
-        let next = self.tokens.peek();
-        if let Some(token) = next {
-            if std::mem::discriminant(token) == std::mem::discriminant(expected_type) {
-                Ok(self.tokens.next().unwrap())
+    // Get a mutable reference to the current parent item based on the index stack
+    // This method needs refinement for the new state structure.
+    fn get_current_parent_mut(&mut self) -> &mut ProjectItem {
+        let mut current = &mut self.project_root;
+        // Traverse down the children based on the indices in the stack
+        for &index in &self.parent_stack {
+             // We need to check if the index is valid for the current item's children
+             if index < current.children.len() {
+                current = current.children.get_mut(index).unwrap(); // Use unwrap cautiously, or handle the error
+             } else {
+                 // This indicates an issue with the index stack management
+                 panic!("Invalid index {} in parent_stack stack.", index);
+             }
+        }
+        current // Return the mutable reference to the item at the top of the conceptual stack
+    }
+
+
+    // Add a new item as a child of the current parent and update the parent stack
+    fn enter_parent_context(&mut self, item: ProjectItem) { // Removed mut from item
+        let current_parent = self.get_current_parent_mut();
+        current_parent.children.push(item); // item is moved here
+
+        // The new parent is the item just added, which is the last child of the previous parent.
+        let new_parent_index = current_parent.children.len() - 1;
+
+        // Add the index of the new parent to the stack
+        self.parent_stack.push(new_parent_index);
+    }
+
+    // Move up one level in the parent hierarchy
+    fn exit_parent_context(&mut self) {
+        // Only pop if the stack is not empty (i.e., not at the root level)
+        if !self.parent_stack.is_empty() {
+            self.parent_stack.pop();
+        }
+    }
+
+    // This function will now use our custom lexer and parsing logic
+    pub fn parse_forsure_file(&mut self) -> io::Result<()> { // Removed reader parameter
+        // The lexer is already initialized in new() with the input string slice.
+
+        loop {
+            // Get the next token, either from the buffer or the lexer
+            let token = if let Some(buffered_token) = self.next_token_buffer.take() {
+                buffered_token
             } else {
-                Err(Error::new(
-                    ErrorKind::InvalidData,
-                    format!("Expected token {:?}, but found {:?}", expected_type, token),
-                ))
+                self.lexer.next_token()
+            };
+
+            // If EndOfFile is encountered while the buffer is empty, break the loop
+            if let Token::EndOfFile = token {
+                if self.next_token_buffer.is_none() {
+                    // Finalize any pending item before breaking
+                     if self.current_item_type != ItemType::Unknown || !self.current_item_name.is_empty() || !self.current_item_content.is_empty() || !self.current_item_attributes.is_empty() || self.current_custom_tag_name.is_some() {
+                          self.finalize_current_item();
+                     }
+                    break;
+                }
             }
-        } else {
-            Err(Error::new(
-                ErrorKind::UnexpectedEof,
-                format!("Expected token {:?}, but found end of file", expected_type),
-            ))
-        }
-    }
 
-    /// Consumes the next token and returns it, regardless of type.
-    fn next_token(&mut self) -> Option<Token> {
-        self.tokens.next()
-    }
 
-    /// Peeks at the next token without consuming it.
-    fn peek_token(&mut self) -> Option<&Token> {
-        self.tokens.peek()
-    }
+            println!("Parsed token: {:?}, State: {:?}", token, self.current_parsing_state); // For debugging
 
-    /// Parses the entire document token stream.
-    pub fn parse_document(&mut self) -> Result<Vec<ProjectItem>, Error> {
-        while self.peek_token().is_some() && self.peek_token() != Some(&Token::EndOfFile) {
-            match self.peek_token().unwrap().clone() {
-                Token::Newline => {
-                    self.next_token(); // Consume newline
-                    // A newline can signify the end of a list item or a content block.
-                    // If we were capturing tag or code block content, this newline is part of it.
-                    // If we are in a list item and not capturing tag/code block content,
-                    // a newline might signify the end of a property line or just a break in text.
-                    // We'll handle finalizing items when a new structural element (Heading, ListItemMarker) is encountered.
-                }
-                Token::Heading(level) => {
-                    // Finalize the current item if any
-                    self.finalize_current_item()?;
-                    // Finalize items on the stack with higher or equal level
-                    self.pop_stack_until_level(level)?;
-                    self.parse_heading(level)?;
-                }
-                Token::ListItemMarker => {
-                     // Finalize the current item if any (must be a previous list item or heading)
-                    self.finalize_current_item()?;
-                    self.parse_list_item()?;
-                }
-                Token::CustomTagStart(tag_name) => {
-                     // If we are in a list item or on the stack, start capturing tag content
-                    if self.current_item.is_some() || self.item_stack.last().is_some() {
-                         self.next_token(); // Consume CustomTagStart
-                         self.list_item_state = ListItemParsingState::CapturingTagContent(tag_name);
-                         self.current_tag_content.clear(); // Clear content for the new tag
-                    } else {
-                         // Unexpected tag start outside of an item context
-                         return Err(Error::new(ErrorKind::InvalidData, format!("Unexpected custom tag <{}> outside item context", tag_name)));
+
+            match self.current_parsing_state {
+                ParsingState::ExpectingStructuralElement => {
+                    match token {
+                        Token::Heading(level) => {
+                            // Determine the item type based on heading level
+                            let item_type = match level {
+                                1 => ItemType::Project,
+                                _ => ItemType::Directory, // Treat all other headings as directories for now
+                            };
+
+                            // Adjust parent stack based on heading level
+                            // Pop until current level is less than new heading level
+                            while self.parent_stack.len() as u8 >= level && !self.parent_stack.is_empty() {
+                                self.exit_parent_context();
+                             }
+
+                            // Prepare to create a new item
+                            self.current_item_type = item_type;
+                            self.current_item_name.clear();
+                            self.current_item_content.clear();
+                            self.current_item_attributes.clear();
+                            self.current_custom_tag_name = None;
+
+
+                            self.current_parsing_state = ParsingState::InHeading; // Expecting heading text (name)
+                        }
+                        Token::ListItemMarker => {
+                            // Prepare to create a new list item
+                            self.current_item_type = ItemType::ListItem;
+                            self.current_item_name.clear();
+                            self.current_item_content.clear();
+                            self.current_item_attributes.clear();
+                            self.current_custom_tag_name = None;
+
+
+                            self.current_parsing_state = ParsingState::InListItem; // Expecting list item text (name)
+                        }
+                        Token::CustomTagStart(tag_name) => {
+                             // Found a custom tag. Prepare a new item for it.
+                             // Determine the item type based on the tag name
+                             let item_type = match tag_name.as_str() {
+                                 "file" => ItemType::File,
+                                 "directory" => ItemType::Directory,
+                                 "description" | "purpose" | "note" | "example" | "content_pattern" | "command" => {
+                                      // These tags define content for the parent item, not new structural items.
+                                      // We will handle their content in a special way, but the tag itself is the identifier.
+                                      // For now, treat them as Unknown until we refine the logic for content-setting tags.
+                                      ItemType::Unknown // Will handle content separately
+                                 },
+                                  _ => ItemType::Unknown, // Default to unknown for other tags
+                             };
+
+                             // Finalize any pending item before starting a new one
+                               if self.current_item_type != ItemType::Unknown || !self.current_item_name.is_empty() || !self.current_item_content.is_empty() || !self.current_item_attributes.is_empty() || self.current_custom_tag_name.is_some() {
+                                   self.finalize_current_item();
+                               }
+
+
+                             self.current_item_type = item_type;
+                             self.current_item_name.clear(); // Custom tags don't typically have names like headings/list items
+                             self.current_item_content.clear(); // Start accumulating content
+                             self.current_item_attributes.clear(); // Attributes will be parsed next if present
+                             self.current_custom_tag_name = Some(tag_name); // Store the tag name
+
+
+                             // After a custom tag start, we expect either attributes (<key="value">) or content.
+                             // Let's peek the next token to decide the state.
+                             let next_token = self.lexer.peek_token();
+                             match next_token {
+                                 Token::LessThan => {
+                                     // Expecting attributes immediately after tag name (e.g., <tag <attr="val">)
+                                     // This format is not currently supported. Assuming attributes come after the tag name on the same line.
+                                     // For now, assume if '<' follows, it's an error or unexpected structure for attributes here.
+                                      return Err(io::Error::new(io::ErrorKind::InvalidData, format!("Unexpected '<' after custom tag name '{}'. Attributes should follow the closing '>'.", self.current_custom_tag_name.as_ref().unwrap_or(&"unknown".to_string()))));
+                                 }
+                                  Token::GreaterThan => {
+                                      // Closing '>' immediately after tag name (e.g., <tag>) - expect content next
+                                      self.lexer.next_token(); // Consume the '>'
+                                      self.current_parsing_state = ParsingState::InCustomTag; // Transition to InCustomTag state
+                                  }
+                                  Token::Newline => {
+                                       // Newline immediately after tag name (e.g., <tag>\n) - expect content on next line
+                                        self.lexer.next_token(); // Consume the Newline
+                                        self.current_parsing_state = ParsingState::InCustomTag; // Transition to InCustomTag state
+                                  }
+                                 _ => {
+                                     // Anything else after the tag name and before '>' is unexpected in this simplified model
+                                      return Err(io::Error::new(io::ErrorKind::InvalidData, format!("Unexpected token after custom tag name '{}': {:?}", self.current_custom_tag_name.as_ref().unwrap_or(&"unknown".to_string()), next_token)));
+                                 }
+                             }
+                        }
+                         Token::CodeBlockStart(lang) => {
+                             // Found a code block start. Prepare for code block content.
+                             // Code blocks should ideally be parsed as content *within* the current item.
+                             // For now, let's transition to a state to capture code block content.
+                             // This might require storing the current item to append the code block content to it later.
+
+                             // Finalize any pending item before starting to capture code block content.
+                             // Code blocks might occur within content, so we need to handle that.
+                              if self.current_item_type != ItemType::Unknown || !self.current_item_name.is_empty() || !self.current_item_content.is_empty() || !self.current_item_attributes.is_empty() || self.current_custom_tag_name.is_some() {
+                                   self.finalize_current_item();
+                              }
+
+                             // For now, just transition to InCodeBlock state and store the language info.
+                             println!("Entered InCodeBlock state with lang: {:?}", lang); // Debugging
+                             self.current_parsing_state = ParsingState::InCodeBlock;
+                             // Store the language for later use if needed (e.g., for syntax highlighting)
+                             self.current_item_attributes.insert("language".to_string(), lang.unwrap_or_else(|| "unknown".to_string())); // Use attributes to store language
+                             self.current_item_type = ItemType::Unknown; // Code block itself is not a structural item in this model yet
+                             self.current_item_name.clear();
+                             self.current_item_content.clear(); // Clear content to accumulate code block content
+                             self.current_custom_tag_name = None;
+
+
+                         }
+                        // Ignore newlines and whitespace in ExpectingStructuralElement state
+                         Token::Newline | Token::Text(_) | Token::GreaterThan | Token::LessThan | Token::Equals | Token::QuotedString(_) | Token::Identifier(_) | Token::CodeBlockEnd => { /* Ignore leading non-structural tokens */ },
+                        Token::EndOfFile => { /* Handled at the start of the loop */ },
+                        Token::Error(e) => return Err(io::Error::new(io::ErrorKind::InvalidData, format!("Lexer error: {}", e))), // Return a parsing error
+                        _ => return Err(io::Error::new(io::ErrorKind::InvalidData, format!("Unexpected token while expecting structural element: {:?}", token))), // Unexpected token
                     }
                 }
-                Token::CustomTagEnd(tag_name) => {
-                    // Finalize captured tag content
-                     // Take ownership of the state
-                     let state = std::mem::take(&mut self.list_item_state);
-                     match state {
-                         ListItemParsingState::CapturingTagContent(current_tag) => {
-                             if current_tag == tag_name { // Compare with the end tag name
-                                 self.next_token(); // Consume CustomTagEnd
-                                 self.assign_captured_content_to_item(&current_tag)?; // Assign content
-                                 self.list_item_state = ListItemParsingState::None; // Reset state
-                                 self.current_tag_content.clear(); // Clear content buffer
-                             } else {
-                                 // Mismatched end tag
-                                 // Put the mismatched state back before returning the error
-                                 // Cloned current_tag to fix borrow of moved value error
-                                 self.list_item_state = ListItemParsingState::CapturingTagContent(current_tag.clone());
-                                 // Corrected formatting for ListItemParsingState
-                                 return Err(Error::new(ErrorKind::InvalidData, format!("Mismatched end tag: Expected </{}> but found </{:?}>", current_tag, self.list_item_state)));
+                ParsingState::InHeading => {
+                    match token {
+                        Token::Text(name_text) => {
+                            // Capture the heading name
+                            self.current_item_name.push_str(&name_text.trim()); // Trim whitespace from name text
+                             // After capturing the name, we might expect attributes or a newline.
+                             // Use peek to check the next token without consuming.
+                             let next_token = self.lexer.peek_token();
+                             match next_token {
+                                 Token::LessThan => {
+                                     // Expecting attributes
+                                     self.current_parsing_state = ParsingState::InAttributes;
+                                 }
+                                 Token::Newline | Token::EndOfFile => {
+                                     // End of heading line, finalize the item
+                                     self.finalize_current_item(); // Helper function to create and add item
+                                     self.current_parsing_state = ParsingState::ExpectingStructuralElement;
+                                 }
+                                 _ => {
+                                     // Unexpected token after heading name
+                                     return Err(io::Error::new(io::ErrorKind::InvalidData, format!("Unexpected token after heading name: {:?}", next_token)));
+                                 }
                              }
-                         }
-                         _ => {
-                              // Unexpected end tag when not in CapturingTagContent state
-                              // Put the original state back before returning error
-                             self.list_item_state = state;
-                             return Err(Error::new(ErrorKind::InvalidData, format!("Unexpected end tag </{}>", tag_name)));
-                         }
-                     }
-                }
-                 Token::CodeBlockStart(_lang_info) => { // Prefix with underscore as unused
-                      // If in an item context, start capturing code block content
-                     if self.current_item.is_some() || self.item_stack.last().is_some() {
-                         self.next_token(); // Consume CodeBlockStart
-                         self.list_item_state = ListItemParsingState::CapturingCodeBlock;
-                         self.current_tag_content.clear(); // Clear content
-                     } else {
-                         return Err(Error::new(ErrorKind::InvalidData, "Unexpected code block start outside item context".to_string()));
-                     }
-                 }
-                // Removed Token::CodeBlockEnd match arm
-
-                Token::Text(text) => {
-                    // Handle text based on the current state
-                    match &self.list_item_state {
-                        ListItemParsingState::CapturingTagContent(_) | ListItemParsingState::CapturingCodeBlock => {
-                            // Append text if inside a tag or code block
-                            // Need to clone text to avoid borrowing issues when appending
-                            self.current_tag_content.push_str(&text.clone());
                         }
-                        ListItemParsingState::None => {
-                             // If not capturing tag/code block content, process text for the current item
-                             // This text could be part of a property value or general description
-                             if self.current_item.is_some() {
-                                 self.parse_list_item_text(&text)?;
-                             } else if let Some(last_item) = self.item_stack.last_mut() {
-                                  // If not in a list item but on the stack (e.g., heading)
-                                  // And the item name is empty, this text might be the item name.
-                                 if last_item.name.is_empty() && last_item.item_type.starts_with("Heading") {
-                                     last_item.name = text.trim().to_string();
+                        Token::LessThan => {
+                            // If we get '<' immediately after a heading, it means the name was empty.
+                            // This is likely an error or a heading with only attributes.
+                             println!("Warning: Heading with no name, followed by attributes.");
+                             self.current_parsing_state = ParsingState::InAttributes; // Go to attributes state
+                        }
+                        Token::Newline | Token::EndOfFile => {
+                            // Empty heading line, finalize the item with no name
+                            println!("Warning: Empty heading line.");
+                            self.finalize_current_item(); // Finalize with empty name
+                            self.current_parsing_state = ParsingState::ExpectingStructuralElement;
+                        }
+                         Token::Error(e) => return Err(io::Error::new(io::ErrorKind::InvalidData, format!("Lexer error in InHeading state: {}", e))), // Return a parsing error
+                        _ => return Err(io::Error::new(io::ErrorKind::InvalidData, format!("Unexpected token in InHeading state: {:?}", token))), // Unexpected token
+                    }
+                }
+                 ParsingState::InListItem => {
+                    match token {
+                        Token::Text(name_text) => {
+                            // Capture the list item name
+                            self.current_item_name.push_str(&name_text.trim()); // Trim whitespace from name text
+                            // After capturing the name, we might expect attributes or a newline/end of file.
+                            let next_token = self.lexer.peek_token();
+                             match next_token {
+                                 Token::LessThan => {
+                                     // Expecting attributes
+                                     self.current_parsing_state = ParsingState::InAttributes;
+                                 }
+                                 Token::Newline | Token::EndOfFile => {
+                                     // End of list item line, finalize the item
+                                     self.finalize_current_item(); // Helper function
+                                     self.current_parsing_state = ParsingState::ExpectingStructuralElement;
+                                 }
+                                 _ => {
+                                     // Unexpected token after list item name
+                                     return Err(io::Error::new(io::ErrorKind::InvalidData, format!("Unexpected token after list item name: {:?}", next_token)));
+                                 }
+                             }
+                        }
+                        Token::LessThan => {
+                            // List item with no name, followed by attributes.
+                             println!("Warning: List item with no name, followed by attributes.");
+                             self.current_parsing_state = ParsingState::InAttributes; // Go to attributes state
+                        }
+                        Token::Newline | Token::EndOfFile => {
+                             // Empty list item line, finalize with no name
+                             println!("Warning: Empty list item line.");
+                             self.finalize_current_item(); // Finalize with empty name
+                             self.current_parsing_state = ParsingState::ExpectingStructuralElement;
+                        }
+                         Token::Error(e) => return Err(io::Error::new(io::ErrorKind::InvalidData, format!("Lexer error in InListItem state: {}", e))), // Return a parsing error
+                        _ => return Err(io::Error::new(io::ErrorKind::InvalidData, format!("Unexpected token in InListItem state: {:?}", token))), // Unexpected token
+                    }
+                }
+                ParsingState::InAttributes => {
+                    match token {
+                        Token::GreaterThan => {
+                            // End of attributes
+                             // After attributes, we might expect content or a new structural element.
+                             let next_token = self.lexer.peek_token();
+                             match next_token {
+                                 Token::Newline | Token::EndOfFile => {
+                                     // End of the line after attributes, finalize the item
+                                     self.finalize_current_item();
+                                     self.current_parsing_state = ParsingState::ExpectingStructuralElement;
+                                 }
+                                 _ => {
+                                     // Expecting content after attributes
+                                     self.current_parsing_state = ParsingState::InContent; // Transition to InContent state
+                                 }
+                             }
+                        }
+                         Token::Identifier(key) => {
+                             // Expected attribute key
+                             // Next should be Equals
+                             let next_token = self.lexer.next_token(); // Consume next token
+                             if let Token::Equals = next_token {
+                                 // Next should be QuotedString
+                                 let value_token = self.lexer.next_token(); // Consume next token
+                                 if let Token::QuotedString(value) = value_token {
+                                     // Store the attribute
+                                     self.current_item_attributes.insert(key, value);
+                                     // After an attribute, we expect another attribute (Identifier) or the closing '>'
+                                     // No state change needed here, stay in InAttributes
                                  } else {
-                                     // Append text to description of the item on the stack?
-                                     // Or ignore text that is not part of a list item or heading name?
-                                     // Let's append to description of the top-most item on stack for now if not a heading name.
-                                      if !text.trim().is_empty() {
-                                         let description = last_item.description.get_or_insert_with(String::new);
-                                         if !description.is_empty() {
-                                            description.push_str(" "); // Add space between text segments
-                                         }
-                                         description.push_str(text.trim()); // Append trimmed text
-                                      }
+                                     return Err(io::Error::new(io::ErrorKind::InvalidData, format!("Expected QuotedString after attribute key '{}' and Equals, found {:?}", key, value_token)));
                                  }
                              } else {
-                                  // Text outside of any item context - ignore or error? Ignore for now.
-                                  // println!("Warning: Ignoring text outside of item context: {:?}", text);
+                                 return Err(io::Error::new(io::ErrorKind::InvalidData, format!("Expected Equals after attribute key '{}', found {:?}", key, next_token)));
+                             }
+                        }
+                        // Ignore whitespace and newlines within attributes for now
+                        Token::Newline | Token::Text(_) => { /* Ignore */ },
+                         Token::Error(e) => return Err(io::Error::new(io::ErrorKind::InvalidData, format!("Lexer error in InAttributes state: {}", e))), // Return a parsing error
+                        _ => return Err(io::Error::new(io::ErrorKind::InvalidData, format!("Unexpected token in InAttributes state: {:?}", token))), // Unexpected token
+                    }
+                }
+                ParsingState::InCustomTag => {
+                     // Handle custom tag content parsing
+                     match token {
+                         Token::CustomTagEnd => {
+                             // End of custom tag, finalize the item being built
+                             self.finalize_current_item();
+                             // After a custom tag, expect a structural element or general content
+                             self.current_parsing_state = ParsingState::ExpectingStructuralElement; // Default transition
+                         }
+                          Token::CodeBlockStart(lang) => {
+                              // Found a code block within a custom tag.
+                              // Finalize the current item (the custom tag) before starting the code block.
+                              // The code block content will be added to the *parent* of the custom tag, or handled separately.
+                              // This requires careful state management. For now, let's finalize and transition.
+                               self.finalize_current_item();
+                               println!("Entered InCodeBlock state from InCustomTag with lang: {:?}", lang); // Debugging
+                               self.current_parsing_state = ParsingState::InCodeBlock;
+                               // Store the language for later use if needed (e.g., for syntax highlighting)
+                               self.current_item_attributes.insert("language".to_string(), lang.unwrap_or_else(|| "unknown".to_string())); // Use attributes to store language
+                               self.current_item_type = ItemType::Unknown; // Code block itself is not a structural item in this model yet
+                               self.current_item_name.clear();
+                               self.current_item_content.clear(); // Clear content to accumulate code block content
+                               self.current_custom_tag_name = None;
+                          }
+                         Token::EndOfFile => {
+                              return Err(io::Error::new(io::ErrorKind::InvalidData, format!("Unexpected EndOfFile while inside custom tag <{}>.", self.current_custom_tag_name.as_ref().unwrap_or(&"unknown".to_string()))));
+                         }
+                         Token::Error(e) => return Err(io::Error::new(io::ErrorKind::InvalidData, format!("Lexer error in InCustomTag state: {}", e))), // Return a parsing error
+                          _ => {
+                              // Accumulate content within the custom tag
+                              // Treat text, newlines, and other tokens as raw content.
+                               match token {
+                                   Token::Text(text) => self.current_item_content.push_str(&text),
+                                   Token::Newline => self.current_item_content.push('\n'),
+                                   // Treat other tokens as raw text content by appending their string representation.
+                                   // This might need refinement depending on how strict we want to be within tags.
+                                    t => self.current_item_content.push_str(&format!("{:?}", t)), // Append debug format for other tokens
+                                }
+                          }
+                      }
+                }
+                ParsingState::InCodeBlock => {
+                    // Handle code block content parsing
+                    match token {
+                        Token::CodeBlockEnd => {
+                            // End of code block. Accumulate the collected content into the current item's content.
+                            // The current item should be the one that contained the code block start token.
+                            // This requires that when we entered InCodeBlock, we didn't finalize the parent item.
+                            // Let's revise the InContent and InCustomTag states to not finalize when entering InCodeBlock.
+
+                             println!("Exited InCodeBlock state."); // Debugging
+                             // The accumulated self.current_item_content now holds the code block text.
+                             // We need to append this to the content of the item that contained the code block.
+                             // This means we cannot clear current_item_content when entering InCodeBlock.
+                             // Let's refine the state transitions and content handling.
+
+                             // For now, as a simplification, let's assume code blocks are top-level or follow structural elements.
+                             // If a code block ends, we transition back to ExpectingStructuralElement.
+                             // The content captured in current_item_content belongs to the code block itself.
+                             // We need to decide how to represent code blocks in the ProjectItem structure.
+                             // Option 1: Code blocks are just part of the parent item's content string.
+                             // Option 2: Code blocks are separate ProjectItems with type CodeBlock.
+
+                             // Let's go with Option 1 for now: Code blocks are part of the parent's content.
+                             // This means when we see CodeBlockStart, we don't finalize the parent item.
+                             // We just switch state to collect code block text, then switch back.
+                             // The accumulated text in self.current_item_content should be added to the *previous* item's content.
+
+                             // Let's revert the state transition logic for code blocks to append content.
+                             // This requires changing how InContent and InCustomTag handle CodeBlockStart.
+
+                             // **Revised Approach for Code Blocks:**
+                             // When CodeBlockStart is encountered in InContent or InCustomTag:
+                             // - Do NOT finalize the current item.
+                             // - Temporarily store the current accumulated content and attributes of the item.
+                             // - Clear current_item_content to start accumulating code block text.
+                             // - Transition to InCodeBlock.
+                             // When CodeBlockEnd is encountered in InCodeBlock:
+                             // - Stop accumulating code block text in current_item_content.
+                             // - Append the collected code block text (self.current_item_content) to the stored content of the parent item.
+                             // - Restore the parent item's attributes and content state.
+                             // - Transition back to the state we were in before InCodeBlock (e.g., InContent or InCustomTag).
+
+                             // This state management is getting complex. Let's simplify for this step and
+                             // treat code blocks as just another type of content to be appended.
+                             // When in InCodeBlock, simply append the tokens as text until CodeBlockEnd.
+
+                              self.current_parsing_state = ParsingState::InContent; // Transition back to InContent after code block
+
+                        }
+                         Token::EndOfFile => {
+                              return Err(io::Error::new(io::ErrorKind::InvalidData, "Unexpected EndOfFile while inside code block."));
+                         }
+                         Token::Error(e) => return Err(io::Error::new(io::ErrorKind::InvalidData, format!("Lexer error in InCodeBlock state: {}", e))), // Return a parsing error
+                        _ => {
+                            // Accumulate code block content. Preserve formatting.
+                            // Append the token's string representation.
+                             match token {
+                                 Token::Text(text) => self.current_item_content.push_str(&text),
+                                 Token::Newline => self.current_item_content.push('\n'),
+                                 _ => {
+                                     // Potentially other tokens within a code block? Like escaped backticks?
+                                     // For simplicity, appending debug format for unexpected tokens.
+                                      self.current_item_content.push_str(&format!("{:?}", token));
+                                 }
                              }
                         }
                     }
-                    self.next_token(); // Consume the Text token
                 }
-                Token::Error(e) => return Err(Error::new(ErrorKind::InvalidData, format!("Lexer error: {}", e))),
-                Token::EndOfFile => break, // Should be handled by the loop condition, but good to have
-                // Removed match arm for Token::TypeKey | Token::NameKey | Token::PathKey
-            }
-        }
-
-        // Finalize the last item after the loop
-        self.finalize_current_item()?;
-
-        // Any remaining items on the stack should be top-level items.
-        // Pop them and add to the result.
-        // The items are pushed onto the stack in document order. Popping gets them in reverse.
-        // To get them in document order, we pop all and then reverse the resulting vector.
-        let mut root_items: Vec<ProjectItem> = Vec::new();
-         while let Some(item) = self.item_stack.pop() {
-            root_items.push(item);
-         }
-         root_items.reverse(); // Reverse to get document order
-
-        Ok(root_items) // Return the top-level items
-    }
-
-    /// Parses a heading and pushes it onto the stack.
-    fn parse_heading(&mut self, level: u8) -> Result<(), Error> {
-         self.consume_token(&Token::Heading(level))?; // Consume the heading token
-
-         // The heading name is the next Text token before a newline or another structural element.
-         let name = match self.peek_token() {
-             Some(Token::Text(text)) => {
-                 let name_str = text.trim().to_string();
-                 self.next_token(); // Consume the Text token
-                 name_str
-             },
-             _ => {
-                 // Heading with no name? Allowed, name will be empty.
-                 String::new()
-             }
-         };
-
-        let new_heading = ProjectItem {
-            item_type: format!("Heading{}", level),
-            name,
-            ..Default::default()
-        };
-        self.item_stack.push(new_heading); // Push the new heading onto the stack
-        Ok(())
-    }
-
-    /// Pops items from the stack until the top item's level is less than the given level.
-    /// Adds popped items as children to the new top of the stack, or to the root.
-    fn pop_stack_until_level(&mut self, current_level: u8) -> Result<(), Error> {
-        // Create a temporary vec to hold items popped from the stack
-        let mut popped_items = Vec::new();
-
-        while let Some(top_item) = self.item_stack.last() {
-            if let Some(heading_level) = self.get_heading_level(&top_item.item_type) {
-                if current_level as u32 <= heading_level {
-                     // Pop the item and add to our temporary vec
-                    popped_items.push(self.item_stack.pop().unwrap());
-                } else {
-                    break; // Found a higher-level heading, stop popping
-                }
-            } else {
-                 // The top of the stack is not a heading (e.g., a list item that wasn't finalized correctly?)
-                 // This indicates a parsing logic error or unexpected token sequence.
-                 // Let's pop the item and add it to our temporary vec before continuing.
-                  popped_items.push(self.item_stack.pop().unwrap());
-            }
-        }
-
-         // Now, add the popped items as children to the new top of the stack (in reverse order of popping)
-         popped_items.reverse(); // Reverse to maintain document order
-         for item in popped_items {
-             self.add_item_to_parent(item)?;
-         }
-
-        Ok(())
-    }
-
-    /// Adds a completed item to the children of the current top of the stack, or implicitly to the root.
-    fn add_item_to_parent(&mut self, item: ProjectItem) -> Result<(), Error> {
-        if let Some(parent) = self.item_stack.last_mut() {
-            parent.children.push(item);
-        } else {
-            // If stack is empty, this item is a top-level item that should be added to the root_items
-            // collected at the end of parse_document.
-            // This method should ideally only be called when there is a parent on the stack.
-            // The items that end up at the root will be those remaining on the stack after the loop
-            // in parse_document.
-             // For now, push onto stack, which will be collected later.
-             self.item_stack.push(item);
-        }
-        Ok(())
-    }
-
-    /// Parses a list item.
-    fn parse_list_item(&mut self) -> Result<(), Error> {
-        self.consume_token(&Token::ListItemMarker)?; // Consume the list item marker
-
-        self.current_item = Some(ProjectItem {
-            item_type: "ListItem".to_string(),
-            ..Default::default()
-        });
-
-        // Parse content within the list item until a new list item, heading, or EOF is encountered
-        // Properties (Type:, Name:, Path:) and other content are handled by the main loop's Text token arm
-        // and the parse_list_item_text method.
-        // The list item is finalized when a new structural element is hit.
-
-        Ok(())
-    }
-
-    /// Parses text within a list item, looking for properties or adding to description/name.
-    fn parse_list_item_text(&mut self, text: &str) -> Result<(), Error> {
-        let current_item = self.current_item.as_mut().ok_or_else(|| {
-            Error::new(ErrorKind::InvalidData, "Text token encountered outside of a current item context.")
-        })?;
-
-        let trimmed_text = text.trim_start();
-
-        if trimmed_text.starts_with("Type:") {
-            current_item.item_type = trimmed_text.replace("Type:", "").trim().to_string();
-        } else if trimmed_text.starts_with("Name:") {
-            current_item.name = trimmed_text.replace("Name:", "").trim().to_string();
-        } else if trimmed_text.starts_with("Path:") {
-            current_item.path = Some(trimmed_text.replace("Path:", "").trim().to_string());
-        } else {
-            // General list item text - append to name if empty, otherwise to description
-            if !text.trim().is_empty() {
-                if current_item.name.is_empty() && current_item.description.is_none() {
-                    // Use the first non-prefixed text as the name if no name is set yet
-                    current_item.name = text.trim().to_string();
-                } else {
-                    // Otherwise, append to description
-                    let description = current_item.description.get_or_insert_with(String::new);
-                     if !description.is_empty() {
-                        description.push_str(" "); // Add space between text segments
-                     }
-                    description.push_str(text.trim()); // Append trimmed text
-                }
-            }
-        }
-        Ok(())
-    }
-
-     /// Finalizes the current item (if any) and adds it to the stack or its parent.
-     fn finalize_current_item(&mut self) -> Result<(), Error> {
-         if let Some(item) = self.current_item.take() { // Removed mut as it's not needed
-             // Finalize any ongoing content capture before adding the item
-              self.assign_captured_content_to_item_if_active()?;
-
-             if let Some(parent) = self.item_stack.last_mut() {
-                 parent.children.push(item);
-             } else {
-                 // If stack is empty, this item is a top-level item that wasn't a heading.
-                 // Push onto stack, which will be collected at the end.
-                  self.item_stack.push(item);
-             }
-         }
-          // Reset state after finalizing an item
-         self.list_item_state = ListItemParsingState::None;
-         self.current_tag_content.clear();
-         Ok(())
-     }
-
-      /// Assigns the accumulated captured content based on the current state.
-     fn assign_captured_content_to_item(&mut self, tag_type: &str) -> Result<(), Error> {
-         let target_item = self.current_item.as_mut().or_else(|| self.item_stack.last_mut());
-
-         if let Some(item) = target_item {
-             let content = self.current_tag_content.trim().to_string();
-             if content.is_empty() {
-                 // Don't assign empty content
-                 return Ok(());
-             }
-
-             match tag_type {
-                 "description" => item.description = Some(content),
-                 "purpose" => item.purpose = Some(content),
-                 "note" => item.note = Some(content),
-                 "example" => item.example = Some(content),
-                 "content_pattern" => item.content_pattern = Some(content),
-                 "CodeBlock" => {
-                     // Append code block content to 'note' for now
-                     let note = item.note.get_or_insert_with(String::new);
-                      if !note.is_empty() {
-                         note.push_str("\n\n"); // Add separator if note already has content
+                 ParsingState::InContent => {
+                     // Handle general content parsing
+                     match token {
+                         Token::Heading(_) | Token::ListItemMarker | Token::CustomTagStart(_) => {
+                              // Found a new structural element, finalize the current item (if any content was collected)
+                               if self.current_item_type != ItemType::Unknown || !self.current_item_name.is_empty() || !self.current_item_content.is_empty() || !self.current_item_attributes.is_empty() || self.current_custom_tag_name.is_some() {
+                                   // Finalize the previous item before starting a new one
+                                   self.finalize_current_item();
+                               }
+                             // Put the structural token back in the buffer to be processed in the next iteration
+                             self.next_token_buffer = Some(token);
+                             self.current_parsing_state = ParsingState::ExpectingStructuralElement;
+                         }
+                         Token::CodeBlockStart(lang) => {
+                             // Found a code block within content.
+                             // Do NOT finalize the current item.
+                             // Transition to InCodeBlock state to capture the code block content.
+                              println!("Entered InCodeBlock state from InContent with lang: {:?}", lang); // Debugging
+                             self.current_parsing_state = ParsingState::InCodeBlock;
+                             // Store the language for later use if needed (e.g., for syntax highlighting)
+                             self.current_item_attributes.insert("language".to_string(), lang.unwrap_or_else(|| "unknown".to_string())); // Use attributes to store language
+                             // Do NOT clear current_item_content here, code block content will be appended to it (or handled separately).
+                             // Let's append code block content to current_item_content for simplicity.
+                         }
+                         Token::EndOfFile => {
+                             // End of file while in content state, finalize the last item
+                              if self.current_item_type != ItemType::Unknown || !self.current_item_name.is_empty() || !self.current_item_content.is_empty() || !self.current_item_attributes.is_empty() || self.current_custom_tag_name.is_some() {
+                                   self.finalize_current_item();
+                               }
+                             break; // End parsing
+                         }
+                         Token::Error(e) => return Err(io::Error::new(io::ErrorKind::InvalidData, format!("Lexer error in InContent state: {}", e))), // Return a parsing error
+                         _ => {
+                             // Accumulate text, newlines, and other non-structural tokens as content
+                              match token {
+                                  Token::Text(text) => self.current_item_content.push_str(&text),
+                                  Token::Newline => self.current_item_content.push('\n'),
+                                  // Decide how to handle other tokens in content, e.g., <, >, =, ", Identifier, QuotedString
+                                  // For now, treat them as raw text content by appending their string representation.
+                                   t => self.current_item_content.push_str(&format!("{:?}", t)), // Append debug format for other tokens
+                              }
+                         }
                       }
-                     note.push_str("Code Block:\n");
-                     note.push_str(&content);
-                 },
-                 _ => { /* Ignore unknown tags */ },
-             }
-         } else {
-              // This should not happen if state is managed correctly - means we were in a capturing
-              // state but there was no current item or item on the stack to assign to.
-             return Err(Error::new(ErrorKind::Other, format!("Failed to assign captured content for '{}': No target item.", tag_type)));
+                 }
+            }
+        }
+
+        // Finalize any remaining current item after the loop finishes (e.g., if the file ends after content)
+         if self.current_item_type != ItemType::Unknown || !self.current_item_name.is_empty() || !self.current_item_content.is_empty() || !self.current_item_attributes.is_empty() || self.current_custom_tag_name.is_some() {
+             self.finalize_current_item();
          }
+
+
          Ok(())
      }
 
-      /// Checks if currently capturing content and assigns it before resetting state.
-      fn assign_captured_content_to_item_if_active(&mut self) -> Result<(), Error> {
-          // Take ownership of the state to avoid borrowing issues
-          let state = std::mem::take(&mut self.list_item_state);
-          match state {
-              ListItemParsingState::CapturingTagContent(tag_name) => {
-                  self.assign_captured_content_to_item(&tag_name)?;
-              },
-              ListItemParsingState::CapturingCodeBlock => {
-                  self.assign_captured_content_to_item("CodeBlock")?;
-              },
-              ListItemParsingState::None => { /* Do nothing */ },
-          }
-          // State is already reset by std::mem::take, no need to reset again here.
-          // current_tag_content is cleared in finalize_current_item.
-          Ok(())
-      }
+    // Helper function to finalize the current item being built and add it to the tree
+    fn finalize_current_item(&mut self) {
+        // Only create an item if it has a type (set by Heading, ListItemMarker, or CustomTagStart)
+        if self.current_item_type != ItemType::Unknown || self.current_custom_tag_name.is_some() {
+            // Determine the final item type based on custom tag name if present
+            let final_item_type = if let Some(tag_name) = &self.current_custom_tag_name {
+                 match tag_name.as_str() {
+                     "file" => ItemType::File,
+                     "directory" => ItemType::Directory,
+                     "description" | "purpose" | "note" | "example" | "content_pattern" | "command" => {
+                         // These tags define content *for the parent item*, they don't create new structural items.
+                         // We need to apply their content/attributes to the parent.
+                         println!("Applying content/attributes from tag <{}> to parent.", tag_name);
+
+                         // Clone content and attributes BEFORE getting the mutable parent reference
+                         let content_to_apply = if self.current_item_content.is_empty() { None } else { Some(self.current_item_content.clone()) };
+                         let attributes_to_apply = self.current_item_attributes.clone();
+                         let tag_name_clone = tag_name.clone(); // Clone tag_name if needed after borrow
+
+                         let parent = self.get_current_parent_mut();
+
+                         match tag_name_clone.as_str() {
+                             "description" => parent.description = content_to_apply,
+                             "purpose" => parent.purpose = content_to_apply,
+                             "note" => parent.note = content_to_apply,
+                             "example" => parent.example = content_to_apply,
+                             "content_pattern" => parent.content_pattern = content_to_apply,
+                             "command" => parent.command = content_to_apply,
+                             _ => { /* Should not happen with current match arms */ }
+                         }
+                         // Apply attributes to the parent as well
+                         for (key, value) in attributes_to_apply {
+                              match key.as_str() {
+                                  "path" => parent.path = Some(value.clone()), // Attributes can also set path/command for parent
+                                  "command" => parent.command = Some(value.clone()),
+                                   _ => {
+                                       println!("Warning: Unhandled attribute '{}' for tag <{}> applied to parent.", key, tag_name_clone);
+                                   }
+                              }
+                         }
+
+                         // Reset temporary fields but do NOT create a new ProjectItem for these content-setting tags.
+                         self.current_item_type = ItemType::Unknown;
+                         self.current_item_name.clear();
+                         self.current_item_content.clear();
+                         self.current_item_attributes.clear();
+                         self.current_custom_tag_name = None;
+                         return; // Exit finalize_current_item as no new item is created
+                     },
+                      _ => self.current_item_type.clone(), // For other custom tags, use the type set when entering InCustomTag
+                 }
+            } else {
+                self.current_item_type.clone() // Use the type set by Heading or ListItemMarker
+            };
 
 
-    /// Helper function to get heading level as u32 from item_type string
-    fn get_heading_level(&self, item_type: &str) -> Option<u32> {
-        if item_type.starts_with("Heading") {
-            item_type.replace("Heading", "").parse::<u32>().ok()
+            let mut new_item = ProjectItem::new(
+                final_item_type.clone(), // Use the determined final item type
+                self.current_item_name.trim().to_string(), // Trim whitespace from name
+                if self.current_item_content.is_empty() { None } else { Some(self.current_item_content.clone()) },
+                Vec::new(), // Children will be added by subsequent parsing
+            );
+
+            // Apply parsed attributes to the new item
+            for (key, value) in &self.current_item_attributes {
+                 match key.as_str() {
+                     "path" => new_item.path = Some(value.clone()),
+                     "command" => new_item.command = Some(value.clone()),
+                      _ => {
+                          // Handle other attributes specific to item types here
+                          println!("Warning: Unhandled attribute '{}' for item type {:?}", key, final_item_type);
+                      }
+                 }
+            }
+            // If it was a custom tag, clear the custom tag name now that it's processed
+             self.current_custom_tag_name = None;
+
+
+            // Add the new item as a child of the current parent
+            self.get_current_parent_mut().children.push(new_item);
+
+            // After adding a structural item (Project, Directory, File, ListItem), push its index onto the parent stack
+            // so subsequent items become its children. Content-setting tags do not become parents.
+            if final_item_type == ItemType::Project || final_item_type == ItemType::Directory || final_item_type == ItemType::File || final_item_type == ItemType::ListItem {
+                let new_parent_index = self.get_current_parent_mut().children.len() - 1;
+                 self.parent_stack.push(new_parent_index);
+                 println!("Entered parent context for {:?}", final_item_type); // Debugging
+            }
+
+
+            // Reset temporary fields after finalizing the item
+            self.current_item_type = ItemType::Unknown;
+            self.current_item_name.clear();
+            self.current_item_content.clear();
+            self.current_item_attributes.clear();
+
         } else {
-            None
+             // If there's temporary content or attributes but no item type (and no custom tag name), it's unassociated content.
+             // Depending on desired behavior, this could be an error or ignored.
+             // For now, append unassociated content to the *parent's* content.
+             if !self.current_item_content.is_empty() {
+                  println!("Warning: Unassociated content found. Appending to parent's content.");
+                  // Extract content BEFORE getting the mutable parent reference
+                  let content_to_append = self.current_item_content.clone();
+                  let parent = self.get_current_parent_mut();
+                  let current_content = parent.content.get_or_insert_with(String::new);
+                  if !current_content.is_empty() {
+                       current_content.push('\n'); // Add a newline if there's existing content
+                  }
+                  current_content.push_str(&content_to_append);
+                  self.current_item_content.clear(); // Clear unassociated content
+             }
+              if !self.current_item_attributes.is_empty() {
+                  // Decide how to handle unassociated attributes. For now, print warning and clear.
+                  println!("Warning: Unassociated attributes found: {:?}", self.current_item_attributes);
+                  self.current_item_attributes.clear(); // Clear unassociated attributes
+              }
+              // If there was a custom tag name but no item type (shouldn't happen with current logic),
+              // it indicates a parsing issue. Handle defensively.
+               if let Some(tag_name) = self.current_custom_tag_name.take() {
+                   println!("Warning: Finalized item with custom tag <{}> but no determined item type.", tag_name);
+               }
         }
+     }
+
+    pub fn get_project_structure(&self) -> &ProjectItem {
+        &self.project_root
     }
-}
-
-/// The main parsing function, now using the custom Lexer and Parser.
-pub fn parse_forsure_file(input: &str) -> Result<Vec<ProjectItem>, Error> {
-    // 1. Lex the input into tokens
-    let lexer = Lexer::new(input); // Use the custom lexer
-    let tokens: Vec<Token> = lexer.into_tokens().collect();
-    // println!("Lexed tokens: {:?}", tokens); // For debugging
-
-    // 2. Parse the tokens into a ProjectItem structure
-    let mut parser = Parser::new(tokens);
-    parser.parse_document()
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    // Lexer is already imported via `use crate::lexer::Lexer;` above
+    use crate::models::{ProjectItem, ItemType};
+    use std::io::Cursor;
+
+    fn parse_and_get_root(input: &str) -> ProjectItem {
+        // Create ParserState with the input string slice
+        let mut parser_state = ParserState::new("TestProject".to_string(), input);
+        // Call parse_forsure_file without a reader, as it now takes input via new()
+        parser_state.parse_forsure_file().expect("Parsing failed");
+        parser_state.project_root
+    }
 
     #[test]
-    fn test_parse_simple_structure() {
-        let input = r#"
-# Project Title
-- Type: Directory
-  Name: src
-- Type: File
-  Name: README.md
-"#;
-        let structure = parse_forsure_file(input).unwrap();
+    fn test_basic_heading_parsing() {
+        let forsure_content = "# MyProject\n## src\n### main.rs";
+        let root = parse_and_get_root(forsure_content);
 
-        assert_eq!(structure.len(), 1);
-        let project_heading = &structure[0];
-        assert_eq!(project_heading.item_type, "Heading1");
-        assert_eq!(project_heading.name, "Project Title");
-        assert_eq!(project_heading.children.len(), 2);
+        assert_eq!(root.name, "MyProject"); // The root name is set from the H1
+         assert_eq!(root.item_type, ItemType::Project); // Root type should be Project
 
-        let src_dir = &project_heading.children[0];
-        assert_eq!(src_dir.item_type, "Directory");
+        // Check the children of the root (H2 items)
+        assert_eq!(root.children.len(), 1); // Only 'src' is a direct child of Project
+
+        let src_dir = &root.children[0];
+        assert_eq!(src_dir.item_type, ItemType::Directory); // H2 becomes Directory
         assert_eq!(src_dir.name, "src");
 
-        let readme_file = &project_heading.children[1];
-        assert_eq!(readme_file.item_type, "File");
-        assert_eq!(readme_file.name, "README.md");
+        // Check the main.rs item created from Heading 3 (child of src)
+        assert_eq!(src_dir.children.len(), 1);
+        let main_rs_item = &src_dir.children[0];
+        // With current simplified logic, H3 is also a Directory. This will need refinement.
+        assert_eq!(main_rs_item.item_type, ItemType::Directory);
+        assert_eq!(main_rs_item.name, "main.rs");
     }
 
      #[test]
-     fn test_parse_with_tags() {
-         let input = r#"
-# Component
-- Type: File
-  Name: Button.tsx
-  <description>
-  A reusable button component.
-  </description>
-  <example>
-  ```tsx
-  <Button>Click me</Button>
-  ```
-  </example>
-"#;
-         let structure = parse_forsure_file(input).unwrap();
+    fn test_headings_with_attributes() {
+        let forsure_content = "# MyProject <path=\"./my_project\"> \n## src <command=\"echo 'Building src'\">";
+        let root = parse_and_get_root(forsure_content);
 
-         assert_eq!(structure.len(), 1);
-         let component_heading = &structure[0];
-         assert_eq!(component_heading.item_type, "Heading1");
-         assert_eq!(component_heading.name, "Component");
-         assert_eq!(component_heading.children.len(), 1);
+        assert_eq!(root.name, "MyProject");
+        assert_eq!(root.item_type, ItemType::Project);
+        assert_eq!(root.path, Some("./my_project".to_string()));
+        assert_eq!(root.command, None); // Command on H1 is not currently handled
 
-         let button_file = &component_heading.children[0];
-         assert_eq!(button_file.item_type, "File");
-         assert_eq!(button_file.name, "Button.tsx");
-         assert_eq!(button_file.description, Some("A reusable button component.".to_string()));
-          // Note: Code block example content is currently appended to 'note' in the parser logic
-         // We should change this to populate the 'example' field. Let's fix the parser logic for example tag.
-         // After fixing assign_captured_content_to_item for example tag:
-          assert_eq!(button_file.example, Some("```tsx\n  <Button>Click me</Button>\n  ```".to_string())); // Corrected expected content based on lexer and trimming
-         assert_eq!(button_file.note, None); // Note should be None unless code block is assigned there
 
-         // Correction: The lexer separates the code block content from the markers.
-         // The parser needs to capture everything *between* CodeBlockStart and CodeBlockEnd.
-         // The current lexer test also shows the content as a separate Text token.
-         // The parser's state and content accumulation logic needs to correctly capture multi-token content.
-         // The current parser assigns *all* captured content for the example tag at once.
-         // The lexer output for the example block is:
-         // CustomTagStart("example"), Newline, CodeBlockStart(Some("tsx")), Newline, Text("  <Button>Click me>"), Newline, CodeBlockEnd, Newline, CustomTagEnd("example"), Newline
-         // The content captured for <example> will be "\n  ```tsx\n  <Button>Click me>\n  ```\n".trim()
-          // Re-checking the expected value based on trim() behavior
-           assert_eq!(button_file.example, Some("```tsx\n  <Button>Click me</Button>\n  ```".to_string()));
-           assert_eq!(button_file.note, None); // Should not have note from example
+        assert_eq!(root.children.len(), 1);
+        let src_dir = &root.children[0];
+        assert_eq!(src_dir.item_type, ItemType::Directory);
+        assert_eq!(src_dir.name, "src");
+        assert_eq!(src_dir.path, None); // Path on H2 is not currently handled as attribute
+        assert_eq!(src_dir.command, Some("echo 'Building src'".to_string())); // Command on H2 is handled
+    }
+
+    #[test]
+    fn test_list_item_with_attributes() {
+        let forsure_content = "* Item 1 <path=\"item1.txt\"> \n* Item 2 <command=\"run_item2.sh\">";
+        let root = parse_and_get_root(forsure_content);
+
+        assert_eq!(root.children.len(), 2);
+
+        let item1 = &root.children[0];
+        assert_eq!(item1.item_type, ItemType::ListItem);
+        assert_eq!(item1.name, "Item 1");
+        assert_eq!(item1.path, Some("item1.txt".to_string()));
+        assert_eq!(item1.command, None); // Command not expected here
+
+        let item2 = &root.children[1];
+        assert_eq!(item2.item_type, ItemType::ListItem);
+        assert_eq!(item2.name, "Item 2");
+        assert_eq!(item2.path, None); // Path not expected here
+        assert_eq!(item2.command, Some("run_item2.sh".to_string()));
+    }
+
+     #[test]
+    fn test_nested_structure_with_attributes() {
+        let forsure_content = "# Project <path=\"./\"> \n## src <command=\"build\"> \n* File Item <path=\"file.txt\">";
+        let root = parse_and_get_root(forsure_content);
+
+        assert_eq!(root.name, "Project");
+        assert_eq!(root.item_type, ItemType::Project);
+        assert_eq!(root.path, Some("./".to_string()));
+
+        assert_eq!(root.children.len(), 1);
+        let src_dir = &root.children[0];
+        assert_eq!(src_dir.item_type, ItemType::Directory);
+          assert_eq!(src_dir.name, "src");
+        assert_eq!(src_dir.command, Some("build".to_string()));
+
+        assert_eq!(src_dir.children.len(), 1); // File Item should be a child of src
+        let file_item = &src_dir.children[0];
+        assert_eq!(file_item.item_type, ItemType::ListItem); // List item type
+        assert_eq!(file_item.name, "File Item");
+        assert_eq!(file_item.path, Some("file.txt".to_string())); // Path attribute
      }
 
-      #[test]
-      fn test_parse_nested_headings_and_lists() {
-          let input = r#"
-# Section 1
-## Subsection 1.1
-- Item A
-- Item B
-## Subsection 1.2
-- Item C
-# Section 2
-- Item D
-"#;
-          let structure = parse_forsure_file(input).unwrap();
+     #[test]
+    fn test_item_with_content() {
+        let forsure_content = "# MyItem\nThis is some content\nfor my item.";
+        let root = parse_and_get_root(forsure_content);
 
-          assert_eq!(structure.len(), 2);
-          let section1 = &structure[0];
-          assert_eq!(section1.item_type, "Heading1");
-          assert_eq!(section1.name, "Section 1");
-          assert_eq!(section1.children.len(), 2); // Subsection 1.1 and Subsection 1.2
+        assert_eq!(root.children.len(), 1);
+        let item = &root.children[0];
+        assert_eq!(item.name, "MyItem");
+        // Expect content to include "This is some content" and "for my item." separated by newline
+        assert_eq!(item.content, Some("This is some content\nfor my item.".to_string()));
+     }
 
-          let subsection1_1 = &section1.children[0];
-          assert_eq!(subsection1_1.item_type, "Heading2");
-          assert_eq!(subsection1_1.name, "Subsection 1.1");
-          assert_eq!(subsection1_1.children.len(), 2); // Item A and Item B
+     #[test]
+    fn test_list_item_with_content() {
+        let forsure_content = "* MyListItem\nItem content here.";
+        let root = parse_and_get_root(forsure_content);
 
-          let item_a = &subsection1_1.children[0];
-          assert_eq!(item_a.item_type, "ListItem");
-          assert_eq!(item_a.name, "Item A");
+        assert_eq!(root.children.len(), 1);
+        let item = &root.children[0];
+        assert_eq!(item.name, "MyListItem");
+        assert_eq!(item.content, Some("Item content here.".to_string()));
+     }
 
-          let item_b = &subsection1_1.children[1];
-          assert_eq!(item_b.item_type, "ListItem");
-          assert_eq!(item_b.name, "Item B");
+    #[test]
+    fn test_custom_file_tag() {
+        let forsure_content = "# Project\n<file path=\"src/main.rs\">\nfn main() { println!(\"Hello\"); }\n</file>";
+        let root = parse_and_get_root(forsure_content);
 
-          let subsection1_2 = &section1.children[1];
-          assert_eq!(subsection1_2.item_type, "Heading2");
-          assert_eq!(subsection1_2.name, "Subsection 1.2");
-          assert_eq!(subsection1_2.children.len(), 1); // Item C
+        assert_eq!(root.name, "Project");
+        assert_eq!(root.children.len(), 1);
 
-          let item_c = &subsection1_2.children[0];
-          assert_eq!(item_c.item_type, "ListItem");
-          assert_eq!(item_c.name, "Item C");
+        let file_item = &root.children[0];
+        assert_eq!(file_item.item_type, ItemType::File); // Should be File type from tag
+        assert_eq!(file_item.name, ""); // No explicit name given in the tag
+        assert_eq!(file_item.path, Some("src/main.rs".to_string())); // Path from attribute
+        assert_eq!(file_item.content, Some("fn main() { println!(\"Hello\"); }\n".to_string())); // Content inside the tag
+    }
 
-          let section2 = &structure[1];
-          assert_eq!(section2.item_type, "Heading1");
-          assert_eq!(section2.name, "Section 2");
-          assert_eq!(section2.children.len(), 1); // Item D
+     #[test]
+    fn test_custom_description_tag() {
+        let forsure_content = "# Project\n<description>\nThis is the project description.\n</description>";
+        let root = parse_and_get_root(forsure_content);
 
-          let item_d = &section2.children[0];
-          assert_eq!(item_d.item_type, "ListItem");
-          assert_eq!(item_d.name, "Item D");
-      }
+        assert_eq!(root.name, "Project");
+        assert_eq!(root.children.len(), 0); // Description tag does not create a new child item
+        assert_eq!(root.description, Some("This is the project description.\n".to_string())); // Content applied to the parent (Project)
+    }
 
-       #[test]
-       fn test_parse_code_block_in_note() {
-           let input = r#"
-# Test Item
-- Name: Code Example
-  <note>
-  This is a note.
-  ```rust
-  fn main() {}
-  ```
-  </note>
-"#;
-           let structure = parse_forsure_file(input).unwrap();
+    #[test]
+    fn test_code_block_in_content() {
+        let forsure_content = "# Item with code\nSome introductory text.\n```rust\nprintln!(\"code\");\n```\nMore text after code.";
+         let root = parse_and_get_root(forsure_content);
 
-           assert_eq!(structure.len(), 1);
-           let test_heading = &structure[0];
-           assert_eq!(test_heading.name, "Test Item");
-           assert_eq!(test_heading.children.len(), 1);
+         assert_eq!(root.children.len(), 1);
+         let item = &root.children[0];
+         assert_eq!(item.name, "Item with code");
+         // Content should include text before, the code block, and text after.
+         // The code block content will be appended as raw text for now.
+          assert_eq!(item.content, Some("Some introductory text.\n\nCodeBlockStart(Some(\"rust\"))\nprintln!(\"code\");\nCodeBlockEnd\nMore text after code.".to_string())); // Need to refine how code blocks are represented in content
+    }
 
-           let code_item = &test_heading.children[0];
-           assert_eq!(code_item.name, "Code Example");
-            // Note should contain text and code block content
-            let expected_note = "This is a note.\n\nCode Block:\n```rust\n  fn main() {}\n  ```";
-           // The lexer provides the code block markers and content as separate tokens.
-           // The parser needs to reconstruct the code block content including the markers.
-           // The `assign_captured_content_to_item` for CodeBlock should handle this.
-            assert_eq!(code_item.note, Some(expected_note.to_string()));
-       }
+    // TODO: Add more tests for different scenarios, including:
+    // - Mixed headings and list items at different levels
+    // - Nested custom tags (if supported)
+    // - Attributes on content-setting tags
+    // - Error handling cases (missing closing tags, unexpected tokens, etc.)
 }

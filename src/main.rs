@@ -1,100 +1,206 @@
-use std::fs; // Keep as it's used for fs::read_to_string
-use std::io::{Error, ErrorKind};
-use getopts::Options;
 use std::env;
-// Removed unused import: use std::path::Path; // Compiler reports unused, although Path::new is used. Let's remove it to fix the warning.
+use std::process;
+use getopts::Options;
+use std::path::Path;
+use std::fs;
+use std::path::PathBuf;
+use std::io::Read; // Import Read trait
 
-mod models;
-mod lexer; // Declare the new lexer module
 mod parser;
+mod models;
 mod creator;
+mod lexer; // Keep lexer module declaration
 
-// Removed unused import: use models::ProjectItem; // ProjectItem is not directly used in main
-use parser::parse_forsure_file; // Import the parsing function
-use creator::{create_project_structure, print_structure}; // Import creator functions
+// Use the ParserState struct from the parser module
+use parser::ParserState;
+use models::ProjectItem; // Import ProjectItem from models
 
-
-// Function to print usage information
 fn print_usage(program: &str, opts: Options) {
     let brief = format!("Usage: {} FILE [options]", program);
     print!("{}", opts.usage(&brief));
 }
 
+// Assuming this function is intended to process the parsed items and create files/directories
+fn process_project_items(items: &[ProjectItem], base_path: &Path) -> std::io::Result<()> {
+    for item in items {
+        // Determine the path for the current item. Prioritize the explicit 'path' field if present.
+        let item_path = if let Some(p) = &item.path {
+            // If path is specified, use it relative to the base_path
+            base_path.join(p)
+        } else if !item.name.is_empty() && (item.item_type == models::ItemType::Directory || item.item_type == models::ItemType::File || item.item_type == models::ItemType::Project || item.item_type == models::ItemType::ListItem) {
+            // If no path but name and is a Directory, File, Project, or ListItem, use sanitized name relative to parent
+            let file_or_dir_name = item.name.replace(" ", "_").to_lowercase(); // Simple sanitization
+             // This logic needs to be smarter about relative paths based on the parent item's path.
+             // For now, joining to base_path is a simplification.
+            base_path.join(file_or_dir_name)
 
-fn main() -> Result<(), Error> {
-    println!("ForSure CLI is running!");
+        }
+         else {
+            // If no name and no path, skip creating a FS entry for this item itself.
+            // Still recurse for children, passing the current base_path.
+            creator::create_project_structure(&item.children, base_path)?; // Use creator::create_project_structure
+            continue; // Skip to the next item in the current level
+        };
 
-    // 1. Define command-line options
-    let mut opts = Options::new();
-    opts.optopt("f", "file", "set the input .forsure file path", "FILE");
-    opts.optflag("h", "help", "print this help menu");
 
-    // 2. Parse command-line arguments
+        match item.item_type { // Match on the ItemType enum directly
+            models::ItemType::Directory | models::ItemType::Project => { // Treat Project like a Directory for creation purposes
+                if !item_path.exists() {
+                    std::fs::create_dir_all(&item_path)?;
+                    println!("Creating directory: \"{}\"", item_path.display());
+                }
+                // Recursively create children within this directory, using item_path as the new base
+                creator::create_project_structure(&item.children, &item_path)?; // Use creator::create_project_structure
+            },
+            models::ItemType::File => { // Only create files for explicit "File" type
+                 // Ensure parent directory exists before creating the file
+                 if let Some(parent) = item_path.parent() {
+                     if !parent.exists() {
+                         std::fs::create_dir_all(parent)?;
+                         println!("Creating parent directory for file: \"{}\"", parent.display());
+                     }
+                 }
+                // Create the file and write content if content_pattern, example, or content is provided
+                let content_to_write = item.content_pattern.clone()
+                    .or_else(|| item.example.clone())
+                    .or_else(|| item.content.clone()); // Also consider the general 'content' field
+
+                if let Some(content) = content_to_write {
+                    std::fs::write(&item_path, content)?;
+                    println!("Creating file and writing content: \"{}\"", item_path.display());
+                } else {
+                    // Create an empty file if no content
+                    std::fs::File::create(&item_path)?;
+                    println!("Creating empty file: \"{}\"", item_path.display());
+                }
+                 // Recursively process children of files. Children of a file might represent nested structure within the logical file content,
+                 // but for file system creation, they would need their own paths.
+                 // If a file has children with paths, they would be created relative to the file's directory.
+                 if !item.children.is_empty() {
+                      // Pass the directory containing the current item as the base for children
+                      if let Some(parent_dir) = item_path.parent() {
+                           println!("Processing children of item '{}' (Type: {:?}) within directory: \"{}\"", item.name, item.item_type, parent_dir.display()); // Use {:?}
+                           creator::create_project_structure(&item.children, parent_dir)?; // Use creator::create_project_structure
+                      } else {
+                           // This case should be rare for files with names, but handle defensively
+                           println!("Warning: Could not determine parent directory for item '{}' (Type: {:?}) with children.", item.name, item.item_type); // Use {:?}
+                           creator::create_project_structure(&item.children, base_path)?; // Fallback to base_path
+                      }
+                 }
+            },
+             models::ItemType::ListItem => {
+                 // ListItems typically don't create FS entries themselves unless they have an explicit path or are typed as File/Directory.
+                 // The check at the top handles cases where a ListItem gets a path or name and becomes a File/Directory.
+                 // If it's still a ListItem here, it's likely just a structural element in the hierarchy.
+                 // Recursively process its children, passing the current base_path.
+                  if !item.children.is_empty() {
+                      println!("Processing children of {:?}: {}", item.item_type, item.name); // Use {:?}
+                       creator::create_project_structure(&item.children, base_path)?; // Use creator::create_project_structure
+                  }
+             }
+            // For any other item type, just recurse through children.
+            models::ItemType::Unknown => { // Handle Unknown explicitly or via _
+                 if !item.children.is_empty() {
+                     println!("Processing children of {:?}: {}", item.item_type, item.name); // Use {:?}
+                     // Pass the current base_path. Children with paths will build relative to this.
+                     creator::create_project_structure(&item.children, base_path)?; // Use creator::create_project_structure
+                 }
+            },
+        }
+
+        // If the item has a command, print it
+        if let Some(command) = &item.command {
+            // Determine the directory where the command should be executed.
+            // If the item is a directory or project, execute in its own path.
+            // If the item is a file or list item, execute in its parent directory.
+            let execution_dir = match item.item_type { // Match on ItemType enum
+                models::ItemType::Directory | models::ItemType::Project => item_path.clone(),
+                models::ItemType::File | models::ItemType::ListItem => item_path.parent().unwrap_or(base_path).to_path_buf(),
+                models::ItemType::Unknown => base_path.to_path_buf(), // For unknown types, execute in the current base path
+            };
+
+            println!(
+                "Suggested command for item '{}' (Type: {:?}): cd \"{}\" && {}", // Use {:?}
+                item.name, item.item_type, execution_dir.display(), command.trim() // Trim command whitespace
+            );
+            // TODO: Implement actual command execution here in a future iteration
+            // For now, we just print the suggested command.
+        }
+    }
+    Ok(())
+}
+
+
+fn main() {
     let args: Vec<String> = env::args().collect();
     let program = args[0].clone();
 
+    let mut opts = Options::new();
+    opts.optopt("o", "output", "set output file name", "NAME");
+    opts.optflag("h", "help", "print this help menu");
+
     let matches = match opts.parse(&args[1..]) {
-        Ok(m) => { m },
-        Err(f) => { // Handle parsing errors
+        Ok(m) => m,
+        Err(f) => {
             eprintln!("{}", f.to_string());
             print_usage(&program, opts);
-            return Err(Error::new(ErrorKind::InvalidInput, "Failed to parse arguments"));
+            process::exit(1);
         }
     };
 
-    // 3. Handle help flag
-    if matches.opt_present("h") {
+    // Update the getopts usage to use the correct method
+    // Assuming you want to check for the presence of the 'h' flag
+    if matches.opt_present("h") { // Using opt_present as a common way to check for a flag
         print_usage(&program, opts);
-        return Ok(()); // Exit after printing help
+        return;
     }
 
-    // 4. Determine the input file path
-    let forsure_file_path = if let Some(file_path) = matches.opt_str("f") {
-        file_path
-    } else if args.len() > 1 && !args[1].starts_with('-') {
-        // If no -f flag, treat the first non-flag argument as the file path
-        args[1].clone()
-    }
-    else {
-        // No file path provided, print usage and exit with an error
-        eprintln!("No input .forsure file specified.");
+    let input_file_path = if matches.free.len() == 1 {
+        matches.free[0].clone()
+    } else {
         print_usage(&program, opts);
-        return Err(Error::new(ErrorKind::InvalidInput, "No input file specified"));
+        process::exit(1);
     };
 
+    let output_path_str = matches.opt_str("o").unwrap_or_else(|| "output_project".to_string());
+    let output_path = PathBuf::from(output_path_str);
 
-    println!("Using input file: {}", forsure_file_path);
-
-    // Read the content of the .forsure file
-    let markdown_input = match fs::read_to_string(&forsure_file_path) {
-        Ok(content) => content,
+    // Read the input file content into a String
+    let mut input_file = match fs::File::open(&input_file_path) {
+        Ok(file) => file,
         Err(e) => {
-            eprintln!("Error reading file {}: {}", forsure_file_path, e);
-            return Err(e);
+            eprintln!("Error opening input file {}: {}", input_file_path, e);
+            process::exit(1);
         }
     };
-
-    // 5. Parse the markdown input using the parser module
-    println!("\nParsing markdown events and building structure:");
-    let project_structure = match parse_forsure_file(&markdown_input) {
-        Ok(structure) => structure,
-        Err(e) => {
-            eprintln!("Error parsing .forsure file: {}", e);
-            return Err(e);
-        }
-    };
-
-
-    // 6. Print the parsed structure (for debugging)
-    println!("\nFinal Parsed Project Structure:");
-    print_structure(&project_structure, 0);
-
-    // 7. Create the project structure on disk using the creator module
-    let output_dir = std::path::Path::new("output_project"); // std::path::Path is still used here
-    match create_project_structure(&project_structure, output_dir) {
-        Ok(_) => println!("\nProject structure created successfully in '{}'", output_dir.display()),
-        Err(e) => eprintln!("\nError creating project structure: {}", e),
+    let mut input_string = String::new();
+    if let Err(e) = input_file.read_to_string(&mut input_string) {
+         eprintln!("Error reading input file {}: {}", input_file_path, e);
+         process::exit(1);
     }
 
-    Ok(())
+
+    // Use ParserState to create the parser instance, providing the project name and input string slice
+    let mut parser_state = ParserState::new("output_project".to_string(), &input_string); // Pass input string slice
+
+
+    if let Err(e) = parser_state.parse_forsure_file() { // parse_forsure_file no longer needs reader
+        eprintln!("Error parsing file: {}", e);
+        process::exit(1);
+    }
+
+    println!("Successfully parsed file. Project structure:");
+    // print the parsed items (optional)
+    // The project structure is now in parser_state.project_root
+    // println!("{:?}", parser_state.project_root);
+
+    // Process the parsed items to create the project structure
+    // Start processing from the children of the root, as process_project_items expects a slice of items
+    if let Err(e) = creator::create_project_structure(&parser_state.project_root.children, &output_path) { // Use creator::create_project_structure
+        eprintln!("Error creating project structure: {}", e);
+        process::exit(1);
+    }
+
+    println!("Project structure created successfully in {:?}", output_path);
+
 }
