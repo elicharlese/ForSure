@@ -60,30 +60,22 @@ export default function Header() {
 
         {/* Desktop navigation */}
         <nav className="hidden md:flex items-center gap-6">
-          <div className="flex items-center gap-1">
-            <Terminal className="h-4 w-4" />
-            <Link href="/cli" className="text-sm font-medium hover:text-primary">
-              CLI
-            </Link>
-          </div>
-          <div className="flex items-center gap-1">
-            <Code className="h-4 w-4" />
-            <Link href="/language" className="text-sm font-medium hover:text-primary">
-              Language
-            </Link>
-          </div>
-          <div className="flex items-center gap-1">
-            <BookOpen className="h-4 w-4" />
-            <Link href="/docs" className="text-sm font-medium hover:text-primary">
-              Documentation
-            </Link>
-          </div>
-          <div className="flex items-center gap-1">
-            <Download className="h-4 w-4" />
-            <Link href="/download" className="text-sm font-medium hover:text-primary">
-              Download
-            </Link>
-          </div>
+          <Link href="/cli" className="flex items-center gap-1 group">
+            <Terminal className="h-4 w-4 group-hover:text-primary transition-colors" />
+            <span className="text-sm font-medium group-hover:text-primary transition-colors">CLI</span>
+          </Link>
+          <Link href="/language" className="flex items-center gap-1 group">
+            <Code className="h-4 w-4 group-hover:text-primary transition-colors" />
+            <span className="text-sm font-medium group-hover:text-primary transition-colors">Language</span>
+          </Link>
+          <Link href="/docs" className="flex items-center gap-1 group">
+            <BookOpen className="h-4 w-4 group-hover:text-primary transition-colors" />
+            <span className="text-sm font-medium group-hover:text-primary transition-colors">Documentation</span>
+          </Link>
+          <Link href="/download" className="flex items-center gap-1 group mr-8">
+            <Download className="h-4 w-4 group-hover:text-primary transition-colors" />
+            <span className="text-sm font-medium group-hover:text-primary transition-colors">Download</span>
+          </Link>
 
           {isAuthenticated ? (
             <UserNav />
@@ -94,7 +86,7 @@ export default function Header() {
                   Log in
                 </Button>
               </Link>
-              <Link href="/register">
+              <Link href="/register" className="ml-[-8px]">
                 <Button variant="default" size="sm">
                   Sign up
                 </Button>
@@ -108,33 +100,21 @@ export default function Header() {
         {isMenuOpen && (
           <div className="absolute top-16 left-0 right-0 bg-background border-b md:hidden">
             <nav className="container flex flex-col py-4 gap-4">
-              <Link
-                href="/cli"
-                className="px-4 py-2 text-sm font-medium hover:text-primary flex items-center"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <Terminal className="h-4 w-4 mr-2" /> CLI
+              <Link href="/cli" className="px-4 py-2 flex items-center group" onClick={() => setIsMenuOpen(false)}>
+                <Terminal className="h-4 w-4 mr-2 group-hover:text-primary transition-colors" />
+                <span className="text-sm font-medium group-hover:text-primary transition-colors">CLI</span>
               </Link>
-              <Link
-                href="/language"
-                className="px-4 py-2 text-sm font-medium hover:text-primary flex items-center"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <Code className="h-4 w-4 mr-2" /> Language
+              <Link href="/language" className="px-4 py-2 flex items-center group" onClick={() => setIsMenuOpen(false)}>
+                <Code className="h-4 w-4 mr-2 group-hover:text-primary transition-colors" />
+                <span className="text-sm font-medium group-hover:text-primary transition-colors">Language</span>
               </Link>
-              <Link
-                href="/docs"
-                className="px-4 py-2 text-sm font-medium hover:text-primary flex items-center"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <BookOpen className="h-4 w-4 mr-2" /> Documentation
+              <Link href="/docs" className="px-4 py-2 flex items-center group" onClick={() => setIsMenuOpen(false)}>
+                <BookOpen className="h-4 w-4 mr-2 group-hover:text-primary transition-colors" />
+                <span className="text-sm font-medium group-hover:text-primary transition-colors">Documentation</span>
               </Link>
-              <Link
-                href="/download"
-                className="px-4 py-2 text-sm font-medium hover:text-primary flex items-center"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <Download className="h-4 w-4 mr-2" /> Download
+              <Link href="/download" className="px-4 py-2 flex items-center group" onClick={() => setIsMenuOpen(false)}>
+                <Download className="h-4 w-4 mr-2 group-hover:text-primary transition-colors" />
+                <span className="text-sm font-medium group-hover:text-primary transition-colors">Download</span>
               </Link>
 
               <div className="flex items-center gap-4 px-4">
