@@ -78,7 +78,7 @@ export default function Header() {
               Documentation
             </Link>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 mr-4">
             <Download className="h-4 w-4" />
             <Link href="/download" className="text-sm font-medium hover:text-primary">
               Download

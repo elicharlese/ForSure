@@ -54,7 +54,7 @@ export function SecondaryNavbar() {
   const breadcrumbs = generateBreadcrumbs()
 
   return (
-    <div className="border-b bg-background">
+    <div className="sticky top-0 z-30 border-b bg-background">
       <div className="container flex h-14 items-center justify-between">
         {/* Left side - Logo and breadcrumbs */}
         <div className="flex items-center gap-4">
@@ -125,7 +125,7 @@ export function SecondaryNavbar() {
             <Tag className="h-4 w-4" />
           </Button>
 
-          <div className="pl-1 border-l ml-1">
+          <div className="pl-4 border-l ml-1">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
