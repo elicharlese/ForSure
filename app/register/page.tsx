@@ -51,7 +51,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="container py-10 flex justify-center">
+    <div className="container pt-20 pb-10 flex justify-center">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-2xl">Create an account</CardTitle>

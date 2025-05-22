@@ -41,7 +41,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="container py-10 flex justify-center">
+    <div className="container pt-32 pb-10 flex justify-center">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-2xl">Log in to ForSure</CardTitle>
