@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Sparkles, ChevronLeft, ChevronRight, MessageSquare } from "lucide-react"
+import { Sparkles } from "lucide-react"
 import { ProjectDetailsForm, type ProjectDetails } from "./components/project-details-form"
 import { FormProgress } from "./components/form-progress"
 import { useSavedProjects } from "./hooks/use-saved-projects"
@@ -30,14 +30,12 @@ export default function ChatApp() {
   const [editingProject, setEditingProject] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [showMobileChat, setShowMobileChat] = useState(true)
-  const [isMobileChatCollapsed, setIsMobileChatCollapsed] = useState(false)
   const [templateBrowserOpen, setTemplateBrowserOpen] = useState(false)
   const [formatAllDialogOpen, setFormatAllDialogOpen] = useState(false)
   const [isFormatting, setIsFormatting] = useState(false)
   const [formatProgress, setFormatProgress] = useState(0)
   const [formattedCount, setFormattedCount] = useState(0)
   const [totalFilesToFormat, setTotalFilesToFormat] = useState(0)
-  const [isChatCollapsed, setIsChatCollapsed] = useState(false)
   const { isDemoMode } = useAuth()
   const {
     savedProjects,
@@ -78,36 +76,6 @@ export default function ChatApp() {
 
     return () => {
       window.removeEventListener("resize", checkIfMobile)
-    }
-  }, [])
-
-  // Reset collapsed state when switching between mobile and desktop
-  useEffect(() => {
-    if (isMobile) {
-      setIsChatCollapsed(false)
-    } else {
-      setIsMobileChatCollapsed(false)
-    }
-  }, [isMobile])
-
-  // Load chat collapse state from localStorage
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      try {
-        // Desktop collapse state
-        const savedCollapseState = localStorage.getItem("chatPanelCollapsed")
-        if (savedCollapseState !== null) {
-          setIsChatCollapsed(savedCollapseState === "true")
-        }
-
-        // Mobile collapse state
-        const savedMobileCollapseState = localStorage.getItem("mobileChatPanelCollapsed")
-        if (savedMobileCollapseState !== null) {
-          setIsMobileChatCollapsed(savedMobileCollapseState === "true")
-        }
-      } catch (error) {
-        console.error("Failed to load chat panel state from localStorage:", error)
-      }
     }
   }, [])
 
@@ -166,7 +134,6 @@ export default function ChatApp() {
           // On mobile, switch to chat view when a new message arrives
           if (isMobile) {
             setShowMobileChat(true)
-            setIsMobileChatCollapsed(false) // Expand mobile chat when new message arrives
           }
         }, 500)
         return
@@ -235,15 +202,9 @@ export default function ChatApp() {
       setMessages((prev) => [...prev, assistantMessage])
       setIsLoading(false)
 
-      // On mobile, switch to chat view when a new message arrives and expand if collapsed
+      // On mobile, switch to chat view when a new message arrives
       if (isMobile) {
         setShowMobileChat(true)
-        setIsMobileChatCollapsed(false)
-      }
-
-      // If chat is collapsed on desktop, expand it to show the new message
-      if (isChatCollapsed) {
-        setIsChatCollapsed(false)
       }
     }, 1000)
   }
@@ -526,30 +487,6 @@ Just let me know what you need!`
     setTimeout(() => setCopied(null), 2000)
   }
 
-  const toggleChatCollapse = () => {
-    const newState = !isChatCollapsed
-    setIsChatCollapsed(newState)
-
-    // Save to localStorage
-    try {
-      localStorage.setItem("chatPanelCollapsed", String(newState))
-    } catch (error) {
-      console.error("Failed to save chat panel state to localStorage:", error)
-    }
-  }
-
-  const toggleMobileChatCollapse = () => {
-    const newState = !isMobileChatCollapsed
-    setIsMobileChatCollapsed(newState)
-
-    // Save to localStorage
-    try {
-      localStorage.setItem("mobileChatPanelCollapsed", String(newState))
-    } catch (error) {
-      console.error("Failed to save mobile chat panel state to localStorage:", error)
-    }
-  }
-
   // Get current project versions if available
   const currentProjectVersions = projectDetails?.id ? getProjectVersions(projectDetails.id) : []
   const currentProject = projectDetails?.id ? getProject(projectDetails.id) : null
@@ -608,10 +545,7 @@ Just let me know what you need!`
                   <Button
                     variant={showMobileChat ? "default" : "outline"}
                     size="sm"
-                    onClick={() => {
-                      setShowMobileChat(true)
-                      setIsMobileChatCollapsed(false) // Ensure chat is expanded when switching to chat view
-                    }}
+                    onClick={() => setShowMobileChat(true)}
                     className="px-3"
                   >
                     Chat
@@ -628,170 +562,65 @@ Just let me know what you need!`
               </div>
             )}
 
-            {/* Split view layout - Desktop */}
-            {!isMobile && (
-              <div className="relative flex h-[calc(100vh-56px)]">
-                {/* Collapsed chat panel */}
-                {isChatCollapsed ? (
-                  <div className="w-12 border-r flex flex-col items-center py-4 transition-all duration-300 ease-in-out">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={toggleChatCollapse}
-                      className="rounded-full"
-                      title="Expand chat panel"
-                    >
-                      <ChevronRight className="h-5 w-5" />
-                      <span className="sr-only">Expand chat panel</span>
-                    </Button>
-                  </div>
-                ) : (
-                  /* Chat interface */
-                  <div className="w-2/5 border-r flex flex-col h-full transition-all duration-300 ease-in-out">
-                    {/* Project info banner */}
-                    <div className="bg-muted/50 border-b border-primary/10 p-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h3 className="font-medium">{projectDetails.name}</h3>
-                          <p className="text-sm text-muted-foreground">
-                            {projectDetails.type} • {projectDetails.framework} • {projectDetails.languages.join(", ")}
+            {/* Split view layout */}
+            {(!isMobile || (isMobile && showMobileChat)) && (
+              <div className={`${isMobile ? "w-full" : "w-1/2 border-r"} flex flex-col h-[calc(100vh-56px)]`}>
+                {/* Project info banner - only show on desktop */}
+                {!isMobile && (
+                  <div className="bg-muted/50 border-b border-primary/10 p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-medium">{projectDetails.name}</h3>
+                        <p className="text-sm text-muted-foreground">
+                          {projectDetails.type} • {projectDetails.framework} • {projectDetails.languages.join(", ")}
+                        </p>
+
+                        {projectDetails.id && currentProject && currentProjectVersions.length > 0 && (
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Version {currentProjectVersions.length} • Last updated:{" "}
+                            {new Date(currentProject.lastUpdated).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })}
                           </p>
-
-                          {projectDetails.id && currentProject && currentProjectVersions.length > 0 && (
-                            <p className="text-xs text-muted-foreground mt-1">
-                              Version {currentProjectVersions.length} • Last updated:{" "}
-                              {new Date(currentProject.lastUpdated).toLocaleDateString("en-US", {
-                                month: "short",
-                                day: "numeric",
-                                year: "numeric",
-                              })}
-                            </p>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={toggleChatCollapse}
-                            className="rounded-full"
-                            title="Collapse chat panel"
-                          >
-                            <ChevronLeft className="h-5 w-5" />
-                            <span className="sr-only">Collapse chat panel</span>
-                          </Button>
-                          <Button variant="outline" size="sm" onClick={editProject}>
-                            Edit Project
-                          </Button>
-                        </div>
+                        )}
                       </div>
+                      <Button variant="outline" size="sm" onClick={editProject}>
+                        Edit Project
+                      </Button>
                     </div>
-
-                    <ChatInterface
-                      messages={messages}
-                      input={input}
-                      isLoading={isLoading}
-                      projectDetails={projectDetails}
-                      onInputChange={setInput}
-                      onSubmit={handleSubmit}
-                      onCopy={copyToClipboard}
-                      copiedId={copied}
-                    />
                   </div>
                 )}
 
-                {/* Visualization panel - adjust width based on chat collapse state */}
-                <div className={`${isChatCollapsed ? "flex-1" : "w-3/5"} transition-all duration-300 ease-in-out`}>
-                  <VisualizationPanel
-                    projectDetails={projectDetails}
-                    activeFileStructure={activeFileStructure}
-                    onFileStructureChange={handleFileStructureChange}
-                    canUndo={canUndo}
-                    canRedo={canRedo}
-                    onUndo={undo}
-                    onRedo={redo}
-                    onFormatAll={() => setFormatAllDialogOpen(true)}
-                  />
-                </div>
+                {/* Chat interface */}
+                <ChatInterface
+                  messages={messages}
+                  input={input}
+                  isLoading={isLoading}
+                  projectDetails={projectDetails}
+                  onInputChange={setInput}
+                  onSubmit={handleSubmit}
+                  onCopy={copyToClipboard}
+                  copiedId={copied}
+                />
               </div>
             )}
 
-            {/* Mobile layout with collapse feature */}
-            {isMobile && (
-              <>
-                {showMobileChat && (
-                  <div className="relative w-full h-[calc(100vh-56px)]">
-                    {/* Always render visualization panel in the background when in chat mode */}
-                    <div className="w-full h-full">
-                      <VisualizationPanel
-                        projectDetails={projectDetails}
-                        activeFileStructure={activeFileStructure}
-                        onFileStructureChange={handleFileStructureChange}
-                        canUndo={canUndo}
-                        canRedo={canRedo}
-                        onUndo={undo}
-                        onRedo={redo}
-                        onFormatAll={() => setFormatAllDialogOpen(true)}
-                      />
-                    </div>
-
-                    {isMobileChatCollapsed ? (
-                      /* Collapsed mobile chat */
-                      <div className="absolute bottom-4 right-4 z-10 transition-all duration-300 ease-in-out">
-                        <Button
-                          size="icon"
-                          className="h-12 w-12 rounded-full shadow-lg bg-primary text-primary-foreground"
-                          onClick={toggleMobileChatCollapse}
-                          title="Expand chat"
-                        >
-                          <MessageSquare className="h-6 w-6" />
-                          <span className="sr-only">Expand chat</span>
-                        </Button>
-                      </div>
-                    ) : (
-                      /* Expanded mobile chat */
-                      <div className="absolute inset-0 w-full flex flex-col bg-background transition-all duration-300 ease-in-out">
-                        <div className="flex justify-end p-2 bg-muted/50 border-b">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={toggleMobileChatCollapse}
-                            className="ml-auto"
-                            title="Collapse chat"
-                          >
-                            <ChevronLeft className="h-4 w-4 mr-1" />
-                            <span>Collapse</span>
-                          </Button>
-                        </div>
-                        <ChatInterface
-                          messages={messages}
-                          input={input}
-                          isLoading={isLoading}
-                          projectDetails={projectDetails}
-                          onInputChange={setInput}
-                          onSubmit={handleSubmit}
-                          onCopy={copyToClipboard}
-                          copiedId={copied}
-                        />
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {!showMobileChat && (
-                  <div className="w-full h-[calc(100vh-56px)]">
-                    <VisualizationPanel
-                      projectDetails={projectDetails}
-                      activeFileStructure={activeFileStructure}
-                      onFileStructureChange={handleFileStructureChange}
-                      canUndo={canUndo}
-                      canRedo={canRedo}
-                      onUndo={undo}
-                      onRedo={redo}
-                      onFormatAll={() => setFormatAllDialogOpen(true)}
-                    />
-                  </div>
-                )}
-              </>
+            {/* Visualization panel */}
+            {(!isMobile || (isMobile && !showMobileChat)) && (
+              <div className={`${isMobile ? "w-full" : "w-1/2"} h-[calc(100vh-56px)]`}>
+                <VisualizationPanel
+                  projectDetails={projectDetails}
+                  activeFileStructure={activeFileStructure}
+                  onFileStructureChange={handleFileStructureChange}
+                  canUndo={canUndo}
+                  canRedo={canRedo}
+                  onUndo={undo}
+                  onRedo={redo}
+                  onFormatAll={() => setFormatAllDialogOpen(true)}
+                />
+              </div>
             )}
           </div>
         )}
