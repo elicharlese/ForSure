@@ -1,10 +1,12 @@
 "use client"
 
+import { Badge } from "@/components/ui/badge"
+
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
-import { Sparkles } from "lucide-react"
+import { Sparkles, Upload, Check, AlertCircle, FileJson } from "lucide-react"
 import { ProjectDetailsForm, type ProjectDetails } from "./components/project-details-form"
 import { FormProgress } from "./components/form-progress"
 import { useSavedProjects } from "./hooks/use-saved-projects"
@@ -18,8 +20,16 @@ import { applyTemplate } from "./services/template-service"
 import { formatAllFiles, type FormatterOptions } from "./services/code-formatter"
 import { useFileStructureHistory } from "./hooks/use-file-structure-history"
 import { useAuth } from "@/contexts/auth-context"
+import { ProjectImportExport } from "./components/project-import-export"
+import { TeamSelector } from "./components/team-selector"
+import { TeamChatButton } from "./components/team-chat-button"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { useTeams } from "./hooks/use-teams"
 import type { Message } from "./types/chat"
 import type { FileNode } from "./components/file-structure-visualization"
+import type { SavedProject } from "./hooks/use-saved-projects"
+import type { Team } from "./types/team"
+import type { MergeOptions } from "./components/version-merge-dialog"
 
 export default function ChatApp() {
   const [projectDetails, setProjectDetails] = useState<ProjectDetails | null>(null)
@@ -36,7 +46,14 @@ export default function ChatApp() {
   const [formatProgress, setFormatProgress] = useState(0)
   const [formattedCount, setFormattedCount] = useState(0)
   const [totalFilesToFormat, setTotalFilesToFormat] = useState(0)
-  const { isDemoMode } = useAuth()
+  const [leftPanelWidth, setLeftPanelWidth] = useState(40) // Default to 40% width
+  const [isDraggingFile, setIsDraggingFile] = useState(false)
+  const [dragImportError, setDragImportError] = useState<string | null>(null)
+  const [dragImportSuccess, setDragImportSuccess] = useState(false)
+  const [dragImportedProjects, setDragImportedProjects] = useState<SavedProject[]>([])
+  const [currentTeam, setCurrentTeam] = useState<Team | null>(null)
+  const { isDemoMode, user } = useAuth()
+  const { teams } = useTeams()
   const {
     savedProjects,
     saveProject,
@@ -45,9 +62,20 @@ export default function ChatApp() {
     getProjectVersions,
     restoreVersion,
     deleteVersion,
+    mergeVersions,
     shareProject,
     unshareProject,
     isLoaded,
+    createBranch,
+    switchBranch,
+    getCurrentBranch,
+    deleteBranch,
+    renameBranch,
+    createTag,
+    deleteTag,
+    updateTag,
+    moveTag,
+    getProjectTags,
   } = useSavedProjects()
 
   // Initialize file structure history with a default empty structure
@@ -78,6 +106,119 @@ export default function ChatApp() {
       window.removeEventListener("resize", checkIfMobile)
     }
   }, [])
+
+  // Process imported files
+  const processImportFiles = useCallback(
+    async (files: FileList | File[]) => {
+      setDragImportError(null)
+      setDragImportSuccess(false)
+      setDragImportedProjects([])
+
+      const allErrors: string[] = []
+      const allProjects: SavedProject[] = []
+
+      // Process each file
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]
+
+        // Skip non-JSON files
+        if (file.type !== "application/json" && !file.name.endsWith(".json")) {
+          allErrors.push(`Skipped "${file.name}" - Not a JSON file`)
+          continue
+        }
+
+        try {
+          const content = await file.text()
+          const parsed = JSON.parse(content)
+
+          // Check if it's an array of projects or a single project
+          if (Array.isArray(parsed)) {
+            // Validate each project has the required fields
+            const validProjects = parsed.filter(
+              (p) => p.name && p.details && p.lastUpdated && p.versions && p.currentVersionId,
+            )
+
+            if (validProjects.length === 0) {
+              allErrors.push(`No valid projects found in file "${file.name}"`)
+            } else {
+              allProjects.push(...validProjects)
+            }
+          } else if (parsed.name && parsed.details) {
+            // Single project
+            allProjects.push(parsed)
+          } else {
+            allErrors.push(`Invalid project format in file "${file.name}"`)
+          }
+        } catch (error) {
+          console.error("Import error:", error)
+          allErrors.push(`Failed to parse file "${file.name}". Please ensure it's a valid JSON file.`)
+        }
+      }
+
+      if (allErrors.length > 0) {
+        setDragImportError(allErrors.join(". "))
+      }
+
+      if (allProjects.length > 0) {
+        handleImportProjects(allProjects)
+        setDragImportedProjects(allProjects)
+        setDragImportSuccess(true)
+      }
+
+      // Clear notifications after a delay
+      setTimeout(() => {
+        setDragImportError(null)
+        setDragImportSuccess(false)
+        setDragImportedProjects([])
+      }, 5000)
+    },
+    [
+      /* dependencies */
+    ],
+  )
+
+  // Global drag and drop handlers
+  useEffect(() => {
+    const handleDragOver = (e: DragEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+      if (e.dataTransfer?.items?.length && e.dataTransfer.items[0].kind === "file") {
+        setIsDraggingFile(true)
+      }
+    }
+
+    const handleDragLeave = (e: DragEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+      // Only set dragging to false if we're leaving the window
+      if (e.clientX <= 0 || e.clientY <= 0 || e.clientX >= window.innerWidth || e.clientY >= window.innerHeight) {
+        setIsDraggingFile(false)
+      }
+    }
+
+    const handleDrop = (e: DragEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+      setIsDraggingFile(false)
+
+      const files = e.dataTransfer?.files
+      if (files?.length) {
+        processImportFiles(files)
+      }
+    }
+
+    // Add event listeners
+    window.addEventListener("dragover", handleDragOver)
+    window.addEventListener("dragleave", handleDragLeave)
+    window.addEventListener("drop", handleDrop)
+
+    // Clean up
+    return () => {
+      window.removeEventListener("dragover", handleDragOver)
+      window.removeEventListener("dragleave", handleDragLeave)
+      window.removeEventListener("drop", handleDrop)
+    }
+  }, [processImportFiles])
 
   const handleFormComplete = (details: ProjectDetails) => {
     setProjectDetails(details)
@@ -399,6 +540,32 @@ Just let me know what you need!`
     }
   }
 
+  const handleMergeVersions = (sourceVersionId: string, targetVersionId: string, options: MergeOptions) => {
+    if (!projectDetails?.id) return
+
+    mergeVersions(projectDetails.id, sourceVersionId, targetVersionId, options)
+
+    // Refresh project details after merge
+    const project = getProject(projectDetails.id)
+    if (project) {
+      setProjectDetails(project.details)
+
+      // Add merge message
+      const mergeMessage: Message = {
+        id: Date.now().toString(),
+        role: "assistant",
+        content: `I've merged changes from a previous version into your "${project.details.name}" project. The merged changes are now reflected in your project.`,
+      }
+
+      setMessages((prev) => [...prev, mergeMessage])
+
+      // Update file structure for the merged version and reset history
+      const initialStructure = generateFileStructure(project.details)
+      updateStructure(initialStructure, false) // Don't record in history
+      clearHistory(initialStructure) // Reset history with new structure
+    }
+  }
+
   const handleShareProject = (settings: any) => {
     if (!projectDetails?.id) return ""
     return shareProject(projectDetails.id, settings)
@@ -487,9 +654,186 @@ Just let me know what you need!`
     setTimeout(() => setCopied(null), 2000)
   }
 
+  const handleImportProjects = (projects: SavedProject[]) => {
+    // For each imported project, add it to the saved projects
+    projects.forEach((project) => {
+      saveProject(project.details, "Imported project")
+    })
+
+    // If there's at least one project, load the first one
+    if (projects.length > 0) {
+      handleLoadProject(projects[0].id)
+    }
+
+    // Add a message about the import
+    const importMessage: Message = {
+      id: Date.now().toString(),
+      role: "assistant",
+      content: `I've imported ${projects.length} project${projects.length === 1 ? "" : "s"}. ${projects.length > 0 ? `The project "${projects[0].name}" has been loaded.` : ""}`,
+    }
+    setMessages((prev) => [...prev, importMessage])
+  }
+
+  const handleTeamChange = (team: Team | null) => {
+    setCurrentTeam(team)
+    // In a real app, you would load team projects here
+  }
+
+  const handleResize = (e: React.MouseEvent) => {
+    const startX = e.clientX
+    const startWidth = leftPanelWidth
+
+    const onMouseMove = (moveEvent: MouseEvent) => {
+      // Calculate the new width as a percentage of the container
+      const containerWidth = document.querySelector(".flex-1.flex.flex-col.md\\:flex-row")?.clientWidth || 1
+      const newWidth = startWidth + ((moveEvent.clientX - startX) / containerWidth) * 100
+
+      // Constrain the width between 20% and 80%
+      const constrainedWidth = Math.min(Math.max(newWidth, 20), 80)
+      setLeftPanelWidth(constrainedWidth)
+    }
+
+    const onMouseUp = () => {
+      document.removeEventListener("mousemove", onMouseMove)
+      document.removeEventListener("mouseup", onMouseUp)
+      document.body.style.cursor = "default"
+      document.body.style.userSelect = "auto"
+    }
+
+    document.addEventListener("mousemove", onMouseMove)
+    document.addEventListener("mouseup", onMouseUp)
+    document.body.style.cursor = "ew-resize"
+    document.body.style.userSelect = "none"
+  }
+
   // Get current project versions if available
   const currentProjectVersions = projectDetails?.id ? getProjectVersions(projectDetails.id) : []
   const currentProject = projectDetails?.id ? getProject(projectDetails.id) : null
+
+  // Add branch handling to the app
+  const handleCreateBranch = (
+    sourceVersionId: string,
+    branchName: string,
+    branchDescription?: string,
+    switchToBranch = true,
+  ) => {
+    if (!projectDetails?.id) return
+
+    createBranch(projectDetails.id, sourceVersionId, branchName, branchDescription, switchToBranch)
+
+    // Add branch created message
+    const branchMessage: Message = {
+      id: Date.now().toString(),
+      role: "assistant",
+      content: `I've created a new branch "${branchName}" from the selected version.${switchToBranch ? " You are now working on this branch." : ""}`,
+    }
+    setMessages((prev) => [...prev, branchMessage])
+  }
+
+  const handleSwitchBranch = (branchId: string) => {
+    if (!projectDetails?.id) return
+
+    switchBranch(projectDetails.id, branchId)
+
+    // Get the branch name
+    const branch = getCurrentBranch(projectDetails.id)
+
+    // Add branch switched message
+    const branchMessage: Message = {
+      id: Date.now().toString(),
+      role: "assistant",
+      content: `You've switched to the "${branch?.name || "new"}" branch.`,
+    }
+    setMessages((prev) => [...prev, branchMessage])
+  }
+
+  const handleDeleteBranch = (branchId: string) => {
+    if (!projectDetails?.id) return
+
+    // Get the branch name before deleting
+    const branch = getCurrentBranch(projectDetails.id)
+    const branchName = branch?.name || "unknown"
+
+    deleteBranch(projectDetails.id, branchId)
+
+    // Add branch deleted message
+    const branchMessage: Message = {
+      id: Date.now().toString(),
+      role: "assistant",
+      content: `The "${branchName}" branch has been deleted.`,
+    }
+    setMessages((prev) => [...prev, branchMessage])
+  }
+
+  const handleRenameBranch = (branchId: string, newName: string) => {
+    if (!projectDetails?.id) return
+
+    renameBranch(projectDetails.id, branchId, newName)
+
+    // Add branch renamed message
+    const branchMessage: Message = {
+      id: Date.now().toString(),
+      role: "assistant",
+      content: `The branch has been renamed to "${newName}".`,
+    }
+    setMessages((prev) => [...prev, branchMessage])
+  }
+
+  const handleCreateTag = (versionId: string, tagName: string, tagType: any, description?: string, metadata?: any) => {
+    if (!projectDetails?.id) return
+
+    createTag(projectDetails.id, versionId, tagName, tagType, description, metadata)
+
+    // Add tag created message
+    const tagMessage: Message = {
+      id: Date.now().toString(),
+      role: "assistant",
+      content: `I've created a new tag "${tagName}" for the selected version.`,
+    }
+    setMessages((prev) => [...prev, tagMessage])
+  }
+
+  const handleDeleteTag = (tagId: string) => {
+    if (!projectDetails?.id) return
+
+    deleteTag(projectDetails.id, tagId)
+
+    // Add tag deleted message
+    const tagMessage: Message = {
+      id: Date.now().toString(),
+      role: "assistant",
+      content: `The tag has been deleted.`,
+    }
+    setMessages((prev) => [...prev, tagMessage])
+  }
+
+  const handleUpdateTag = (tagId: string, updates: any) => {
+    if (!projectDetails?.id) return
+
+    updateTag(projectDetails.id, tagId, updates)
+
+    // Add tag updated message
+    const tagMessage: Message = {
+      id: Date.now().toString(),
+      role: "assistant",
+      content: `The tag has been updated.`,
+    }
+    setMessages((prev) => [...prev, tagMessage])
+  }
+
+  const handleMoveTag = (tagId: string, newVersionId: string) => {
+    if (!projectDetails?.id) return
+
+    moveTag(projectDetails.id, tagId, newVersionId)
+
+    // Add tag moved message
+    const tagMessage: Message = {
+      id: Date.now().toString(),
+      role: "assistant",
+      content: `The tag has been moved to a different version.`,
+    }
+    setMessages((prev) => [...prev, tagMessage])
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -564,7 +908,10 @@ Just let me know what you need!`
 
             {/* Split view layout */}
             {(!isMobile || (isMobile && showMobileChat)) && (
-              <div className={`${isMobile ? "w-full" : "w-1/2 border-r"} flex flex-col h-[calc(100vh-56px)]`}>
+              <div
+                className={`${isMobile ? "w-full" : ""} flex flex-col h-[calc(100vh-56px)]`}
+                style={{ width: isMobile ? "100%" : `${leftPanelWidth}%` }}
+              >
                 {/* Project info banner - only show on desktop */}
                 {!isMobile && (
                   <div className="bg-muted/50 border-b border-primary/10 p-4">
@@ -586,9 +933,18 @@ Just let me know what you need!`
                           </p>
                         )}
                       </div>
-                      <Button variant="outline" size="sm" onClick={editProject}>
-                        Edit Project
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        {user && <TeamSelector onTeamChange={handleTeamChange} currentTeam={currentTeam} />}
+                        {user && currentTeam && <TeamChatButton team={currentTeam} />}
+                        <ProjectImportExport
+                          currentProject={projectDetails}
+                          savedProjects={savedProjects}
+                          onImport={handleImportProjects}
+                        />
+                        <Button variant="outline" size="sm" onClick={editProject}>
+                          Edit Project
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -607,9 +963,22 @@ Just let me know what you need!`
               </div>
             )}
 
+            {/* Resize handle - only show on desktop */}
+            {!isMobile && projectDetails && !editingProject && (
+              <div
+                className="w-1 hover:w-2 bg-border hover:bg-primary/30 cursor-ew-resize transition-all h-[calc(100vh-56px)] flex items-center justify-center"
+                onMouseDown={handleResize}
+              >
+                <div className="h-8 w-1 bg-primary/50 rounded-full"></div>
+              </div>
+            )}
+
             {/* Visualization panel */}
             {(!isMobile || (isMobile && !showMobileChat)) && (
-              <div className={`${isMobile ? "w-full" : "w-1/2"} h-[calc(100vh-56px)]`}>
+              <div
+                className={`${isMobile ? "w-full" : ""} h-[calc(100vh-56px)]`}
+                style={{ width: isMobile ? "100%" : `${100 - leftPanelWidth - 0.25}%` }}
+              >
                 <VisualizationPanel
                   projectDetails={projectDetails}
                   activeFileStructure={activeFileStructure}
@@ -619,12 +988,72 @@ Just let me know what you need!`
                   onUndo={undo}
                   onRedo={redo}
                   onFormatAll={() => setFormatAllDialogOpen(true)}
+                  currentTeam={currentTeam}
+                  onMergeVersions={handleMergeVersions}
+                  onCreateBranch={handleCreateBranch}
+                  onSwitchBranch={handleSwitchBranch}
+                  onDeleteBranch={handleDeleteBranch}
+                  onRenameBranch={handleRenameBranch}
+                  onCreateTag={handleCreateTag}
+                  onDeleteTag={handleDeleteTag}
+                  onUpdateTag={handleUpdateTag}
+                  onMoveTag={handleMoveTag}
                 />
               </div>
             )}
           </div>
         )}
       </div>
+
+      {/* Global drag and drop overlay */}
+      {isDraggingFile && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center pointer-events-none">
+          <div className="bg-background rounded-lg p-8 max-w-md text-center shadow-xl border-2 border-dashed border-primary animate-pulse">
+            <Upload className="h-16 w-16 mx-auto text-primary mb-4" />
+            <h3 className="text-xl font-bold mb-2">Drop to Import Projects</h3>
+            <p className="text-muted-foreground">Release to import your ForSure project files</p>
+          </div>
+        </div>
+      )}
+
+      {/* Import notification */}
+      {(dragImportSuccess || dragImportError) && (
+        <div className="fixed bottom-4 right-4 z-50 max-w-md">
+          {dragImportSuccess && (
+            <Alert className="bg-green-50 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800 shadow-lg">
+              <Check className="h-4 w-4" />
+              <AlertTitle>Success</AlertTitle>
+              <AlertDescription>
+                {dragImportedProjects.length === 1
+                  ? "1 project imported successfully!"
+                  : `${dragImportedProjects.length} projects imported successfully!`}
+              </AlertDescription>
+              {dragImportedProjects.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {dragImportedProjects.map((project) => (
+                    <Badge
+                      key={project.id}
+                      variant="outline"
+                      className="bg-green-100 dark:bg-green-900/30 flex items-center gap-1"
+                    >
+                      <FileJson className="h-3 w-3" />
+                      {project.name}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </Alert>
+          )}
+
+          {dragImportError && (
+            <Alert variant="destructive" className="shadow-lg">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{dragImportError}</AlertDescription>
+            </Alert>
+          )}
+        </div>
+      )}
 
       {/* Template browser dialog */}
       {templateBrowserOpen && (

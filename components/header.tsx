@@ -5,7 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ModeToggle } from "@/components/mode-toggle"
-import { Menu, X, Terminal, Code, BookOpen, Download } from "lucide-react"
+import { Menu, X, Terminal, Code, FileText } from "lucide-react"
 import ScrollProgress from "@/components/scroll-progress"
 import { useTheme } from "next-themes"
 import { UserNav } from "@/components/user-nav"
@@ -60,21 +60,17 @@ export default function Header() {
 
         {/* Desktop navigation */}
         <nav className="hidden md:flex items-center gap-6">
-          <Link href="/cli" className="flex items-center gap-1 group">
+          <Link href="/cli" className="flex items-center gap-1 group mr-4">
             <Terminal className="h-4 w-4 group-hover:text-primary transition-colors" />
             <span className="text-sm font-medium group-hover:text-primary transition-colors">CLI</span>
           </Link>
-          <Link href="/language" className="flex items-center gap-1 group">
+          <Link href="/language" className="flex items-center gap-1 group mr-4">
             <Code className="h-4 w-4 group-hover:text-primary transition-colors" />
             <span className="text-sm font-medium group-hover:text-primary transition-colors">Language</span>
           </Link>
-          <Link href="/docs" className="flex items-center gap-1 group">
-            <BookOpen className="h-4 w-4 group-hover:text-primary transition-colors" />
+          <Link href="/docs" className="flex items-center gap-1 group mr-4">
+            <FileText className="h-4 w-4 group-hover:text-primary transition-colors" />
             <span className="text-sm font-medium group-hover:text-primary transition-colors">Documentation</span>
-          </Link>
-          <Link href="/download" className="flex items-center gap-1 group mr-8">
-            <Download className="h-4 w-4 group-hover:text-primary transition-colors" />
-            <span className="text-sm font-medium group-hover:text-primary transition-colors">Download</span>
           </Link>
 
           {isAuthenticated ? (
@@ -109,12 +105,8 @@ export default function Header() {
                 <span className="text-sm font-medium group-hover:text-primary transition-colors">Language</span>
               </Link>
               <Link href="/docs" className="px-4 py-2 flex items-center group" onClick={() => setIsMenuOpen(false)}>
-                <BookOpen className="h-4 w-4 mr-2 group-hover:text-primary transition-colors" />
+                <FileText className="h-4 w-4 mr-2 group-hover:text-primary transition-colors" />
                 <span className="text-sm font-medium group-hover:text-primary transition-colors">Documentation</span>
-              </Link>
-              <Link href="/download" className="px-4 py-2 flex items-center group" onClick={() => setIsMenuOpen(false)}>
-                <Download className="h-4 w-4 mr-2 group-hover:text-primary transition-colors" />
-                <span className="text-sm font-medium group-hover:text-primary transition-colors">Download</span>
               </Link>
 
               <div className="flex items-center gap-4 px-4">

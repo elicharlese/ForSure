@@ -3,12 +3,11 @@
 import { useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Terminal, Code, ArrowRight, Download, Copy, Check, ChevronRight, ChevronLeft } from "lucide-react"
+import { Terminal, Code, ArrowRight, Download, Copy, Check, ChevronRight, FileText, Edit3, Layers } from "lucide-react"
 import CodeExample from "@/components/code-example"
 import AnimateOnScroll from "@/components/animate-on-scroll"
 import FloatingLogo from "@/components/floating-logo"
 import { useTheme } from "next-themes"
-import { motion, AnimatePresence } from "framer-motion"
 
 export default function Home() {
   const { theme } = useTheme()
@@ -162,7 +161,7 @@ root:
 
           <div className="container px-4 md:px-6 relative z-10">
             <div className="flex flex-col lg:flex-row items-center gap-12">
-              <div className="flex-1 space-y-8">
+              <div className="flex-1 space-y-8 pl-8">
                 <AnimateOnScroll type="fade" duration={0.8}>
                   <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-white">
                     Define Your Project Structure with Confidence
@@ -204,6 +203,22 @@ root:
                     </pre>
                   </div>
                 </AnimateOnScroll>
+                <AnimateOnScroll type="slideUp" delay={0.9} duration={0.8}>
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mt-6">
+                    <Button
+                      asChild
+                      size="lg"
+                      className="bg-primary hover:bg-primary/90 text-secondary-dark font-semibold"
+                    >
+                      <Link href="/download" className="flex items-center">
+                        <Download className="mr-2 h-5 w-5" /> Download Now
+                      </Link>
+                    </Button>
+                    <Link href="/docs" className="text-white/90 hover:text-white flex items-center transition-colors">
+                      <ArrowRight className="mr-2 h-4 w-4" /> Read the Documentation
+                    </Link>
+                  </div>
+                </AnimateOnScroll>
               </div>
 
               <div className="flex-1 flex justify-center">
@@ -238,14 +253,14 @@ root:
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <AnimateOnScroll type="slideUp" delay={0.1} duration={0.6}>
                 <div className="group bg-white dark:bg-secondary-dark/30 rounded-lg p-6 shadow-sm border border-primary/10 hover:border-primary/30 transition-all hover:shadow-md hover:shadow-primary/5 hover:-translate-y-1 duration-300">
                   <div className="p-4 bg-primary/10 rounded-full w-fit mb-5 group-hover:bg-primary/20 transition-all group-hover:scale-110 transform">
                     <Terminal className="h-7 w-7 text-primary" />
                   </div>
                   <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">CLI Tool</h3>
-                  <p className="text-secondary/80 dark:text-primary-light/70 mb-5 leading-relaxed">
+                  <p className="text-secondary/80 dark:text-primary-light/70 mb-5 leading-relaxed max-w-xs mx-auto">
                     Generate project structures from ForSure files with a powerful command-line interface. Automate your
                     project setup and maintain consistency.
                   </p>
@@ -266,7 +281,7 @@ root:
                     <Code className="h-7 w-7 text-primary" />
                   </div>
                   <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">Language</h3>
-                  <p className="text-secondary/80 dark:text-primary-light/70 mb-5 leading-relaxed">
+                  <p className="text-secondary/80 dark:text-primary-light/70 mb-5 leading-relaxed max-w-xs mx-auto">
                     A human-readable language for defining and documenting file structures with rich metadata. Simple
                     syntax, powerful capabilities.
                   </p>
@@ -302,7 +317,7 @@ root:
                     </svg>
                   </div>
                   <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">Templates</h3>
-                  <p className="text-secondary/80 dark:text-primary-light/70 mb-5 leading-relaxed">
+                  <p className="text-secondary/80 dark:text-primary-light/70 mb-5 leading-relaxed max-w-xs mx-auto">
                     Ready-to-use templates for common project structures across various frameworks and languages. Start
                     your projects faster.
                   </p>
@@ -314,107 +329,6 @@ root:
                       Learn more <ChevronRight className="h-4 w-4 ml-1" />
                     </Link>
                   </div>
-                </div>
-              </AnimateOnScroll>
-            </div>
-          </div>
-        </section>
-
-        {/* Code Examples Section - Now with Slideshow */}
-        <section className="w-full py-12 md:py-24 cyber-ocean-gradient text-white" id="examples">
-          <div className="container px-4 md:px-6 relative z-10">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <AnimateOnScroll type="fade" duration={0.8}>
-                <div className="space-y-2">
-                  <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                    Define Any Project Structure
-                  </h2>
-                  <p className="mx-auto max-w-[700px] text-white/90 md:text-xl">
-                    ForSure works with any tech stack, from web applications to mobile apps and backend services.
-                  </p>
-                </div>
-              </AnimateOnScroll>
-
-              {/* Desktop Slideshow */}
-              <div className="w-full max-w-4xl py-12 hidden lg:block">
-                <div className="relative">
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={currentSlide}
-                      initial={{ opacity: 0, x: 100 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -100 }}
-                      transition={{ duration: 0.5 }}
-                      className="w-full"
-                    >
-                      <div className="space-y-4">
-                        <h3 className="text-2xl font-bold">{slides[currentSlide].title}</h3>
-                        <CodeExample code={slides[currentSlide].code} />
-                      </div>
-                    </motion.div>
-                  </AnimatePresence>
-
-                  {/* Navigation buttons */}
-                  <button
-                    onClick={prevSlide}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-12 bg-primary/20 hover:bg-primary/40 text-white rounded-full p-2 transition-all"
-                    aria-label="Previous slide"
-                  >
-                    <ChevronLeft className="h-6 w-6" />
-                  </button>
-                  <button
-                    onClick={nextSlide}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-12 bg-primary/20 hover:bg-primary/40 text-white rounded-full p-2 transition-all"
-                    aria-label="Next slide"
-                  >
-                    <ChevronRight className="h-6 w-6" />
-                  </button>
-                </div>
-
-                {/* Slide indicators */}
-                <div className="flex justify-center space-x-2 mt-6">
-                  {slides.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => goToSlide(index)}
-                      className={`h-2 rounded-full transition-all ${
-                        currentSlide === index ? "w-8 bg-primary" : "w-2 bg-white/30"
-                      }`}
-                      aria-label={`Go to slide ${index + 1}`}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              {/* Mobile stacked examples */}
-              <div className="w-full max-w-4xl space-y-8 pt-8 lg:hidden">
-                <AnimateOnScroll type="slideLeft" duration={0.8}>
-                  <div className="space-y-4">
-                    <h3 className="text-2xl font-bold">{slides[0].title}</h3>
-                    <CodeExample code={slides[0].code} />
-                  </div>
-                </AnimateOnScroll>
-
-                <AnimateOnScroll type="slideLeft" delay={0.2} duration={0.8}>
-                  <div className="space-y-4">
-                    <h3 className="text-2xl font-bold">{slides[1].title}</h3>
-                    <CodeExample code={slides[1].code} />
-                  </div>
-                </AnimateOnScroll>
-              </div>
-              {/* Action buttons */}
-              <AnimateOnScroll type="slideUp" delay={0.5} duration={0.8}>
-                <div className="flex flex-col sm:flex-row items-center gap-4 mt-8">
-                  <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-white font-semibold">
-                    <Link href="/download" className="flex items-center text-white">
-                      <Download className="mr-2 h-5 w-5 text-white" /> Get Started
-                    </Link>
-                  </Button>
-                  <Button asChild variant="outline" size="lg" className="border-white/20 text-white">
-                    <Link href="/docs" className="flex items-center text-white">
-                      Read the Docs <ArrowRight className="ml-2 h-5 w-5 text-white" />
-                    </Link>
-                  </Button>
                 </div>
               </AnimateOnScroll>
             </div>
@@ -433,37 +347,219 @@ root:
               </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 max-w-6xl mx-auto">
               {/* Step 1: Define */}
               <AnimateOnScroll type="slideUp" delay={0.1} duration={0.6}>
-                <div className="flex flex-col h-full">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                      <span className="text-xl font-bold text-primary">1</span>
+                <div className="flex flex-col h-full bg-white dark:bg-secondary-dark/20 rounded-xl p-4 sm:p-6 shadow-md border border-primary/10 hover:border-primary/30 transition-all hover:shadow-lg">
+                  <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 shadow-inner border border-primary/10">
+                      <span className="text-xl sm:text-2xl font-bold text-primary">1</span>
                     </div>
-                    <h3 className="text-2xl font-bold">Define</h3>
+                    <h3 className="text-xl sm:text-2xl font-bold text-secondary dark:text-primary">Define</h3>
                   </div>
-                  <p className="text-secondary/80 dark:text-primary-light/70 mb-4">
+
+                  <p className="text-secondary/80 dark:text-primary-light/70 mb-4 sm:mb-6 text-base sm:text-lg">
                     Create a .forsure file that describes your project structure with rich metadata. Define directories,
                     files, and their relationships in a clear, hierarchical format.
                   </p>
-                  <ul className="list-disc pl-6 space-y-1 text-secondary/80 dark:text-primary-light/70 mb-6">
-                    <li>Describe directories and files with a simple syntax</li>
-                    <li>Add metadata like descriptions and purposes</li>
-                    <li>Use indentation to represent nesting</li>
-                    <li>Create reusable templates for common structures</li>
-                  </ul>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                    <div className="flex items-start gap-2 sm:gap-3">
+                      <div className="p-1.5 sm:p-2 bg-primary/10 rounded-full flex-shrink-0 mt-1">
+                        <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-secondary dark:text-primary-light mb-0.5 sm:mb-1 text-sm sm:text-base">
+                          Simple Syntax
+                        </h4>
+                        <p className="text-xs sm:text-sm text-secondary/70 dark:text-primary-light/70">
+                          Describe directories and files with an intuitive, easy-to-learn syntax
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-2 sm:gap-3">
+                      <div className="p-1.5 sm:p-2 bg-primary/10 rounded-full flex-shrink-0 mt-1">
+                        <Edit3 className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-secondary dark:text-primary-light mb-0.5 sm:mb-1 text-sm sm:text-base">
+                          Rich Metadata
+                        </h4>
+                        <p className="text-xs sm:text-sm text-secondary/70 dark:text-primary-light/70">
+                          Add descriptions, purposes, and other metadata to document your structure
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-2 sm:gap-3">
+                      <div className="p-1.5 sm:p-2 bg-primary/10 rounded-full flex-shrink-0 mt-1">
+                        <Layers className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-secondary dark:text-primary-light mb-0.5 sm:mb-1 text-sm sm:text-base">
+                          Hierarchical
+                        </h4>
+                        <p className="text-xs sm:text-sm text-secondary/70 dark:text-primary-light/70">
+                          Use indentation to represent nesting and relationships between files
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-2 sm:gap-3">
+                      <div className="p-1.5 sm:p-2 bg-primary/10 rounded-full flex-shrink-0 mt-1">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="h-4 w-4 sm:h-5 sm:w-5 text-primary"
+                        >
+                          <path d="M20 7h-3a2 2 0 0 1-2-2V2" />
+                          <path d="M9 18a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h7l4 4v10a2 2 0 0 1-2 2Z" />
+                          <path d="M3 7.6v12.8A1.6 1.6 0 0 0 4.6 22h9.8" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-secondary dark:text-primary-light mb-0.5 sm:mb-1 text-sm sm:text-base">
+                          Reusable
+                        </h4>
+                        <p className="text-xs sm:text-sm text-secondary/70 dark:text-primary-light/70">
+                          Create templates for common structures that can be reused across projects
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-auto pt-3 sm:pt-4">
+                    <Link
+                      href="/language"
+                      className="inline-flex items-center text-primary text-sm sm:text-base font-medium hover:underline"
+                    >
+                      Learn more about the ForSure language <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 ml-1" />
+                    </Link>
+                  </div>
                 </div>
               </AnimateOnScroll>
 
               <AnimateOnScroll type="slideUp" delay={0.2} duration={0.6}>
-                <div className="bg-white dark:bg-secondary-dark/30 rounded-lg shadow-md border border-primary/10 overflow-hidden h-full">
-                  <div className="bg-secondary/10 dark:bg-primary/10 px-4 py-2 border-b border-primary/10">
-                    <span className="font-mono text-sm text-secondary dark:text-primary">project.forsure</span>
+                <div className="bg-white dark:bg-secondary-dark/30 rounded-lg shadow-md border border-primary/10 overflow-hidden h-full transition-all duration-300 hover:shadow-lg hover:border-primary/30 group">
+                  <div className="bg-secondary/10 dark:bg-primary/10 px-4 py-2 border-b border-primary/10 flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <div className="flex space-x-1.5">
+                        <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                      </div>
+                      <div className="flex items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="text-primary mr-1.5"
+                        >
+                          <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                          <polyline points="14 2 14 8 20 8" />
+                        </svg>
+                        <span className="font-mono text-sm text-secondary dark:text-primary">project.forsure</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button
+                        className="text-secondary/70 dark:text-primary/70 hover:text-secondary dark:hover:text-primary p-1 rounded-md hover:bg-secondary/10 dark:hover:bg-primary/10 transition-colors"
+                        aria-label="Copy code"
+                        title="Copy to clipboard"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                          <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                        </svg>
+                      </button>
+                      <button
+                        className="text-secondary/70 dark:text-primary/70 hover:text-secondary dark:hover:text-primary p-1 rounded-md hover:bg-secondary/10 dark:hover:bg-primary/10 transition-colors"
+                        aria-label="Download file"
+                        title="Download file"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                          <polyline points="7 10 12 15 17 10" />
+                          <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
-                  <div className="p-0">
-                    <CodeExample
-                      code={`root:
+                  <div className="p-0 relative">
+                    <div className="absolute left-0 top-0 bottom-0 w-10 flex flex-col items-center pt-2 text-xs font-mono text-secondary/40 dark:text-primary/40 select-none bg-secondary/5 dark:bg-primary/5 border-r border-primary/5">
+                      <div>1</div>
+                      <div>2</div>
+                      <div>3</div>
+                      <div>4</div>
+                      <div>5</div>
+                      <div>6</div>
+                      <div>7</div>
+                      <div>8</div>
+                      <div>9</div>
+                      <div>10</div>
+                      <div>11</div>
+                      <div>12</div>
+                    </div>
+                    <div className="relative">
+                      <div className="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                        <button
+                          className="bg-primary text-white text-xs px-2 py-1 rounded hover:bg-primary/90 transition-colors flex items-center"
+                          title="Try this example"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="12"
+                            height="12"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="mr-1"
+                          >
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                          </svg>
+                          Try it
+                        </button>
+                      </div>
+                      <CodeExample
+                        code={`# Define a basic web project structure
+root:
   - Type: Directory
   - Path: ./
   <description>
@@ -480,113 +576,496 @@ root:
       - Name: index.js
       <description>
       Entry point for the application.
-      </description>`}
-                      language="forsure"
-                      className="text-left border-0"
-                    />
-                  </div>
-                </div>
-              </AnimateOnScroll>
-
-              {/* Step 2: Document */}
-              <AnimateOnScroll type="slideUp" delay={0.3} duration={0.6}>
-                <div className="flex flex-col h-full">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                      <span className="text-xl font-bold text-primary">2</span>
-                    </div>
-                    <h3 className="text-2xl font-bold">Document</h3>
-                  </div>
-                  <p className="text-secondary/80 dark:text-primary-light/70 mb-4">
-                    Add detailed descriptions, purposes, and other metadata to document your project structure. This
-                    makes it easier for team members to understand the purpose of each file and directory.
-                  </p>
-                  <ul className="list-disc pl-6 space-y-1 text-secondary/80 dark:text-primary-light/70 mb-6">
-                    <li>Document the purpose of each file and directory</li>
-                    <li>Add author information and version details</li>
-                    <li>Include usage examples and dependencies</li>
-                    <li>Make your codebase self-documenting</li>
-                  </ul>
-                </div>
-              </AnimateOnScroll>
-
-              <AnimateOnScroll type="slideUp" delay={0.4} duration={0.6}>
-                <div className="bg-white dark:bg-secondary-dark/30 rounded-lg shadow-md border border-primary/10 overflow-hidden h-full">
-                  <div className="bg-secondary/10 dark:bg-primary/10 px-4 py-2 border-b border-primary/10">
-                    <span className="font-mono text-sm text-secondary dark:text-primary">components.forsure</span>
-                  </div>
-                  <div className="p-0">
-                    <CodeExample
-                      code={`- Type: Directory
-  - Name: components/
-  <description>
-  Contains reusable UI components.
-  </description>
-  <purpose>
-  Promotes code reusability and maintainability.
-  </purpose>
-
-  - Type: File
-    - Name: Button.jsx
+      </description>
+      
+  - Type: Directory
+    - Name: public/
     <description>
-    Reusable button component with various styles.
-    </description>
-    <author>
-    Jane Doe (jane@example.com)
-    </author>`}
-                      language="forsure"
-                      className="text-left border-0"
-                    />
+    Static assets directory.
+    </description>`}
+                        language="forsure"
+                        className="text-left border-0 pl-10"
+                      />
+                    </div>
+                  </div>
+                  <div className="bg-secondary/5 dark:bg-primary/5 border-t border-primary/10 px-4 py-2 flex justify-between items-center text-xs text-secondary/70 dark:text-primary/70">
+                    <div className="flex items-center">
+                      <span className="inline-flex items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="mr-1"
+                        >
+                          <path d="M12 2H2v10h10V2z"></path>
+                          <path d="M12 12H2v10h10V12z"></path>
+                          <path d="M22 2h-10v10h10V2z"></path>
+                          <path d="M22 12h-10v10h10V12z"></path>
+                        </svg>
+                        ForSure Syntax
+                      </span>
+                    </div>
+                    <Link href="/language" className="hover:text-primary transition-colors inline-flex items-center">
+                      Learn more
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="ml-1"
+                      >
+                        <path d="M5 12h14"></path>
+                        <path d="m12 5 7 7-7 7"></path>
+                      </svg>
+                    </Link>
                   </div>
                 </div>
               </AnimateOnScroll>
 
               {/* Step 3: Generate */}
-              <AnimateOnScroll type="slideUp" delay={0.5} duration={0.6}>
-                <div className="flex flex-col h-full">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                      <span className="text-xl font-bold text-primary">3</span>
+              <AnimateOnScroll type="slideUp" delay={0.3} duration={0.6}>
+                <div className="flex flex-col h-full bg-white dark:bg-secondary-dark/20 rounded-xl p-4 sm:p-6 shadow-md border border-primary/10 hover:border-primary/30 transition-all hover:shadow-lg">
+                  <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 shadow-inner border border-primary/10">
+                      <span className="text-xl sm:text-2xl font-bold text-primary">2</span>
                     </div>
-                    <h3 className="text-2xl font-bold">Generate</h3>
+                    <h3 className="text-xl sm:text-2xl font-bold text-secondary dark:text-primary">Generate</h3>
                   </div>
-                  <p className="text-secondary/80 dark:text-primary-light/70 mb-4">
+
+                  <p className="text-secondary/80 dark:text-primary-light/70 mb-4 sm:mb-6 text-base sm:text-lg">
                     Use the ForSure CLI to generate the actual file structure from your definition. The CLI creates all
                     directories and files according to your specification, saving you time and ensuring consistency.
                   </p>
-                  <ul className="list-disc pl-6 space-y-1 text-secondary/80 dark:text-primary-light/70 mb-6">
-                    <li>Generate entire project structures with a single command</li>
-                    <li>Ensure consistency across multiple projects</li>
-                    <li>Save time on repetitive setup tasks</li>
-                    <li>Validate your structure before generation</li>
-                  </ul>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                    <div className="flex items-start gap-2 sm:gap-3">
+                      <div className="p-1.5 sm:p-2 bg-primary/10 rounded-full flex-shrink-0 mt-1">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="h-4 w-4 sm:h-5 sm:w-5 text-primary"
+                        >
+                          <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                          <circle cx="8.5" cy="7" r="4"></circle>
+                          <line x1="20" y1="8" x2="20" y2="14"></line>
+                          <line x1="23" y1="11" x2="17" y2="11"></line>
+                        </svg>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-secondary dark:text-primary-light mb-0.5 sm:mb-1 text-sm sm:text-base">
+                          One Command
+                        </h4>
+                        <p className="text-xs sm:text-sm text-secondary/70 dark:text-primary-light/70">
+                          Generate entire project structures with a single CLI command
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-2 sm:gap-3">
+                      <div className="p-1.5 sm:p-2 bg-primary/10 rounded-full flex-shrink-0 mt-1">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="h-4 w-4 sm:h-5 sm:w-5 text-primary"
+                        >
+                          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-secondary dark:text-primary-light mb-0.5 sm:mb-1 text-sm sm:text-base">
+                          Validation
+                        </h4>
+                        <p className="text-xs sm:text-sm text-secondary/70 dark:text-primary-light/70">
+                          Validate your structure before generation to catch errors early
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-2 sm:gap-3">
+                      <div className="p-1.5 sm:p-2 bg-primary/10 rounded-full flex-shrink-0 mt-1">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="h-4 w-4 sm:h-5 sm:w-5 text-primary"
+                        >
+                          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                          <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                        </svg>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-secondary dark:text-primary-light mb-0.5 sm:mb-1 text-sm sm:text-base">
+                          Consistency
+                        </h4>
+                        <p className="text-xs sm:text-sm text-secondary/70 dark:text-primary-light/70">
+                          Ensure consistent structure across multiple projects and teams
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-2 sm:gap-3">
+                      <div className="p-1.5 sm:p-2 bg-primary/10 rounded-full flex-shrink-0 mt-1">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="h-4 w-4 sm:h-5 sm:w-5 text-primary"
+                        >
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-secondary dark:text-primary-light mb-0.5 sm:mb-1 text-sm sm:text-base">
+                          Time-Saving
+                        </h4>
+                        <p className="text-xs sm:text-sm text-secondary/70 dark:text-primary-light/70">
+                          Automate repetitive setup tasks and focus on actual development
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-auto pt-3 sm:pt-4">
+                    <Link
+                      href="/cli"
+                      className="inline-flex items-center text-primary text-sm sm:text-base font-medium hover:underline"
+                    >
+                      Learn more about the ForSure CLI <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 ml-1" />
+                    </Link>
+                  </div>
                 </div>
               </AnimateOnScroll>
 
               <AnimateOnScroll type="slideUp" delay={0.6} duration={0.6}>
-                <div className="bg-white dark:bg-secondary-dark/30 rounded-lg shadow-md border border-primary/10 overflow-hidden h-full">
-                  <div className="bg-secondary/10 dark:bg-primary/10 px-4 py-2 border-b border-primary/10">
-                    <span className="font-mono text-sm text-secondary dark:text-primary">Terminal</span>
+                <div className="bg-white dark:bg-secondary-dark/30 rounded-lg shadow-md border border-primary/10 overflow-hidden h-full flex flex-col transition-all duration-300 hover:shadow-lg hover:border-primary/30 group">
+                  <div className="bg-secondary/10 dark:bg-primary/10 px-4 py-2 border-b border-primary/10 flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <div className="flex space-x-1.5">
+                        <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                      </div>
+                      <div className="flex items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="text-primary mr-1.5"
+                        >
+                          <rect x="2" y="4" width="20" height="16" rx="2" />
+                          <path d="M8 10l4 4 4-4" />
+                          <path d="M12 14v-7" />
+                        </svg>
+                        <span className="font-mono text-sm text-secondary dark:text-primary">Terminal</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button
+                        className="text-secondary/70 dark:text-primary/70 hover:text-secondary dark:hover:text-primary p-1 rounded-md hover:bg-secondary/10 dark:hover:bg-primary/10 transition-colors"
+                        aria-label="Copy commands"
+                        title="Copy commands"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                          <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                        </svg>
+                      </button>
+                      <button
+                        className="text-secondary/70 dark:text-primary/70 hover:text-secondary dark:hover:text-primary p-1 rounded-md hover:bg-secondary/10 dark:hover:bg-primary/10 transition-colors"
+                        aria-label="Open in terminal"
+                        title="Open in terminal"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="15 3 21 3 21 9" />
+                          <polyline points="9 21 3 21 3 15" />
+                          <line x1="21" y1="3" x2="14" y2="10" />
+                          <line x1="3" y1="21" x2="10" y2="14" />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
-                  <div className="p-0">
-                    <CodeExample
-                      code={`# Generate project structure
-$ forsure generate project.forsure --output ./my-project
+                  <div className="p-0 flex-1 relative">
+                    <div className="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                      <button
+                        className="bg-primary text-white text-xs px-2 py-1 rounded hover:bg-primary/90 transition-colors flex items-center"
+                        title="Try in CLI playground"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="mr-1"
+                        >
+                          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        Try it
+                      </button>
+                    </div>
+                    <div className="bg-black text-white font-mono text-sm p-4 h-full overflow-auto">
+                      <div className="flex items-center text-green-400 mb-2">
+                        <span className="mr-2">$</span>
+                        <span className="text-white">forsure generate project.forsure --output ./my-project</span>
+                      </div>
 
-✓ Parsing project.forsure
-✓ Validating structure
-✓ Creating directories
-✓ Creating files
-✓ Structure created successfully!
+                      <div className="mt-3 text-gray-300">
+                        <div className="flex items-center text-green-400 mb-1">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="mr-2"
+                          >
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                          </svg>
+                          <span>Parsing project.forsure</span>
+                        </div>
+                        <div className="flex items-center text-green-400 mb-1">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="mr-2"
+                          >
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                          </svg>
+                          <span>Validating structure</span>
+                        </div>
+                        <div className="flex items-center text-green-400 mb-1">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="mr-2"
+                          >
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                          </svg>
+                          <span>Creating directories (3)</span>
+                        </div>
+                        <div className="flex items-center text-green-400 mb-1">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="mr-2"
+                          >
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                          </svg>
+                          <span>Creating files (2)</span>
+                        </div>
+                        <div className="flex items-center text-green-400 mb-3">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="mr-2"
+                          >
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                          </svg>
+                          <span>Structure created successfully!</span>
+                        </div>
 
-$ ls -la my-project/
-total 8
-drwxr-xr-x  4 user  staff  128 May 21 13:30 .
-drwxr-xr-x  3 user  staff   96 May 21 13:30 ..
-drwxr-xr-x  3 user  staff   96 May 21 13:30 src`}
-                      language="bash"
-                      className="text-left border-0"
-                    />
+                        <div className="text-blue-400 mb-2">
+                          <span className="text-green-400 mr-2">$</span>
+                          <span>ls -la my-project/</span>
+                        </div>
+
+                        <div className="text-gray-400">
+                          <div>total 8</div>
+                          <div className="grid grid-cols-5">
+                            <span className="text-blue-300">drwxr-xr-x</span>
+                            <span>4</span>
+                            <span>user</span>
+                            <span>staff</span>
+                            <span>128</span>
+                            <span className="col-span-5">
+                              May 21 13:30 <span className="text-blue-300">.</span>
+                            </span>
+
+                            <span className="text-blue-300">drwxr-xr-x</span>
+                            <span>3</span>
+                            <span>user</span>
+                            <span>staff</span>
+                            <span>96</span>
+                            <span className="col-span-5">
+                              May 21 13:30 <span className="text-blue-300">..</span>
+                            </span>
+
+                            <span className="text-blue-300">drwxr-xr-x</span>
+                            <span>3</span>
+                            <span>user</span>
+                            <span>staff</span>
+                            <span>96</span>
+                            <span className="col-span-5">
+                              May 21 13:30 <span className="text-blue-300">src</span>
+                            </span>
+
+                            <span className="text-blue-300">drwxr-xr-x</span>
+                            <span>2</span>
+                            <span>user</span>
+                            <span>staff</span>
+                            <span>64</span>
+                            <span className="col-span-5">
+                              May 21 13:30 <span className="text-blue-300">public</span>
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="mt-3 flex items-center">
+                          <span className="text-green-400 mr-2">$</span>
+                          <span className="relative">
+                            <span className="animate-pulse">▌</span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-secondary/5 dark:bg-primary/5 border-t border-primary/10 px-4 py-2 flex justify-between items-center text-xs text-secondary/70 dark:text-primary/70">
+                    <div className="flex items-center">
+                      <span className="inline-flex items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="mr-1"
+                        >
+                          <rect x="2" y="4" width="20" height="16" rx="2" />
+                          <path d="m9 10-2 2 2 2" />
+                          <path d="m15 10 2 2-2 2" />
+                        </svg>
+                        ForSure CLI
+                      </span>
+                    </div>
+                    <Link href="/cli" className="hover:text-primary transition-colors inline-flex items-center">
+                      Learn more
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="ml-1"
+                      >
+                        <path d="M5 12h14"></path>
+                        <path d="m12 5 7 7-7 7"></path>
+                      </svg>
+                    </Link>
                   </div>
                 </div>
               </AnimateOnScroll>

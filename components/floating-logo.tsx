@@ -2,20 +2,24 @@
 
 import { motion } from "framer-motion"
 import Image from "next/image"
-import { useTheme } from "next-themes"
 
 interface FloatingLogoProps {
-  src: string
+  src?: string
   alt: string
   width: number
   height: number
   className?: string
+  containerClassName?: string
 }
 
-export default function FloatingLogo({ src, alt, width, height, className }: FloatingLogoProps) {
-  const { theme } = useTheme()
-  const isDark = theme === "dark"
-
+export default function FloatingLogo({
+  src,
+  alt,
+  width,
+  height,
+  className = "",
+  containerClassName = "",
+}: FloatingLogoProps) {
   return (
     <motion.div
       animate={{
@@ -23,29 +27,12 @@ export default function FloatingLogo({ src, alt, width, height, className }: Flo
       }}
       transition={{
         duration: 4,
-        repeat: Number.POSITIVE_INFINITY,
-        repeatType: "reverse",
         ease: "easeInOut",
+        repeat: Number.POSITIVE_INFINITY,
       }}
-      className="relative"
+      className={`relative ${containerClassName}`}
     >
-      {/* Glow effect - different for light and dark modes */}
-      <div
-        className={`absolute inset-0 rounded-full blur-xl ${isDark ? "bg-primary/20" : "bg-primary/10"} scale-125`}
-        style={{ width, height }}
-      />
-      <Image
-        src={src || "/placeholder.svg"}
-        alt={alt}
-        width={width}
-        height={height}
-        className={className}
-        style={{
-          filter: isDark
-            ? "drop-shadow(0 0 12px rgba(140, 255, 230, 0.3))"
-            : "drop-shadow(0 0 8px rgba(140, 255, 230, 0.2))",
-        }}
-      />
+      <Image src={src || "/fs-logo.png"} alt={alt} width={width} height={height} className={`${className}`} priority />
     </motion.div>
   )
 }

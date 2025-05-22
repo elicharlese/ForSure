@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
-import { Save, X, Copy, Check, Code, FileText, Settings } from "lucide-react"
+import { Save, X, Copy, Check, Code, FileText, Settings, ChevronUp, ChevronDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { formatCode, type FormatterOptions, defaultFormatterOptions } from "../services/code-formatter"
 import { FormatterSettings } from "./formatter-settings"
@@ -24,6 +24,7 @@ export function FileEditor({ fileName, content: initialContent, onSave, onClose,
   const [language, setLanguage] = useState<string>("plaintext")
   const [formatterOptions, setFormatterOptions] = useState<FormatterOptions>(defaultFormatterOptions)
   const [isFormatterSettingsOpen, setIsFormatterSettingsOpen] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(false)
 
   // Determine language based on file extension
   useEffect(() => {
@@ -140,6 +141,9 @@ export function FileEditor({ fileName, content: initialContent, onSave, onClose,
           <span className="font-medium">{fileName}</span>
         </div>
         <div className="flex items-center gap-2">
+          <Button variant="ghost" size="sm" onClick={() => setIsCollapsed(!isCollapsed)} className="h-8 w-8 p-0">
+            {isCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+          </Button>
           <Button variant="ghost" size="sm" onClick={copyToClipboard} className="h-8 w-8 p-0">
             {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
           </Button>
@@ -165,41 +169,55 @@ export function FileEditor({ fileName, content: initialContent, onSave, onClose,
           </TabsList>
         </div>
 
-        <TabsContent value="edit" className="flex-1 p-0 m-0">
-          <div className="relative h-full">
-            <Textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              className="h-full min-h-[300px] font-mono text-sm resize-none rounded-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-              placeholder={`Enter ${fileName} content here...`}
-            />
-          </div>
-        </TabsContent>
+        {!isCollapsed && (
+          <>
+            <TabsContent value="edit" className="flex-1 p-0 m-0">
+              <div className="relative h-full">
+                <Textarea
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  className="h-full min-h-[300px] font-mono text-sm resize-none rounded-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                  placeholder={`Enter ${fileName} content here...`}
+                />
+              </div>
+            </TabsContent>
 
-        <TabsContent value="preview" className="flex-1 p-0 m-0 overflow-auto">
-          {renderPreview()}
-        </TabsContent>
+            <TabsContent value="preview" className="flex-1 p-0 m-0 overflow-auto">
+              {renderPreview()}
+            </TabsContent>
+          </>
+        )}
       </Tabs>
 
-      <div className="flex justify-between gap-2 p-2 border-t bg-muted/30">
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={handleFormat}>
-            Format
-          </Button>
-          <Button variant="ghost" size="sm" onClick={() => setIsFormatterSettingsOpen(true)} className="h-8 w-8 p-0">
-            <Settings className="h-4 w-4" />
-          </Button>
+      {isCollapsed && (
+        <div className="flex-1 flex items-center justify-center text-muted-foreground p-4 border-t">
+          <p>
+            Editor collapsed. Click <ChevronDown className="h-4 w-4 inline mx-1" /> to expand.
+          </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button size="sm" onClick={handleSave}>
-            <Save className="h-4 w-4 mr-2" />
-            Save
-          </Button>
+      )}
+
+      {!isCollapsed && (
+        <div className="flex justify-between gap-2 p-2 border-t bg-muted/30">
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={handleFormat}>
+              Format
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => setIsFormatterSettingsOpen(true)} className="h-8 w-8 p-0">
+              <Settings className="h-4 w-4" />
+            </Button>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button size="sm" onClick={handleSave}>
+              <Save className="h-4 w-4 mr-2" />
+              Save
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
 
       <FormatterSettings
         isOpen={isFormatterSettingsOpen}
