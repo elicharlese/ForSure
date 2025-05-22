@@ -1,0 +1,164 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 180 100% 99%;
+    --foreground: 200 50% 15%;
+
+    --card: 180 100% 99%;
+    --card-foreground: 200 50% 15%;
+
+    --popover: 180 100% 99%;
+    --popover-foreground: 200 50% 15%;
+
+    /* Updated primary color to match the logo */
+    --primary: 165 100% 80%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 196 75% 23%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 173 100% 95%;
+    --muted-foreground: 196 75% 23%;
+
+    /* Updated accent color to match the logo */
+    --accent: 165 100% 85%;
+    --accent-foreground: 196 75% 23%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 180 70% 90%;
+    --input: 180 70% 90%;
+    --ring: 165 100% 80%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    /* Updated dark mode colors to match the logo */
+    --background: 200 30% 8%;
+    --foreground: 180 30% 90%;
+
+    --card: 200 30% 10%;
+    --card-foreground: 180 30% 90%;
+
+    --popover: 200 30% 10%;
+    --popover-foreground: 180 30% 90%;
+
+    --primary: 165 100% 80%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 196 30% 40%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 200 30% 15%;
+    --muted-foreground: 180 20% 80%;
+
+    --accent: 165 100% 70%;
+    --accent-foreground: 200 30% 8%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 200 30% 18%;
+    --input: 200 30% 18%;
+    --ring: 165 100% 80%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  .cyber-grid-bg {
+    background-image: linear-gradient(rgba(10, 77, 104, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(10, 77, 104, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  .dark .cyber-grid-bg {
+    background-image: linear-gradient(rgba(140, 255, 230, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(140, 255, 230, 0.05) 1px, transparent 1px);
+  }
+
+  .ocean-gradient {
+    background: linear-gradient(135deg, #e6fffd 0%, #a7f7e7 100%);
+  }
+
+  .dark .ocean-gradient {
+    background: linear-gradient(135deg, #0a2a38 0%, #061e29 100%);
+  }
+
+  .cyber-gradient {
+    background: linear-gradient(135deg, #0a4d68 0%, #05161a 100%);
+  }
+
+  .dark .cyber-gradient {
+    background: linear-gradient(135deg, #061e29 0%, #020a0c 100%);
+  }
+
+  .cyber-ocean-gradient {
+    background: linear-gradient(135deg, #8cffe6 0%, #0a4d68 100%);
+  }
+
+  .dark .cyber-ocean-gradient {
+    background: linear-gradient(135deg, #8cffe6 0%, #061e29 100%);
+  }
+
+  .code-window {
+    background-color: rgba(5, 22, 26, 0.95);
+    border: 1px solid #8cffe6;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 10px rgba(140, 255, 230, 0.3);
+  }
+
+  .dark .code-window {
+    border-color: #8cffe6;
+    box-shadow: 0 0 10px rgba(140, 255, 230, 0.3);
+  }
+
+  .line-numbers {
+    counter-reset: line;
+  }
+
+  .line-numbers code::before {
+    counter-increment: line;
+    content: counter(line);
+    display: inline-block;
+    width: 1.5rem;
+    margin-right: 1rem;
+    text-align: right;
+    color: rgba(115, 138, 148, 0.6);
+    user-select: none;
+  }
+
+  .line-numbers code {
+    display: block;
+    line-height: 1.5;
+    position: relative;
+  }
+
+  .line-numbers code:nth-child(odd)::before {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  .animate-ticker {
+    animation: ticker 30s linear infinite;
+  }
+
+  .animate-ticker:hover {
+    animation-play-state: paused;
+  }
+}
