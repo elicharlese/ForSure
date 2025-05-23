@@ -5,7 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ModeToggle } from "@/components/mode-toggle"
-import { Menu, X, Terminal, Code, FileText } from "lucide-react"
+import { Menu, X, Terminal, Code, FileText, Package } from "lucide-react"
 import ScrollProgress from "@/components/scroll-progress"
 import { useTheme } from "next-themes"
 import { UserNav } from "@/components/user-nav"
@@ -72,6 +72,11 @@ export default function Header() {
             <FileText className="h-4 w-4 group-hover:text-primary transition-colors" />
             <span className="text-sm font-medium group-hover:text-primary transition-colors">Documentation</span>
           </Link>
+          <Link href="/components" className="flex items-center gap-1 group mr-8">
+            <Package className="h-4 w-4 group-hover:text-primary transition-colors" />
+            <span className="text-sm font-medium group-hover:text-primary transition-colors">Components</span>
+          </Link>
+          <div className="h-6 w-px bg-border mr-4 hidden md:block"></div>
 
           {isAuthenticated ? (
             <UserNav />
@@ -107,6 +112,14 @@ export default function Header() {
               <Link href="/docs" className="px-4 py-2 flex items-center group" onClick={() => setIsMenuOpen(false)}>
                 <FileText className="h-4 w-4 mr-2 group-hover:text-primary transition-colors" />
                 <span className="text-sm font-medium group-hover:text-primary transition-colors">Documentation</span>
+              </Link>
+              <Link
+                href="/components"
+                className="px-4 py-2 flex items-center group"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Package className="h-4 w-4 mr-2 group-hover:text-primary transition-colors" />
+                <span className="text-sm font-medium group-hover:text-primary transition-colors">Components</span>
               </Link>
 
               <div className="flex items-center gap-4 px-4">

@@ -1,9 +1,28 @@
 "use client"
 
+import { Badge } from "@/components/ui/badge"
+
 import { useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Terminal, Code, ArrowRight, Download, Copy, Check, ChevronRight, FileText, Edit3, Layers } from "lucide-react"
+import {
+  Terminal,
+  Code,
+  ArrowRight,
+  Download,
+  Copy,
+  Check,
+  ChevronRight,
+  FileText,
+  Edit3,
+  Layers,
+  Sparkles,
+  Cpu,
+  Globe,
+  Brain,
+  Fingerprint,
+  Zap,
+} from "lucide-react"
 import CodeExample from "@/components/code-example"
 import AnimateOnScroll from "@/components/animate-on-scroll"
 import FloatingLogo from "@/components/floating-logo"
@@ -164,14 +183,14 @@ root:
               <div className="flex-1 space-y-8 pl-8">
                 <AnimateOnScroll type="fade" duration={0.8}>
                   <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-white">
-                    Define Your Project Structure with Confidence
+                    ForSure: The Prompting Programming Language
                   </h1>
                 </AnimateOnScroll>
 
                 <AnimateOnScroll type="slideUp" delay={0.3} duration={0.8}>
                   <p className="text-white/90 md:text-xl">
-                    ForSure is a powerful language and CLI tool for defining, documenting, and generating project
-                    structures across your entire tech stack.
+                    ForSure is a powerful prompting programming language with both a CLI and web app for defining,
+                    documenting, and generating project structures across your entire tech stack.
                   </p>
                 </AnimateOnScroll>
 
@@ -211,7 +230,17 @@ root:
                       className="bg-primary hover:bg-primary/90 text-secondary-dark font-semibold"
                     >
                       <Link href="/download" className="flex items-center">
-                        <Download className="mr-2 h-5 w-5" /> Download Now
+                        <Download className="mr-2 h-5 w-5" /> Download CLI
+                      </Link>
+                    </Button>
+                    <Button
+                      asChild
+                      size="lg"
+                      variant="outline"
+                      className="border-white/20 text-white hover:bg-white/10"
+                    >
+                      <Link href="/app" className="flex items-center">
+                        <Globe className="mr-2 h-5 w-5" /> Try Web App
                       </Link>
                     </Button>
                     <Link href="/docs" className="text-white/90 hover:text-white flex items-center transition-colors">
@@ -246,10 +275,11 @@ root:
           <div className="container px-4 md:px-6">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-secondary dark:text-primary">
-                One Language, Multiple Use Cases
+                A Prompting Language for Project Structure
               </h2>
               <p className="mt-4 text-secondary/80 dark:text-primary-light/80 md:text-lg max-w-3xl mx-auto">
-                ForSure provides a unified way to define and document project structures across your entire tech stack.
+                ForSure provides a unified prompting programming language to define and document project structures
+                across your entire tech stack.
               </p>
             </div>
 
@@ -261,8 +291,8 @@ root:
                   </div>
                   <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">CLI Tool</h3>
                   <p className="text-secondary/80 dark:text-primary-light/70 mb-5 leading-relaxed max-w-xs mx-auto">
-                    Generate project structures from ForSure files with a powerful command-line interface. Automate your
-                    project setup and maintain consistency.
+                    Generate project structures from ForSure prompts with a powerful command-line interface. Automate
+                    your project setup and maintain consistency.
                   </p>
                   <div className="mt-auto pt-2 border-t border-primary/10">
                     <Link
@@ -280,10 +310,12 @@ root:
                   <div className="p-4 bg-primary/10 rounded-full w-fit mb-5 group-hover:bg-primary/20 transition-all group-hover:scale-110 transform">
                     <Code className="h-7 w-7 text-primary" />
                   </div>
-                  <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">Language</h3>
+                  <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
+                    Prompting Language
+                  </h3>
                   <p className="text-secondary/80 dark:text-primary-light/70 mb-5 leading-relaxed max-w-xs mx-auto">
-                    A human-readable language for defining and documenting file structures with rich metadata. Simple
-                    syntax, powerful capabilities.
+                    A human-readable prompting language for defining and documenting file structures with rich metadata.
+                    Simple syntax, powerful capabilities.
                   </p>
                   <div className="mt-auto pt-2 border-t border-primary/10">
                     <Link
@@ -299,38 +331,169 @@ root:
               <AnimateOnScroll type="slideUp" delay={0.3} duration={0.6}>
                 <div className="group bg-white dark:bg-secondary-dark/30 rounded-lg p-6 shadow-sm border border-primary/10 hover:border-primary/30 transition-all hover:shadow-md hover:shadow-primary/5 hover:-translate-y-1 duration-300">
                   <div className="p-4 bg-primary/10 rounded-full w-fit mb-5 group-hover:bg-primary/20 transition-all group-hover:scale-110 transform">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="h-7 w-7 text-primary"
-                    >
-                      <path d="M20 7h-3a2 2 0 0 1-2-2V2" />
-                      <path d="M9 18a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h7l4 4v10a2 2 0 0 1-2 2Z" />
-                      <path d="M3 7.6v12.8A1.6 1.6 0 0 0 4.6 22h9.8" />
-                    </svg>
+                    <Globe className="h-7 w-7 text-primary" />
                   </div>
-                  <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">Templates</h3>
+                  <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">Web Application</h3>
                   <p className="text-secondary/80 dark:text-primary-light/70 mb-5 leading-relaxed max-w-xs mx-auto">
-                    Ready-to-use templates for common project structures across various frameworks and languages. Start
-                    your projects faster.
+                    Access ForSure's prompting capabilities through our intuitive web interface. Create, manage, and
+                    share your project structures from anywhere.
                   </p>
                   <div className="mt-auto pt-2 border-t border-primary/10">
                     <Link
-                      href="/templates"
+                      href="/app"
                       className="text-primary font-medium inline-flex items-center hover:underline group-hover:translate-x-1 transition-transform"
                     >
-                      Learn more <ChevronRight className="h-4 w-4 ml-1" />
+                      Try the web app <ChevronRight className="h-4 w-4 ml-1" />
                     </Link>
                   </div>
                 </div>
               </AnimateOnScroll>
+            </div>
+
+            {/* Neural Network Feature Section */}
+            <div className="mt-16">
+              <div className="text-center mb-10">
+                <Badge variant="outline" className="mb-4">
+                  NEW FEATURE
+                </Badge>
+                <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-secondary dark:text-primary">
+                  Adaptive Neural Network
+                </h2>
+                <p className="mt-3 text-secondary/80 dark:text-primary-light/80 md:text-lg max-w-2xl mx-auto">
+                  Our advanced neural network learns from your coding style and project patterns to deliver increasingly
+                  personalized results.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <AnimateOnScroll type="slideRight" duration={0.8}>
+                  <div className="bg-white dark:bg-secondary-dark/20 rounded-xl p-6 shadow-md border border-primary/10 relative overflow-hidden">
+                    <div className="absolute -right-10 -top-10 w-40 h-40 bg-primary/5 rounded-full"></div>
+                    <div className="absolute -right-5 -bottom-5 w-24 h-24 bg-primary/10 rounded-full"></div>
+
+                    <div className="relative z-10">
+                      <div className="flex items-center mb-6">
+                        <div className="p-3 bg-primary/10 rounded-full mr-4">
+                          <Brain className="h-8 w-8 text-primary" />
+                        </div>
+                        <h3 className="text-xl font-bold text-secondary dark:text-primary">Style Learning Engine</h3>
+                      </div>
+
+                      <ul className="space-y-3 mb-6">
+                        <li className="flex items-start">
+                          <div className="p-1 bg-primary/10 rounded-full mr-3 mt-1">
+                            <Fingerprint className="h-4 w-4 text-primary" />
+                          </div>
+                          <div>
+                            <span className="font-medium text-secondary dark:text-primary">Personalized Patterns</span>
+                            <p className="text-sm text-secondary/70 dark:text-primary-light/70">
+                              Identifies your unique coding patterns and architectural preferences
+                            </p>
+                          </div>
+                        </li>
+                        <li className="flex items-start">
+                          <div className="p-1 bg-primary/10 rounded-full mr-3 mt-1">
+                            <Zap className="h-4 w-4 text-primary" />
+                          </div>
+                          <div>
+                            <span className="font-medium text-secondary dark:text-primary">Adaptive Suggestions</span>
+                            <p className="text-sm text-secondary/70 dark:text-primary-light/70">
+                              Provides increasingly relevant structure suggestions as you build more projects
+                            </p>
+                          </div>
+                        </li>
+                        <li className="flex items-start">
+                          <div className="p-1 bg-primary/10 rounded-full mr-3 mt-1">
+                            <Cpu className="h-4 w-4 text-primary" />
+                          </div>
+                          <div>
+                            <span className="font-medium text-secondary dark:text-primary">Continuous Learning</span>
+                            <p className="text-sm text-secondary/70 dark:text-primary-light/70">
+                              Evolves with your development style across projects and technologies
+                            </p>
+                          </div>
+                        </li>
+                      </ul>
+
+                      <Button asChild className="mt-2 bg-primary hover:bg-primary/90">
+                        <Link href="/ai-features" className="flex items-center">
+                          Learn more about our AI features <ChevronRight className="ml-2 h-4 w-4" />
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
+                </AnimateOnScroll>
+
+                <AnimateOnScroll type="slideLeft" duration={0.8} delay={0.2}>
+                  <div className="bg-gradient-to-br from-secondary/5 to-primary/10 dark:from-secondary-dark/30 dark:to-primary/20 rounded-xl p-6 border border-primary/10 shadow-md">
+                    <h4 className="text-lg font-semibold mb-4 text-secondary dark:text-primary">How It Works</h4>
+
+                    <div className="space-y-6">
+                      <div className="flex items-center">
+                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center mr-4">
+                          <span className="font-bold text-primary">1</span>
+                        </div>
+                        <div>
+                          <h5 className="font-medium text-secondary dark:text-primary">Initial Analysis</h5>
+                          <p className="text-sm text-secondary/70 dark:text-primary-light/70">
+                            Our neural network analyzes your existing projects and coding patterns
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center">
+                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center mr-4">
+                          <span className="font-bold text-primary">2</span>
+                        </div>
+                        <div>
+                          <h5 className="font-medium text-secondary dark:text-primary">Pattern Recognition</h5>
+                          <p className="text-sm text-secondary/70 dark:text-primary-light/70">
+                            Identifies your preferred naming conventions, structure patterns, and organization style
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center">
+                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center mr-4">
+                          <span className="font-bold text-primary">3</span>
+                        </div>
+                        <div>
+                          <h5 className="font-medium text-secondary dark:text-primary">Adaptive Learning</h5>
+                          <p className="text-sm text-secondary/70 dark:text-primary-light/70">
+                            Continuously improves suggestions based on your feedback and project evolution
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center">
+                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center mr-4">
+                          <span className="font-bold text-primary">4</span>
+                        </div>
+                        <div>
+                          <h5 className="font-medium text-secondary dark:text-primary">Personalized Output</h5>
+                          <p className="text-sm text-secondary/70 dark:text-primary-light/70">
+                            Generates project structures that match your style and follow your established patterns
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-6 pt-4 border-t border-primary/10">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          <Sparkles className="h-5 w-5 text-primary mr-2" />
+                          <span className="text-sm font-medium text-secondary dark:text-primary">
+                            Powered by advanced machine learning
+                          </span>
+                        </div>
+                        <Badge variant="outline" className="text-xs">
+                          Beta
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+                </AnimateOnScroll>
+              </div>
             </div>
           </div>
         </section>
@@ -340,10 +503,11 @@ root:
           <div className="container px-4 md:px-6">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl text-secondary dark:text-primary">
-                How It Works
+                How ForSure Prompting Works
               </h2>
               <p className="mt-4 text-secondary/80 dark:text-primary-light/80 md:text-lg max-w-3xl mx-auto">
-                A streamlined workflow to define, document, and generate project structures
+                A streamlined workflow to define, document, and generate project structures using our prompting
+                programming language
               </p>
             </div>
 
@@ -355,12 +519,13 @@ root:
                     <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 shadow-inner border border-primary/10">
                       <span className="text-xl sm:text-2xl font-bold text-primary">1</span>
                     </div>
-                    <h3 className="text-xl sm:text-2xl font-bold text-secondary dark:text-primary">Define</h3>
+                    <h3 className="text-xl sm:text-2xl font-bold text-secondary dark:text-primary">Write Prompts</h3>
                   </div>
 
                   <p className="text-secondary/80 dark:text-primary-light/70 mb-4 sm:mb-6 text-base sm:text-lg">
-                    Create a .forsure file that describes your project structure with rich metadata. Define directories,
-                    files, and their relationships in a clear, hierarchical format.
+                    Create a .forsure file using our prompting programming language that describes your project
+                    structure with rich metadata. Define directories, files, and their relationships in a clear,
+                    hierarchical format.
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
@@ -370,10 +535,10 @@ root:
                       </div>
                       <div>
                         <h4 className="font-semibold text-secondary dark:text-primary-light mb-0.5 sm:mb-1 text-sm sm:text-base">
-                          Simple Syntax
+                          Intuitive Syntax
                         </h4>
                         <p className="text-xs sm:text-sm text-secondary/70 dark:text-primary-light/70">
-                          Describe directories and files with an intuitive, easy-to-learn syntax
+                          Describe directories and files with an intuitive, easy-to-learn prompting syntax
                         </p>
                       </div>
                     </div>
@@ -408,29 +573,14 @@ root:
 
                     <div className="flex items-start gap-2 sm:gap-3">
                       <div className="p-1.5 sm:p-2 bg-primary/10 rounded-full flex-shrink-0 mt-1">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="h-4 w-4 sm:h-5 sm:w-5 text-primary"
-                        >
-                          <path d="M20 7h-3a2 2 0 0 1-2-2V2" />
-                          <path d="M9 18a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h7l4 4v10a2 2 0 0 1-2 2Z" />
-                          <path d="M3 7.6v12.8A1.6 1.6 0 0 0 4.6 22h9.8" />
-                        </svg>
+                        <Brain className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                       </div>
                       <div>
                         <h4 className="font-semibold text-secondary dark:text-primary-light mb-0.5 sm:mb-1 text-sm sm:text-base">
-                          Reusable
+                          Style Learning
                         </h4>
                         <p className="text-xs sm:text-sm text-secondary/70 dark:text-primary-light/70">
-                          Create templates for common structures that can be reused across projects
+                          Our neural network learns your style and adapts to your preferences over time
                         </p>
                       </div>
                     </div>
@@ -441,7 +591,8 @@ root:
                       href="/language"
                       className="inline-flex items-center text-primary text-sm sm:text-base font-medium hover:underline"
                     >
-                      Learn more about the ForSure language <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 ml-1" />
+                      Learn more about the ForSure prompting language{" "}
+                      <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 ml-1" />
                     </Link>
                   </div>
                 </div>
@@ -608,7 +759,7 @@ root:
                           <path d="M22 2h-10v10h10V2z"></path>
                           <path d="M22 12h-10v10h10V12z"></path>
                         </svg>
-                        ForSure Syntax
+                        ForSure Prompting Syntax
                       </span>
                     </div>
                     <Link href="/language" className="hover:text-primary transition-colors inline-flex items-center">
@@ -644,94 +795,50 @@ root:
                   </div>
 
                   <p className="text-secondary/80 dark:text-primary-light/70 mb-4 sm:mb-6 text-base sm:text-lg">
-                    Use the ForSure CLI to generate the actual file structure from your definition. The CLI creates all
-                    directories and files according to your specification, saving you time and ensuring consistency.
+                    Use the ForSure CLI or web app to generate the actual file structure from your prompts. Our tools
+                    create all directories and files according to your specification, saving you time and ensuring
+                    consistency.
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                     <div className="flex items-start gap-2 sm:gap-3">
                       <div className="p-1.5 sm:p-2 bg-primary/10 rounded-full flex-shrink-0 mt-1">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="h-4 w-4 sm:h-5 sm:w-5 text-primary"
-                        >
-                          <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                          <circle cx="8.5" cy="7" r="4"></circle>
-                          <line x1="20" y1="8" x2="20" y2="14"></line>
-                          <line x1="23" y1="11" x2="17" y2="11"></line>
-                        </svg>
+                        <Terminal className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                       </div>
                       <div>
                         <h4 className="font-semibold text-secondary dark:text-primary-light mb-0.5 sm:mb-1 text-sm sm:text-base">
-                          One Command
+                          CLI Tool
                         </h4>
                         <p className="text-xs sm:text-sm text-secondary/70 dark:text-primary-light/70">
-                          Generate entire project structures with a single CLI command
+                          Generate structures with a powerful command-line interface
                         </p>
                       </div>
                     </div>
 
                     <div className="flex items-start gap-2 sm:gap-3">
                       <div className="p-1.5 sm:p-2 bg-primary/10 rounded-full flex-shrink-0 mt-1">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="h-4 w-4 sm:h-5 sm:w-5 text-primary"
-                        >
-                          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                        </svg>
+                        <Globe className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                       </div>
                       <div>
                         <h4 className="font-semibold text-secondary dark:text-primary-light mb-0.5 sm:mb-1 text-sm sm:text-base">
-                          Validation
+                          Web Application
                         </h4>
                         <p className="text-xs sm:text-sm text-secondary/70 dark:text-primary-light/70">
-                          Validate your structure before generation to catch errors early
+                          Create and manage projects through our intuitive web interface
                         </p>
                       </div>
                     </div>
 
                     <div className="flex items-start gap-2 sm:gap-3">
                       <div className="p-1.5 sm:p-2 bg-primary/10 rounded-full flex-shrink-0 mt-1">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="h-4 w-4 sm:h-5 sm:w-5 text-primary"
-                        >
-                          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                          <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                        </svg>
+                        <Brain className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                       </div>
                       <div>
                         <h4 className="font-semibold text-secondary dark:text-primary-light mb-0.5 sm:mb-1 text-sm sm:text-base">
-                          Consistency
+                          Neural Network
                         </h4>
                         <p className="text-xs sm:text-sm text-secondary/70 dark:text-primary-light/70">
-                          Ensure consistent structure across multiple projects and teams
+                          Adapts to your style and generates personalized project structures
                         </p>
                       </div>
                     </div>
@@ -770,7 +877,7 @@ root:
                       href="/cli"
                       className="inline-flex items-center text-primary text-sm sm:text-base font-medium hover:underline"
                     >
-                      Learn more about the ForSure CLI <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 ml-1" />
+                      Learn more about the ForSure tools <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 ml-1" />
                     </Link>
                   </div>
                 </div>
@@ -915,6 +1022,42 @@ root:
                             <polyline points="22 4 12 14.01 9 11.01" />
                           </svg>
                           <span>Validating structure</span>
+                        </div>
+                        <div className="flex items-center text-blue-400 mb-1">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="mr-2"
+                          >
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                          </svg>
+                          <span>Analyzing your coding style...</span>
+                        </div>
+                        <div className="flex items-center text-blue-400 mb-1">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="mr-2"
+                          >
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                          </svg>
+                          <span>Applying neural network optimizations</span>
                         </div>
                         <div className="flex items-center text-green-400 mb-1">
                           <svg
@@ -1086,11 +1229,11 @@ root:
               <AnimateOnScroll type="fade" delay={0.2} duration={0.8}>
                 <div className="space-y-2">
                   <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                    Ready to Streamline Your Project Structure?
+                    Ready to Try Our Prompting Programming Language?
                   </h2>
                   <p className="mx-auto max-w-[700px] md:text-xl text-white/90">
                     Join the growing community of developers using ForSure to define, document, and generate project
-                    structures.
+                    structures with our powerful prompting language and neural network technology.
                   </p>
                 </div>
               </AnimateOnScroll>
@@ -1103,7 +1246,13 @@ root:
                     className="bg-primary hover:bg-primary/90 text-secondary-dark font-semibold"
                   >
                     <Link href="/download" className="flex items-center">
-                      <Download className="mr-2 h-5 w-5" /> Download Now
+                      <Download className="mr-2 h-5 w-5" /> Download CLI
+                    </Link>
+                  </Button>
+
+                  <Button asChild size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10">
+                    <Link href="/app" className="flex items-center">
+                      <Globe className="mr-2 h-5 w-5" /> Try Web App
                     </Link>
                   </Button>
 

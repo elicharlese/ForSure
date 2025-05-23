@@ -8,6 +8,7 @@ import { Save, X, Copy, Check, Code, FileText, Settings, ChevronUp, ChevronDown 
 import { cn } from "@/lib/utils"
 import { formatCode, type FormatterOptions, defaultFormatterOptions } from "../services/code-formatter"
 import { FormatterSettings } from "./formatter-settings"
+import { autoFormatForSure, defaultAutoFormatOptions, type AutoFormatOptions } from "../services/forsure-auto-formatter"
 
 interface FileEditorProps {
   fileName: string
@@ -25,6 +26,8 @@ export function FileEditor({ fileName, content: initialContent, onSave, onClose,
   const [formatterOptions, setFormatterOptions] = useState<FormatterOptions>(defaultFormatterOptions)
   const [isFormatterSettingsOpen, setIsFormatterSettingsOpen] = useState(false)
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const [autoFormatOptions, setAutoFormatOptions] = useState<AutoFormatOptions>(defaultAutoFormatOptions)
+  const [isAutoFormatting, setIsAutoFormatting] = useState(false)
 
   // Determine language based on file extension
   useEffect(() => {
@@ -71,8 +74,31 @@ export function FileEditor({ fileName, content: initialContent, onSave, onClose,
   }
 
   const handleFormat = () => {
-    const formatted = formatCode(content, fileName, formatterOptions)
-    setContent(formatted)
+    if (
+      language === "javascript" ||
+      language === "typescript" ||
+      fileName.endsWith(".fs") ||
+      fileName.endsWith(".forsure")
+    ) {
+      setIsAutoFormatting(true)
+      try {
+        const result = autoFormatForSure(content, autoFormatOptions)
+        setContent(result.formatted)
+
+        // Show a toast or notification about changes made
+        if (result.hasChanges) {
+          console.log(`Auto-format applied ${result.changes.length} changes`)
+        }
+      } catch (error) {
+        console.error("Auto-format error:", error)
+      } finally {
+        setIsAutoFormatting(false)
+      }
+    } else {
+      // Use existing formatter for other file types
+      const formatted = formatCode(content, fileName, formatterOptions)
+      setContent(formatted)
+    }
   }
 
   // Render preview based on file type
@@ -200,8 +226,8 @@ export function FileEditor({ fileName, content: initialContent, onSave, onClose,
       {!isCollapsed && (
         <div className="flex justify-between gap-2 p-2 border-t bg-muted/30">
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={handleFormat}>
-              Format
+            <Button variant="outline" size="sm" onClick={handleFormat} disabled={isAutoFormatting}>
+              {isAutoFormatting ? "Auto-formatting..." : "Format"}
             </Button>
             <Button variant="ghost" size="sm" onClick={() => setIsFormatterSettingsOpen(true)} className="h-8 w-8 p-0">
               <Settings className="h-4 w-4" />

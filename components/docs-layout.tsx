@@ -76,7 +76,7 @@ export function DocsSidebarNav({ items }: DocsSidebarNavProps) {
             <X className="h-5 w-5" />
           </Button>
         </div>
-        <ScrollArea className="flex-1 py-6 px-4">
+        <ScrollArea className="flex-1 py-6 px-4 max-h-[calc(100vh-10rem)] overflow-y-auto">
           {items.map((item, index) => (
             <div key={index} className="pb-6">
               <h4 className="mb-2 text-sm font-semibold text-primary">{item.title}</h4>
@@ -162,6 +162,32 @@ export default function DocsLayout({ children }: DocsLayoutProps) {
       ],
     },
     {
+      title: "AI & Neural Network",
+      href: "/docs/ai",
+      items: [
+        {
+          title: "Overview",
+          href: "/docs/ai",
+        },
+        {
+          title: "Examples",
+          href: "/docs/ai/examples",
+        },
+        {
+          title: "Advanced Features",
+          href: "/docs/ai/advanced",
+        },
+        {
+          title: "Team Usage",
+          href: "/docs/ai/team-usage",
+        },
+        {
+          title: "API Reference",
+          href: "/docs/ai/api",
+        },
+      ],
+    },
+    {
       title: "Examples",
       href: "/docs/examples",
       items: [
@@ -239,7 +265,7 @@ export default function DocsLayout({ children }: DocsLayoutProps) {
     <div className="flex min-h-screen flex-col">
       <div className="flex-1 flex flex-col lg:flex-row">
         <DocsSidebarNav items={sidebarItems} />
-        <main className="flex-1 py-6 px-4 lg:px-8 max-w-full w-full overflow-hidden">
+        <main className="flex-1 py-6 px-4 lg:px-8 max-w-full w-full overflow-hidden max-h-[calc(100vh-4rem)] overflow-y-auto">
           <div className="max-w-3xl mx-auto w-full">{children}</div>
         </main>
       </div>

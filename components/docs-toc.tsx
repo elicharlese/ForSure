@@ -60,8 +60,39 @@ export default function DocsToc({ className }: DocsTocProps) {
   }
 
   return (
-    <div className={cn("hidden lg:block", className)}>
-      <div className="sticky top-16 max-h-[calc(100vh-4rem)] overflow-y-auto pt-6">
+    <>
+      <button
+        className="fixed right-0 top-1/4 z-50 bg-primary text-primary-foreground p-2 rounded-l-md shadow-md"
+        onClick={() => {
+          const toc = document.getElementById("toc-content")
+          toc?.classList.toggle("translate-x-full")
+          toc?.classList.toggle("translate-x-0")
+        }}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="h-4 w-4"
+        >
+          <line x1="3" x2="21" y1="6" y2="6" />
+          <line x1="3" x2="21" y1="12" y2="12" />
+          <line x1="3" x2="21" y1="18" y2="18" />
+        </svg>
+      </button>
+      <div
+        id="toc-content"
+        className={cn(
+          "fixed right-0 top-1/4 z-40 bg-card text-card-foreground p-4 rounded-l-md shadow-lg w-64 max-h-[70vh] overflow-y-auto transform translate-x-full transition-transform duration-300 ease-in-out",
+          className,
+        )}
+      >
         <h4 className="mb-4 text-sm font-semibold">On This Page</h4>
         <ul className="space-y-2 text-sm">
           {headings.map((heading) => (
@@ -79,6 +110,13 @@ export default function DocsToc({ className }: DocsTocProps) {
                   })
                   // Update URL without full page reload
                   window.history.pushState(null, "", `#${heading.id}`)
+
+                  // Hide the TOC after clicking on mobile
+                  if (window.innerWidth < 1024) {
+                    const toc = document.getElementById("toc-content")
+                    toc?.classList.add("translate-x-full")
+                    toc?.classList.remove("translate-x-0")
+                  }
                 }}
               >
                 {heading.text}
@@ -87,6 +125,6 @@ export default function DocsToc({ className }: DocsTocProps) {
           ))}
         </ul>
       </div>
-    </div>
+    </>
   )
 }

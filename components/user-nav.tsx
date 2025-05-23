@@ -13,7 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { User, Settings, LogOut } from "lucide-react"
+import { User, Settings, LogOut, Download } from "lucide-react"
 
 export function UserNav() {
   const { user, logout } = useAuth()
@@ -27,6 +27,12 @@ export function UserNav() {
       .join("")
       .toUpperCase()
       .substring(0, 2)
+  }
+
+  const handleDownload = () => {
+    // Implement download functionality here
+    console.log("Downloading project...")
+    // For example, trigger a download of the current project
   }
 
   return (
@@ -49,16 +55,20 @@ export function UserNav() {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
-            <Link href="/account" className="cursor-pointer">
+            <Link href="/app/account" className="cursor-pointer">
               <User className="mr-2 h-4 w-4" />
               <span>My Account</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href="/account?tab=security" className="cursor-pointer">
+            <Link href="/app/settings" className="cursor-pointer">
               <Settings className="mr-2 h-4 w-4" />
               <span>Settings</span>
             </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={handleDownload} className="cursor-pointer">
+            <Download className="mr-2 h-4 w-4" />
+            <span>Download</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />

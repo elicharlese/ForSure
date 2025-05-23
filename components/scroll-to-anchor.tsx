@@ -8,8 +8,11 @@ export function ScrollToAnchor() {
       const target = e.target as HTMLElement
       if (target.tagName === "A" && target.getAttribute("href")?.startsWith("#")) {
         e.preventDefault()
-        const targetId = target.getAttribute("href")
-        const targetElement = document.querySelector(targetId as string)
+        const href = target.getAttribute("href") as string
+
+        // Extract the ID without the # and find the element by ID instead of using querySelector with #
+        const targetId = href.substring(1)
+        const targetElement = document.getElementById(targetId)
 
         if (targetElement) {
           const offsetTop = targetElement.getBoundingClientRect().top + window.pageYOffset - 80 // Adjust for header height
@@ -19,7 +22,7 @@ export function ScrollToAnchor() {
           })
 
           // Update URL without reload
-          history.pushState(null, "", targetId)
+          history.pushState(null, "", href)
         }
       }
     }
@@ -28,7 +31,8 @@ export function ScrollToAnchor() {
 
     // Handle initial load with hash
     if (window.location.hash) {
-      const targetElement = document.querySelector(window.location.hash)
+      const targetId = window.location.hash.substring(1)
+      const targetElement = document.getElementById(targetId)
       if (targetElement) {
         setTimeout(() => {
           const offsetTop = targetElement.getBoundingClientRect().top + window.pageYOffset - 80

@@ -1,5 +1,17 @@
 import Link from "next/link"
-import { ArrowRight, Book, Code, FileText, Terminal, Lightbulb, Zap, Layers, GitBranch } from "lucide-react"
+import {
+  ArrowRight,
+  Book,
+  Code,
+  FileText,
+  Terminal,
+  Lightbulb,
+  Layers,
+  GitBranch,
+  Globe,
+  Cpu,
+  Brain,
+} from "lucide-react"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
@@ -26,7 +38,8 @@ export default function DocsPage() {
             </div>
             <h1 className="text-4xl font-bold tracking-tight">ForSure Documentation</h1>
             <p className="text-xl text-muted-foreground">
-              A language for describing and documenting file structures in a clear and concise manner.
+              A prompting programming language for describing and documenting file structures in a clear and concise
+              manner.
             </p>
             <div className="pt-2">
               <DocsSearch />
@@ -58,11 +71,13 @@ export default function DocsPage() {
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center text-lg">
                   <Code className="h-5 w-5 mr-2 text-primary" />
-                  Syntax Reference
+                  Prompting Syntax
                 </CardTitle>
               </CardHeader>
               <CardContent className="pb-2">
-                <p className="text-sm text-muted-foreground">Comprehensive guide to ForSure syntax and features.</p>
+                <p className="text-sm text-muted-foreground">
+                  Comprehensive guide to ForSure prompting syntax and features.
+                </p>
               </CardContent>
               <CardFooter>
                 <Link href="/docs/syntax" className="text-sm text-primary hover:underline flex items-center">
@@ -75,15 +90,34 @@ export default function DocsPage() {
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center text-lg">
                   <Terminal className="h-5 w-5 mr-2 text-primary" />
-                  CLI Reference
+                  CLI & Web App
                 </CardTitle>
               </CardHeader>
               <CardContent className="pb-2">
-                <p className="text-sm text-muted-foreground">Learn how to use the ForSure command-line interface.</p>
+                <p className="text-sm text-muted-foreground">Learn how to use the ForSure CLI and web application.</p>
               </CardContent>
               <CardFooter>
                 <Link href="/docs/cli" className="text-sm text-primary hover:underline flex items-center">
                   CLI commands
+                  <ArrowRight className="ml-1 h-3 w-3" />
+                </Link>
+              </CardFooter>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="flex items-center text-lg">
+                  <Brain className="h-5 w-5 mr-2 text-primary" />
+                  Neural Network
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pb-2">
+                <p className="text-sm text-muted-foreground">
+                  Learn about ForSure's AI capabilities that adapt to your coding style.
+                </p>
+              </CardContent>
+              <CardFooter>
+                <Link href="/docs/ai" className="text-sm text-primary hover:underline flex items-center">
+                  AI documentation
                   <ArrowRight className="ml-1 h-3 w-3" />
                 </Link>
               </CardFooter>
@@ -96,13 +130,14 @@ export default function DocsPage() {
               Introduction
             </h2>
             <p>
-              ForSure is a language designed to simplify projects by using a flat-file-like structured
-              language/compiler/cli/converter system. It allows you to describe and document file structures in a clear
-              and concise manner, similar to how you would write a Dockerfile for a container.
+              ForSure is a prompting programming language designed to simplify projects by using a flat-file-like
+              structured language/compiler/cli/converter system. It allows you to describe and document file structures
+              in a clear and concise manner, similar to how you would write a Dockerfile for a container.
             </p>
             <p>
-              ForSure uses a simple, human-readable syntax to represent directories, files, and their relationships,
-              making it easy to understand and maintain project structures.
+              ForSure uses a simple, human-readable prompting syntax to represent directories, files, and their
+              relationships, making it easy to understand and maintain project structures. Available as both a CLI tool
+              and web application.
             </p>
 
             <div className="bg-muted/50 rounded-lg p-6 my-6 border">
@@ -112,8 +147,8 @@ export default function DocsPage() {
                   <h3 className="font-medium mb-2">Why ForSure?</h3>
                   <p className="text-muted-foreground">
                     ForSure was created to solve the problem of documenting and sharing project structures in a
-                    standardized way. It helps teams maintain consistency across projects and makes onboarding new
-                    developers easier.
+                    standardized way. As a prompting programming language, it helps teams maintain consistency across
+                    projects and makes onboarding new developers easier.
                   </p>
                 </div>
               </div>
@@ -125,7 +160,10 @@ export default function DocsPage() {
             <h2 id="interactive-demo" className="text-2xl font-semibold tracking-tight scroll-m-20">
               Interactive Demo
             </h2>
-            <p>Try ForSure right in your browser. Edit the code below and see the generated file structure.</p>
+            <p>
+              Try ForSure's prompting language right in your browser. Edit the code below and see the generated file
+              structure.
+            </p>
 
             <DocsInteractiveDemo />
           </div>
@@ -141,12 +179,13 @@ export default function DocsPage() {
                 <CardHeader className="pb-2">
                   <CardTitle className="flex items-center text-base">
                     <Layers className="h-5 w-5 mr-2 text-primary" />
-                    Hierarchical Structure
+                    Prompting Language
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
-                    Mimics the natural file system's hierarchy for intuitive organization.
+                    A powerful prompting programming language that mimics the natural file system's hierarchy for
+                    intuitive organization.
                   </p>
                 </CardContent>
               </Card>
@@ -168,6 +207,35 @@ export default function DocsPage() {
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="flex items-center text-base">
+                    <Terminal className="h-5 w-5 mr-2 text-primary" />
+                    CLI Tool
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    Powerful command-line interface for generating and managing project structures from ForSure prompts.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="flex items-center text-base">
+                    <Globe className="h-5 w-5 mr-2 text-primary" />
+                    Web Application
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    Intuitive web interface for creating, managing, and sharing project structures without installing
+                    anything.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="flex items-center text-base">
                     <GitBranch className="h-5 w-5 mr-2 text-primary" />
                     @import Directives
                   </CardTitle>
@@ -182,13 +250,13 @@ export default function DocsPage() {
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="flex items-center text-base">
-                    <Zap className="h-5 w-5 mr-2 text-primary" />
-                    Custom Attributes
+                    <Cpu className="h-5 w-5 mr-2 text-primary" />
+                    AI-Enhanced
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
-                    Extends elements with user-defined attributes like permissions and sizes.
+                    Leverages artificial intelligence to optimize and enhance your project structures.
                   </p>
                 </CardContent>
               </Card>
@@ -285,8 +353,8 @@ export default function DocsPage() {
             </Tabs>
 
             <p className="text-sm text-muted-foreground mt-4">
-              The example above shows how ForSure represents a simple project structure with directories, files,
-              comments, and attributes.
+              The example above shows how ForSure's prompting language represents a simple project structure with
+              directories, files, comments, and attributes.
             </p>
           </div>
 
@@ -303,9 +371,15 @@ export default function DocsPage() {
                   1
                 </div>
                 <h3 className="text-lg font-medium mb-2">Install ForSure</h3>
-                <p className="text-muted-foreground mb-2">Clone the repository to get started with ForSure.</p>
+                <p className="text-muted-foreground mb-2">
+                  Clone the repository or install via npm to get started with ForSure.
+                </p>
                 <DocsCodeBlock
-                  code={`git clone https://github.com/elicharlese/ForSure.git
+                  code={`# Install the CLI
+npm install -g forsure-cli
+
+# Or clone the repository
+git clone https://github.com/elicharlese/ForSure.git
 cd ForSure`}
                   language="bash"
                 />
@@ -322,7 +396,9 @@ cd ForSure`}
                   2
                 </div>
                 <h3 className="text-lg font-medium mb-2">Create your first ForSure file</h3>
-                <p className="text-muted-foreground mb-2">Create a new .forsure file using any text editor.</p>
+                <p className="text-muted-foreground mb-2">
+                  Create a new .forsure file using our prompting language in any text editor.
+                </p>
                 <DocsCodeBlock
                   code={`root:
   - src:
@@ -344,7 +420,7 @@ cd ForSure`}
                 </div>
                 <h3 className="text-lg font-medium mb-2">Generate the file structure</h3>
                 <p className="text-muted-foreground mb-2">
-                  Use the ForSure CLI to generate the file structure from your .forsure file.
+                  Use the ForSure CLI or web app to generate the file structure from your .forsure file.
                 </p>
                 <DocsCodeBlock
                   code={`forsure generate my-first-project.forsure --output ./my-project`}
@@ -362,9 +438,9 @@ cd ForSure`}
                 <div className="absolute left-0 top-0 flex items-center justify-center w-10 h-10 rounded-full border bg-background text-primary font-bold">
                   4
                 </div>
-                <h3 className="text-lg font-medium mb-2">Learn the syntax</h3>
+                <h3 className="text-lg font-medium mb-2">Learn the prompting syntax</h3>
                 <p className="text-muted-foreground mb-2">
-                  Explore the ForSure syntax to create more complex file structures.
+                  Explore the ForSure prompting syntax to create more complex file structures.
                 </p>
                 <div className="mt-2">
                   <Link href="/docs/syntax" className="text-sm text-primary hover:underline flex items-center">
@@ -387,9 +463,9 @@ cd ForSure`}
               <Link href="/docs/syntax" className="block p-6 border rounded-lg hover:bg-muted transition-colors">
                 <div className="flex items-center mb-2">
                   <Code className="h-5 w-5 mr-2 text-primary" />
-                  <div className="font-semibold">Syntax Reference</div>
+                  <div className="font-semibold">Prompting Syntax</div>
                 </div>
-                <div className="text-sm text-muted-foreground">Learn the ForSure syntax in detail</div>
+                <div className="text-sm text-muted-foreground">Learn the ForSure prompting syntax in detail</div>
               </Link>
 
               <Link href="/docs/examples" className="block p-6 border rounded-lg hover:bg-muted transition-colors">
@@ -408,12 +484,12 @@ cd ForSure`}
                 <div className="text-sm text-muted-foreground">Learn how to use the ForSure command-line interface</div>
               </Link>
 
-              <Link href="/docs/api" className="block p-6 border rounded-lg hover:bg-muted transition-colors">
+              <Link href="/docs/web-app" className="block p-6 border rounded-lg hover:bg-muted transition-colors">
                 <div className="flex items-center mb-2">
-                  <Zap className="h-5 w-5 mr-2 text-primary" />
-                  <div className="font-semibold">API Reference</div>
+                  <Globe className="h-5 w-5 mr-2 text-primary" />
+                  <div className="font-semibold">Web App Guide</div>
                 </div>
-                <div className="text-sm text-muted-foreground">Use ForSure programmatically in your projects</div>
+                <div className="text-sm text-muted-foreground">Learn how to use the ForSure web application</div>
               </Link>
             </div>
           </div>

@@ -15,18 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-  Settings,
-  Share2,
-  Github,
-  BellIcon as Vercel,
-  GitFork,
-  Download,
-  Tag,
-  ChevronRight,
-  Menu,
-  X,
-} from "lucide-react"
+import { Share2, Github, BellIcon as Vercel, GitFork, Tag, ChevronRight, Menu, X } from "lucide-react"
 import { useAuth } from "@/contexts/auth-context"
 
 export function SecondaryNavbar() {
@@ -54,12 +43,12 @@ export function SecondaryNavbar() {
   const breadcrumbs = generateBreadcrumbs()
 
   return (
-    <div className="border-b bg-background">
+    <div className="sticky top-0 z-30 border-b bg-background">
       <div className="container flex h-14 items-center justify-between">
         {/* Left side - Logo and breadcrumbs */}
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <Link href="/app" className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2">
               <div className="relative w-8 h-8">
                 <Image src="/fs-logo.png" alt="ForSure Logo" width={32} height={32} className="h-8 w-8" />
               </div>
@@ -103,9 +92,6 @@ export function SecondaryNavbar() {
               Exit Demo
             </Button>
           )}
-          <Button variant="ghost" size="icon" title="Settings">
-            <Settings className="h-4 w-4" />
-          </Button>
           <Button variant="ghost" size="icon" title="Share">
             <Share2 className="h-4 w-4" />
           </Button>
@@ -117,9 +103,6 @@ export function SecondaryNavbar() {
           </Button>
           <Button variant="ghost" size="icon" title="Fork Chat">
             <GitFork className="h-4 w-4" />
-          </Button>
-          <Button variant="ghost" size="icon" title="Download">
-            <Download className="h-4 w-4" />
           </Button>
           <Button variant="ghost" size="icon" title="Version">
             <Tag className="h-4 w-4" />
@@ -151,27 +134,22 @@ export function SecondaryNavbar() {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Settings className="mr-2 h-4 w-4" />
-                  <span>Settings</span>
+                <DropdownMenuItem asChild>
+                  <Link href="/app/account" className="cursor-pointer">
+                    <span>My Account</span>
+                  </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Share2 className="mr-2 h-4 w-4" />
-                  <span>Share</span>
+                <DropdownMenuItem asChild>
+                  <Link href="/app/settings" className="cursor-pointer">
+                    <span>Settings</span>
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Download className="mr-2 h-4 w-4" />
-                  <span>Download</span>
-                </DropdownMenuItem>
                 {isDemoMode && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={exitDemoMode}>
-                      <X className="mr-2 h-4 w-4" />
-                      <span>Exit Demo Mode</span>
-                    </DropdownMenuItem>
-                  </>
+                  <DropdownMenuItem onClick={exitDemoMode}>
+                    <X className="mr-2 h-4 w-4" />
+                    <span>Exit Demo Mode</span>
+                  </DropdownMenuItem>
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
@@ -195,10 +173,6 @@ export function SecondaryNavbar() {
                 </Button>
               )}
               <Button variant="outline" size="sm" className="flex items-center gap-1">
-                <Settings className="h-3.5 w-3.5" />
-                <span>Settings</span>
-              </Button>
-              <Button variant="outline" size="sm" className="flex items-center gap-1">
                 <Share2 className="h-3.5 w-3.5" />
                 <span>Share</span>
               </Button>
@@ -213,10 +187,6 @@ export function SecondaryNavbar() {
               <Button variant="outline" size="sm" className="flex items-center gap-1">
                 <GitFork className="h-3.5 w-3.5" />
                 <span>Fork</span>
-              </Button>
-              <Button variant="outline" size="sm" className="flex items-center gap-1">
-                <Download className="h-3.5 w-3.5" />
-                <span>Download</span>
               </Button>
               <Button variant="outline" size="sm" className="flex items-center gap-1">
                 <Tag className="h-3.5 w-3.5" />
