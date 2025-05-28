@@ -38,16 +38,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Check for existing session on mount
     const checkSession = async () => {
       try {
-        const response = await fetch('/api/auth/me', {
-          method: 'GET',
-          credentials: 'include',
-        })
-        
-        if (response.ok) {
-          const data = await response.json()
-          if (data.success && data.user) {
-            setUser(data.user)
-          }
+        const storedUser = localStorage.getItem("forsure_user")
+        if (storedUser) {
+          setUser(JSON.parse(storedUser))
         }
       } catch (error) {
         console.error("Failed to restore session:", error)
@@ -62,25 +55,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string) => {
     setIsLoading(true)
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ email, password }),
-      })
+      // In a real app, this would be an API call
+      // Simulating API delay
+      await new Promise((resolve) => setTimeout(resolve, 1000))
 
-      const data = await response.json()
+      // Mock authentication - in a real app, validate credentials against backend
+      if (email === "demo@forsure.dev" && password === "password") {
+        const mockUser: User = {
+          id: "user-1",
+          email,
+          name: "Demo User",
+          role: "user",
+          createdAt: new Date().toISOString(),
+        }
 
-      if (data.success && data.user) {
-        setUser(data.user)
+        setUser(mockUser)
+        localStorage.setItem("forsure_user", JSON.stringify(mockUser))
         return { success: true }
       }
 
       return {
         success: false,
-        message: data.message || "Login failed",
+        message: "Invalid email or password",
       }
     } catch (error) {
       console.error("Login failed:", error)
@@ -96,26 +92,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const register = async (email: string, name: string, password: string) => {
     setIsLoading(true)
     try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ email, name, password }),
-      })
+      // In a real app, this would be an API call
+      // Simulating API delay
+      await new Promise((resolve) => setTimeout(resolve, 1000))
 
-      const data = await response.json()
-
-      if (data.success && data.user) {
-        setUser(data.user)
-        return { success: true }
+      // Mock registration - in a real app, send data to backend
+      const mockUser: User = {
+        id: `user-${Date.now()}`,
+        email,
+        name,
+        role: "user",
+        createdAt: new Date().toISOString(),
       }
 
-      return {
-        success: false,
-        message: data.message || "Registration failed",
-      }
+      setUser(mockUser)
+      localStorage.setItem("forsure_user", JSON.stringify(mockUser))
+      return { success: true }
     } catch (error) {
       console.error("Registration failed:", error)
       return {
@@ -127,18 +119,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const logout = async () => {
-    try {
-      await fetch('/api/auth/logout', {
-        method: 'POST',
-        credentials: 'include',
-      })
-    } catch (error) {
-      console.error("Logout error:", error)
-    } finally {
-      setUser(null)
-      router.push("/")
-    }
+  const logout = () => {
+    setUser(null)
+    localStorage.removeItem("forsure_user")
+    router.push("/")
   }
 
   const enterDemoMode = () => {
@@ -156,25 +140,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     setIsLoading(true)
     try {
-      const response = await fetch('/api/auth/me', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(data),
-      })
+      // In a real app, this would be an API call
+      // Simulating API delay
+      await new Promise((resolve) => setTimeout(resolve, 1000))
 
-      const result = await response.json()
-
-      if (result.success && result.user) {
-        setUser(result.user)
-      } else {
-        throw new Error(result.message || 'Profile update failed')
-      }
+      const updatedUser = { ...user, ...data }
+      setUser(updatedUser)
+      localStorage.setItem("forsure_user", JSON.stringify(updatedUser))
     } catch (error) {
       console.error("Profile update failed:", error)
-      throw error
     } finally {
       setIsLoading(false)
     }

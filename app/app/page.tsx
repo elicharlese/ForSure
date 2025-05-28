@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Sparkles } from "lucide-react"
+import { Sparkles, ChevronLeft, ChevronRight } from "lucide-react"
 import { ProjectDetailsForm, type ProjectDetails } from "./components/project-details-form"
 import { FormProgress } from "./components/form-progress"
 import { useSavedProjects } from "./hooks/use-saved-projects"
@@ -31,6 +31,14 @@ export default function ChatApp() {
   const { isDemoMode, user } = useAuth()
   const [isDraftProject, setIsDraftProject] = useState(false)
   const [forSureFiles, setForSureFiles] = useState<any[]>([])
+  const [rightChatMessages, setRightChatMessages] = useState<any[]>([])
+  const [rightChatInput, setRightChatInput] = useState("")
+  const [rightChatLoading, setRightChatLoading] = useState(false)
+  const [showRightChat, setShowRightChat] = useState(true)
+  const [rightPanelWidth, setRightPanelWidth] = useState(30)
+  const [leftPanelCollapsed, setLeftPanelCollapsed] = useState(false)
+  const [rightPanelCollapsed, setRightPanelCollapsed] = useState(false)
+  const [collapsedPanelWidth] = useState(3) // Width when collapsed
 
   const { savedProjects, saveProject, deleteProject, getProject, getProjectVersions, restoreVersion, isLoaded } =
     useSavedProjects()
@@ -197,6 +205,31 @@ export default function ChatApp() {
     }, 1000)
   }
 
+  const handleRightChatSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!rightChatInput.trim()) return
+
+    const userMessage = {
+      id: Date.now().toString(),
+      role: "user",
+      content: rightChatInput,
+    }
+    setRightChatMessages((prev) => [...prev, userMessage])
+    setRightChatInput("")
+    setRightChatLoading(true)
+
+    setTimeout(() => {
+      const assistantMessage = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: `Secondary AI: I understand you're asking about "${rightChatInput}". This is the secondary chat panel for additional assistance or different perspectives on your project.`,
+      }
+
+      setRightChatMessages((prev) => [...prev, assistantMessage])
+      setRightChatLoading(false)
+    }, 1000)
+  }
+
   const extractProjectDetailsFromChat = (input: string, currentProject: ProjectDetails): ProjectDetails => {
     const lowerInput = input.toLowerCase()
     const updatedProject = { ...currentProject }
@@ -297,6 +330,8 @@ export default function ChatApp() {
   }
 
   const handleResize = (e: React.MouseEvent) => {
+    if (leftPanelCollapsed) return
+
     const startX = e.clientX
     const startWidth = leftPanelWidth
 
@@ -320,12 +355,38 @@ export default function ChatApp() {
     document.body.style.userSelect = "none"
   }
 
+  const handleRightResize = (e: React.MouseEvent) => {
+    if (rightPanelCollapsed) return
+
+    const startX = e.clientX
+    const startWidth = rightPanelWidth
+
+    const onMouseMove = (moveEvent: MouseEvent) => {
+      const containerWidth = document.querySelector(".flex-1.flex.flex-col.md\\:flex-row")?.clientWidth || 1
+      const newWidth = startWidth - ((moveEvent.clientX - startX) / containerWidth) * 100
+      const constrainedWidth = Math.min(Math.max(newWidth, 20), 60)
+      setRightPanelWidth(constrainedWidth)
+    }
+
+    const onMouseUp = () => {
+      document.removeEventListener("mousemove", onMouseMove)
+      document.removeEventListener("mouseup", onMouseUp)
+      document.body.style.cursor = "default"
+      document.body.style.userSelect = "auto"
+    }
+
+    document.addEventListener("mousemove", onMouseMove)
+    document.addEventListener("mouseup", onMouseUp)
+    document.body.style.cursor = "ew-resize"
+    document.body.style.userSelect = "none"
+  }
+
   return (
-    <div className="flex flex-col h-screen bg-background overflow-hidden">
+    <div className="flex flex-col h-full bg-background overflow-hidden">
       {/* Header */}
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col h-[calc(100vh-0px)]">
+      <div className="flex-1 flex flex-col h-full">
         {showDashboard ? (
           <div className="container py-6">
             <EnhancedDashboard
@@ -387,12 +448,15 @@ export default function ChatApp() {
               <div className="bg-muted/50 border-b border-primary/10 p-2 flex justify-center">
                 <div className="flex gap-2">
                   <Button
-                    variant={showMobileChat ? "default" : "outline"}
+                    variant={showMobileChat && showRightChat === false ? "default" : "outline"}
                     size="sm"
-                    onClick={() => setShowMobileChat(true)}
+                    onClick={() => {
+                      setShowMobileChat(true)
+                      setShowRightChat(false)
+                    }}
                     className="px-3"
                   >
-                    Chat
+                    Chat 1
                   </Button>
                   <Button
                     variant={!showMobileChat ? "default" : "outline"}
@@ -402,17 +466,30 @@ export default function ChatApp() {
                   >
                     View
                   </Button>
+                  <Button
+                    variant={showMobileChat && showRightChat === true ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => {
+                      setShowMobileChat(true)
+                      setShowRightChat(true)
+                    }}
+                    className="px-3"
+                  >
+                    Chat 2
+                  </Button>
                 </div>
               </div>
             )}
 
             {/* Chat panel */}
-            {(!isMobile || (isMobile && showMobileChat)) && (
+            {(!isMobile || (isMobile && showMobileChat && !showRightChat)) && (
               <div
                 className={`${
                   isMobile ? "w-full" : ""
-                } flex flex-col h-full bg-gradient-to-b from-background to-background/95 backdrop-blur-sm border-r border-primary/10 shadow-inner relative overflow-hidden`}
-                style={{ width: isMobile ? "100%" : `${leftPanelWidth}%` }}
+                } flex flex-col h-full bg-gradient-to-b from-background to-background/95 backdrop-blur-sm border-r border-primary/10 shadow-inner relative overflow-hidden transition-all duration-300 ease-in-out`}
+                style={{
+                  width: isMobile ? "100%" : leftPanelCollapsed ? `${collapsedPanelWidth}%` : `${leftPanelWidth}%`,
+                }}
               >
                 {/* AI-inspired background pattern */}
                 <div className="absolute inset-0 bg-grid-pattern opacity-[0.03] pointer-events-none"></div>
@@ -424,53 +501,85 @@ export default function ChatApp() {
                   style={{ animationDelay: "2s" }}
                 ></div>
 
-                {/* Desktop project info banner */}
-                {!isMobile && (
-                  <div className="bg-muted/50 border-b border-primary/10 p-4 backdrop-blur-sm relative z-10 flex-shrink-0">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-medium">{projectDetails.name}</h3>
-                          {isDraftProject && (
-                            <Badge variant="outline" className="text-xs">
-                              Draft
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          {projectDetails.type} • {projectDetails.framework} • {projectDetails.languages.join(", ")}
-                        </p>
-                      </div>
-                      <Button variant="outline" size="sm" onClick={editProject}>
-                        Edit Project
-                      </Button>
+                {/* Collapsed state */}
+                {!isMobile && leftPanelCollapsed && (
+                  <div className="h-full flex flex-col items-center justify-center p-2 relative z-10">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setLeftPanelCollapsed(false)}
+                      className="mb-4 rotate-90"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                    <div className="text-xs text-muted-foreground writing-mode-vertical text-center">
+                      Frontend Development
                     </div>
                   </div>
                 )}
 
-                {/* Chat interface with proper chat layout */}
-                <div className="relative z-10 flex-1 flex flex-col min-h-0">
-                  <ChatInterface
-                    messages={messages}
-                    input={input}
-                    isLoading={isLoading}
-                    projectDetails={projectDetails}
-                    forSureFiles={forSureFiles}
-                    onForSureFilesChange={setForSureFiles}
-                    onInputChange={setInput}
-                    onSubmit={handleSubmit}
-                    onCopy={(text, id) => {
-                      navigator.clipboard.writeText(text)
-                      setCopied(id)
-                      setTimeout(() => setCopied(null), 2000)
-                    }}
-                    copiedId={copied}
-                  />
-                </div>
+                {/* Expanded state */}
+                {(!leftPanelCollapsed || isMobile) && (
+                  <>
+                    {/* Desktop project info banner */}
+                    {!isMobile && (
+                      <div className="bg-muted/50 border-b border-primary/10 p-4 backdrop-blur-sm relative z-10 flex-shrink-0">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <h3 className="font-medium">{projectDetails.name}</h3>
+                              {isDraftProject && (
+                                <Badge variant="outline" className="text-xs">
+                                  Draft
+                                </Badge>
+                              )}
+                            </div>
+                            <p className="text-sm text-muted-foreground">
+                              {projectDetails.type} • {projectDetails.framework} • {projectDetails.languages.join(", ")}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Button variant="outline" size="sm" onClick={editProject}>
+                              Edit Project
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => setLeftPanelCollapsed(true)}
+                              className="h-8 w-8"
+                            >
+                              <ChevronLeft className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Chat interface with proper chat layout */}
+                    <div className="relative z-10 flex-1 flex flex-col min-h-0">
+                      <ChatInterface
+                        messages={messages}
+                        input={input}
+                        isLoading={isLoading}
+                        projectDetails={projectDetails}
+                        forSureFiles={forSureFiles}
+                        onForSureFilesChange={setForSureFiles}
+                        onInputChange={setInput}
+                        onSubmit={handleSubmit}
+                        onCopy={(text, id) => {
+                          navigator.clipboard.writeText(text)
+                          setCopied(id)
+                          setTimeout(() => setCopied(null), 2000)
+                        }}
+                        copiedId={copied}
+                      />
+                    </div>
+                  </>
+                )}
               </div>
             )}
 
-            {/* Resize handle */}
+            {/* First resize handle */}
             {!isMobile && projectDetails && !editingProject && (
               <div
                 className="w-1 hover:w-2 bg-border hover:bg-primary/30 cursor-ew-resize transition-all h-full flex items-center justify-center"
@@ -483,8 +592,12 @@ export default function ChatApp() {
             {/* Visualization panel */}
             {(!isMobile || (isMobile && !showMobileChat)) && (
               <div
-                className={`${isMobile ? "w-full" : ""} h-full`}
-                style={{ width: isMobile ? "100%" : `${100 - leftPanelWidth - 0.25}%` }}
+                className={`${isMobile ? "w-full" : ""} h-full transition-all duration-300 ease-in-out`}
+                style={{
+                  width: isMobile
+                    ? "100%"
+                    : `${100 - (leftPanelCollapsed ? collapsedPanelWidth : leftPanelWidth) - (showRightChat ? (rightPanelCollapsed ? collapsedPanelWidth : rightPanelWidth) : 0) - 0.5}%`,
+                }}
               >
                 <VisualizationPanel
                   projectDetails={projectDetails}
@@ -505,7 +618,105 @@ export default function ChatApp() {
                   onDeleteTag={() => {}}
                   onUpdateTag={() => {}}
                   onMoveTag={() => {}}
-                />
+                >
+                  {!isMobile && !showRightChat && (
+                    <Button variant="outline" size="sm" onClick={() => setShowRightChat(true)} className="ml-2">
+                      Show Secondary Chat
+                    </Button>
+                  )}
+                </VisualizationPanel>
+              </div>
+            )}
+
+            {/* Second resize handle */}
+            {!isMobile && projectDetails && !editingProject && showRightChat && (
+              <div
+                className="w-1 hover:w-2 bg-border hover:bg-primary/30 cursor-ew-resize transition-all h-full flex items-center justify-center"
+                onMouseDown={handleRightResize}
+              >
+                <div className="h-8 w-1 bg-primary/50 rounded-full"></div>
+              </div>
+            )}
+
+            {/* Right chat panel */}
+            {(!isMobile || (isMobile && showMobileChat && showRightChat)) && showRightChat && (
+              <div
+                className={`${
+                  isMobile ? "w-full" : ""
+                } flex flex-col h-full bg-gradient-to-b from-background to-background/95 backdrop-blur-sm border-l border-primary/10 shadow-inner relative overflow-hidden transition-all duration-300 ease-in-out`}
+                style={{
+                  width: isMobile ? "100%" : rightPanelCollapsed ? `${collapsedPanelWidth}%` : `${rightPanelWidth}%`,
+                }}
+              >
+                {/* AI-inspired background pattern */}
+                <div className="absolute inset-0 bg-grid-pattern opacity-[0.03] pointer-events-none"></div>
+
+                {/* Subtle glow effect */}
+                <div className="absolute -top-20 -right-20 w-40 h-40 bg-primary/10 rounded-full blur-3xl opacity-20 animate-pulse"></div>
+
+                {/* Collapsed state */}
+                {!isMobile && rightPanelCollapsed && (
+                  <div className="h-full flex flex-col items-center justify-center p-2 relative z-10">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setRightPanelCollapsed(false)}
+                      className="mb-4 rotate-90"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    <div className="text-xs text-muted-foreground writing-mode-vertical text-center">
+                      Backend Development
+                    </div>
+                  </div>
+                )}
+
+                {/* Expanded state */}
+                {(!rightPanelCollapsed || isMobile) && (
+                  <>
+                    {/* Right chat header */}
+                    {!isMobile && (
+                      <div className="bg-muted/50 border-b border-primary/10 p-4 backdrop-blur-sm relative z-10 flex-shrink-0">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h3 className="font-medium">Backend AI Assistant</h3>
+                            <p className="text-sm text-muted-foreground">Backend development and API assistance</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => setRightPanelCollapsed(true)}
+                              className="h-8 w-8"
+                            >
+                              <ChevronRight className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Right chat interface */}
+                    <div className="relative z-10 flex-1 flex flex-col min-h-0">
+                      <ChatInterface
+                        messages={rightChatMessages}
+                        input={rightChatInput}
+                        isLoading={rightChatLoading}
+                        projectDetails={projectDetails}
+                        forSureFiles={forSureFiles}
+                        onForSureFilesChange={setForSureFiles}
+                        onInputChange={setRightChatInput}
+                        onSubmit={handleRightChatSubmit}
+                        onCopy={(text, id) => {
+                          navigator.clipboard.writeText(text)
+                          setCopied(id)
+                          setTimeout(() => setCopied(null), 2000)
+                        }}
+                        copiedId={copied}
+                      />
+                    </div>
+                  </>
+                )}
               </div>
             )}
           </div>

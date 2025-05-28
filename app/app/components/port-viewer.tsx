@@ -1116,7 +1116,7 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
   }
 
   return (
-    <div className={`${isFullscreen ? "fixed inset-0 z-50 bg-background" : "h-full"} flex flex-col`}>
+    <div className={`${isFullscreen ? "fixed inset-0 z-50 bg-background" : "h-full"} flex flex-col p-4`}>
       <div className="mb-4 flex gap-2">
         <Input
           value={url}

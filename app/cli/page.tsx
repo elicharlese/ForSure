@@ -100,37 +100,39 @@ export default function CLIPage() {
   }
 
   return (
-    <div className="container py-12 max-w-5xl">
+    <div className="container py-6 md:py-12 max-w-5xl px-4 md:px-6">
       <div className="space-y-8">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="flex flex-col gap-4 mb-6 md:mb-8">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <Terminal className="h-6 w-6 text-primary" />
-              <h1 className="text-4xl font-bold tracking-tight">ForSure CLI</h1>
-              <Badge variant="outline" className="ml-2">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
+              <div className="flex items-center gap-2">
+                <Terminal className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+                <h1 className="text-2xl md:text-4xl font-bold tracking-tight">ForSure CLI</h1>
+              </div>
+              <Badge variant="outline" className="w-fit">
                 v1.2.0
               </Badge>
             </div>
-            <p className="text-xl text-muted-foreground">
+            <p className="text-lg md:text-xl text-muted-foreground">
               A powerful command-line interface for generating project structures from ForSure files.
             </p>
           </div>
-          <div className="flex gap-2">
-            <Button asChild>
-              <Link href="/download" className="flex items-center">
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Button asChild className="w-full sm:w-auto">
+              <Link href="/download" className="flex items-center justify-center">
                 Download CLI <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
-            <Button variant="outline" asChild>
-              <Link href="/docs/cli" className="flex items-center">
+            <Button variant="outline" asChild className="w-full sm:w-auto">
+              <Link href="/docs/cli" className="flex items-center justify-center">
                 Documentation <FileText className="ml-2 h-4 w-4" />
               </Link>
             </Button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="md:col-span-2">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
+          <Card className="lg:col-span-2">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2">
                 <Zap className="h-5 w-5 text-primary" />
@@ -148,17 +150,17 @@ export default function CLIPage() {
                       variant="ghost"
                       size="sm"
                       onClick={copyInstallCommand}
-                      className="h-8 text-primary hover:text-white hover:bg-secondary"
+                      className="h-8 text-primary hover:text-white hover:bg-secondary shrink-0"
                     >
                       {copied ? (
                         <>
                           <Check className="h-4 w-4 mr-1" />
-                          Copied
+                          <span className="hidden sm:inline">Copied</span>
                         </>
                       ) : (
                         <>
                           <Copy className="h-4 w-4 mr-1" />
-                          Copy
+                          <span className="hidden sm:inline">Copy</span>
                         </>
                       )}
                     </Button>
@@ -195,7 +197,7 @@ export default function CLIPage() {
             <CardContent>
               <div
                 ref={terminalRef}
-                className="bg-black rounded-md p-3 h-[220px] overflow-y-auto font-mono text-xs text-white"
+                className="bg-black rounded-md p-2 md:p-3 h-[180px] md:h-[220px] overflow-y-auto font-mono text-xs text-white"
               >
                 <div className="mb-2 text-primary">ForSure CLI Simulator</div>
                 <div className="mb-2 text-gray-400">Type 'help' for available commands</div>
@@ -229,22 +231,22 @@ export default function CLIPage() {
         </div>
 
         <Tabs defaultValue="commands" className="w-full">
-          <TabsList className="grid grid-cols-4 mb-4">
-            <TabsTrigger value="commands" className="flex items-center gap-1">
-              <Code className="h-4 w-4" />
-              <span className="hidden sm:inline">Commands</span>
+          <TabsList className="grid grid-cols-2 md:grid-cols-4 mb-4 h-auto">
+            <TabsTrigger value="commands" className="flex items-center gap-1 text-xs md:text-sm py-2">
+              <Code className="h-3 w-3 md:h-4 md:w-4" />
+              <span>Commands</span>
             </TabsTrigger>
-            <TabsTrigger value="options" className="flex items-center gap-1">
-              <Settings className="h-4 w-4" />
-              <span className="hidden sm:inline">Options</span>
+            <TabsTrigger value="options" className="flex items-center gap-1 text-xs md:text-sm py-2">
+              <Settings className="h-3 w-3 md:h-4 md:w-4" />
+              <span>Options</span>
             </TabsTrigger>
-            <TabsTrigger value="examples" className="flex items-center gap-1">
-              <FileText className="h-4 w-4" />
-              <span className="hidden sm:inline">Examples</span>
+            <TabsTrigger value="examples" className="flex items-center gap-1 text-xs md:text-sm py-2">
+              <FileText className="h-3 w-3 md:h-4 md:w-4" />
+              <span>Examples</span>
             </TabsTrigger>
-            <TabsTrigger value="faq" className="flex items-center gap-1">
-              <HelpCircle className="h-4 w-4" />
-              <span className="hidden sm:inline">FAQ</span>
+            <TabsTrigger value="faq" className="flex items-center gap-1 text-xs md:text-sm py-2">
+              <HelpCircle className="h-3 w-3 md:h-4 md:w-4" />
+              <span>FAQ</span>
             </TabsTrigger>
           </TabsList>
 
@@ -403,67 +405,71 @@ export default function CLIPage() {
                 <CardDescription>Common options that can be used with ForSure CLI commands</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="overflow-x-auto">
-                  <table className="w-full border-collapse">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="text-left py-2 px-4">Option</th>
-                        <th className="text-left py-2 px-4">Description</th>
-                        <th className="text-left py-2 px-4">Example</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr className="border-b">
-                        <td className="py-3 px-4 font-mono text-sm">--output, -o</td>
-                        <td className="py-3 px-4">Specify the output directory or file</td>
-                        <td className="py-3 px-4 font-mono text-xs">
-                          <code>--output ./my-project</code>
-                        </td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="py-3 px-4 font-mono text-sm">--force, -f</td>
-                        <td className="py-3 px-4">Overwrite existing files</td>
-                        <td className="py-3 px-4 font-mono text-xs">
-                          <code>--force</code>
-                        </td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="py-3 px-4 font-mono text-sm">--dry-run, -d</td>
-                        <td className="py-3 px-4">Show what would be generated without creating files</td>
-                        <td className="py-3 px-4 font-mono text-xs">
-                          <code>--dry-run</code>
-                        </td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="py-3 px-4 font-mono text-sm">--verbose, -v</td>
-                        <td className="py-3 px-4">Show detailed output</td>
-                        <td className="py-3 px-4 font-mono text-xs">
-                          <code>--verbose</code>
-                        </td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="py-3 px-4 font-mono text-sm">--ignore, -i</td>
-                        <td className="py-3 px-4">Ignore specific files or patterns</td>
-                        <td className="py-3 px-4 font-mono text-xs">
-                          <code>--ignore "node_modules/**"</code>
-                        </td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="py-3 px-4 font-mono text-sm">--template, -t</td>
-                        <td className="py-3 px-4">Use a specific template</td>
-                        <td className="py-3 px-4 font-mono text-xs">
-                          <code>--template react-app</code>
-                        </td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="py-3 px-4 font-mono text-sm">--config, -c</td>
-                        <td className="py-3 px-4">Specify a configuration file</td>
-                        <td className="py-3 px-4 font-mono text-xs">
-                          <code>--config .forsurerc</code>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <div className="overflow-x-auto -mx-4 md:mx-0">
+                  <div className="min-w-full px-4 md:px-0">
+                    <table className="w-full border-collapse min-w-[600px]">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left py-2 px-2 md:px-4 text-sm">Option</th>
+                          <th className="text-left py-2 px-2 md:px-4 text-sm">Description</th>
+                          <th className="text-left py-2 px-2 md:px-4 text-sm">Example</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="border-b">
+                          <td className="py-3 px-2 md:px-4 font-mono text-xs md:text-sm">--output, -o</td>
+                          <td className="py-3 px-2 md:px-4 text-sm">Specify the output directory or file</td>
+                          <td className="py-3 px-2 md:px-4 font-mono text-xs">
+                            <code>--output ./my-project</code>
+                          </td>
+                        </tr>
+                        <tr className="border-b">
+                          <td className="py-3 px-2 md:px-4 font-mono text-xs md:text-sm">--force, -f</td>
+                          <td className="py-3 px-2 md:px-4 text-sm">Overwrite existing files</td>
+                          <td className="py-3 px-2 md:px-4 font-mono text-xs">
+                            <code>--force</code>
+                          </td>
+                        </tr>
+                        <tr className="border-b">
+                          <td className="py-3 px-2 md:px-4 font-mono text-xs md:text-sm">--dry-run, -d</td>
+                          <td className="py-3 px-2 md:px-4 text-sm">
+                            Show what would be generated without creating files
+                          </td>
+                          <td className="py-3 px-2 md:px-4 font-mono text-xs">
+                            <code>--dry-run</code>
+                          </td>
+                        </tr>
+                        <tr className="border-b">
+                          <td className="py-3 px-2 md:px-4 font-mono text-xs md:text-sm">--verbose, -v</td>
+                          <td className="py-3 px-2 md:px-4 text-sm">Show detailed output</td>
+                          <td className="py-3 px-2 md:px-4 font-mono text-xs">
+                            <code>--verbose</code>
+                          </td>
+                        </tr>
+                        <tr className="border-b">
+                          <td className="py-3 px-2 md:px-4 font-mono text-xs md:text-sm">--ignore, -i</td>
+                          <td className="py-3 px-2 md:px-4 text-sm">Ignore specific files or patterns</td>
+                          <td className="py-3 px-2 md:px-4 font-mono text-xs">
+                            <code>--ignore "node_modules/**"</code>
+                          </td>
+                        </tr>
+                        <tr className="border-b">
+                          <td className="py-3 px-2 md:px-4 font-mono text-xs md:text-sm">--template, -t</td>
+                          <td className="py-3 px-2 md:px-4 text-sm">Use a specific template</td>
+                          <td className="py-3 px-2 md:px-4 font-mono text-xs">
+                            <code>--template react-app</code>
+                          </td>
+                        </tr>
+                        <tr className="border-b">
+                          <td className="py-3 px-2 md:px-4 font-mono text-xs md:text-sm">--config, -c</td>
+                          <td className="py-3 px-2 md:px-4 text-sm">Specify a configuration file</td>
+                          <td className="py-3 px-2 md:px-4 font-mono text-xs">
+                            <code>--config .forsurerc</code>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -787,25 +793,25 @@ root:
           </TabsContent>
         </Tabs>
 
-        <div className="bg-muted/50 rounded-lg p-6 mt-8">
-          <div className="flex flex-col md:flex-row md:items-center gap-4">
-            <div className="flex-1">
-              <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
+        <div className="bg-muted/50 rounded-lg p-4 md:p-6 mt-6 md:mt-8">
+          <div className="flex flex-col gap-4">
+            <div className="text-center md:text-left">
+              <h2 className="text-xl md:text-2xl font-bold mb-2 flex items-center justify-center md:justify-start gap-2">
                 <BookOpen className="h-5 w-5 text-primary" />
                 Learn More
               </h2>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground text-sm md:text-base">
                 Explore our comprehensive documentation to learn all about ForSure CLI and how to use it effectively.
               </p>
             </div>
-            <div className="flex gap-3">
-              <Button asChild>
-                <Link href="/docs/cli" className="flex items-center">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button asChild className="w-full sm:w-auto">
+                <Link href="/docs/cli" className="flex items-center justify-center">
                   Full Documentation <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button variant="outline" asChild>
-                <Link href="/examples" className="flex items-center">
+              <Button variant="outline" asChild className="w-full sm:w-auto">
+                <Link href="/examples" className="flex items-center justify-center">
                   View Examples <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>

@@ -10,7 +10,7 @@ export default function AppLayout({
 }) {
   return (
     <ProtectedRoute>
-      <div className="min-h-screen flex flex-col">
+      <div className="h-screen flex flex-col overflow-hidden">
         <DemoBanner />
         <SecondaryNavbar />
         {children}
