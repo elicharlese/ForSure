@@ -1,5 +1,5 @@
-import type { ProjectVersion } from "../hooks/use-saved-projects"
-import type { FileNode } from "../components/file-structure-visualization"
+import type { ProjectVersion } from '../hooks/use-saved-projects'
+import type { FileNode } from '../components/file-structure-visualization'
 
 export interface ThreeWayMergeResult {
   conflicts: ThreeWayConflict[]
@@ -10,20 +10,26 @@ export interface ThreeWayMergeResult {
 
 export interface ThreeWayConflict {
   path: string
-  type: "content" | "type" | "structure" | "both-modified" | "both-added" | "both-deleted"
+  type:
+    | 'content'
+    | 'type'
+    | 'structure'
+    | 'both-modified'
+    | 'both-added'
+    | 'both-deleted'
   ancestorValue?: any
   currentValue?: any
   targetValue?: any
   conflictReason: string
   autoResolvable: boolean
-  suggestedResolution?: "current" | "target" | "ancestor" | "merge"
+  suggestedResolution?: 'current' | 'target' | 'ancestor' | 'merge'
   confidence: number
 }
 
 export interface ThreeWayChange {
   path: string
-  changeType: "added" | "removed" | "modified" | "unchanged"
-  source: "current" | "target" | "both"
+  changeType: 'added' | 'removed' | 'modified' | 'unchanged'
+  source: 'current' | 'target' | 'both'
   ancestorValue?: any
   currentValue?: any
   targetValue?: any
@@ -37,10 +43,13 @@ export class ThreeWayMergeService {
   static findCommonAncestor(
     currentVersion: ProjectVersion,
     targetVersion: ProjectVersion,
-    allVersions: ProjectVersion[],
+    allVersions: ProjectVersion[]
   ): ProjectVersion | null {
     // Sort versions by timestamp
-    const sortedVersions = allVersions.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
+    const sortedVersions = allVersions.sort(
+      (a, b) =>
+        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+    )
 
     const currentTime = new Date(currentVersion.timestamp).getTime()
     const targetTime = new Date(targetVersion.timestamp).getTime()
@@ -71,7 +80,7 @@ export class ThreeWayMergeService {
   static performThreeWayMerge(
     ancestor: ProjectVersion | null,
     current: ProjectVersion,
-    target: ProjectVersion,
+    target: ProjectVersion
   ): ThreeWayMergeResult {
     const conflicts: ThreeWayConflict[] = []
     const autoResolved: ThreeWayChange[] = []
@@ -82,19 +91,28 @@ export class ThreeWayMergeService {
     }
 
     // Analyze basic project properties
-    this.analyzeProjectProperties(ancestor, current, target, conflicts, autoResolved)
+    this.analyzeProjectProperties(
+      ancestor,
+      current,
+      target,
+      conflicts,
+      autoResolved
+    )
 
     // Analyze languages
     this.analyzeLanguages(ancestor, current, target, conflicts, autoResolved)
 
     // Analyze file structure
-    if (ancestor.details.fileStructure && (current.details.fileStructure || target.details.fileStructure)) {
+    if (
+      ancestor.details.fileStructure &&
+      (current.details.fileStructure || target.details.fileStructure)
+    ) {
       this.analyzeFileStructure(
         ancestor.details.fileStructure,
         current.details.fileStructure,
         target.details.fileStructure,
         conflicts,
-        autoResolved,
+        autoResolved
       )
     }
 
@@ -106,24 +124,35 @@ export class ThreeWayMergeService {
     }
   }
 
-  private static performTwoWayMerge(current: ProjectVersion, target: ProjectVersion): ThreeWayMergeResult {
+  private static performTwoWayMerge(
+    current: ProjectVersion,
+    target: ProjectVersion
+  ): ThreeWayMergeResult {
     const conflicts: ThreeWayConflict[] = []
     const autoResolved: ThreeWayChange[] = []
 
     // Simple two-way comparison for fallback
-    const properties = ["name", "description", "type", "framework", "teamSize", "goals"]
+    const properties = [
+      'name',
+      'description',
+      'type',
+      'framework',
+      'teamSize',
+      'goals',
+    ]
 
-    properties.forEach((prop) => {
+    properties.forEach(prop => {
       const currentVal = (current.details as any)[prop]
       const targetVal = (target.details as any)[prop]
 
       if (currentVal !== targetVal) {
         conflicts.push({
           path: prop,
-          type: "content",
+          type: 'content',
           currentValue: currentVal,
           targetValue: targetVal,
-          conflictReason: "Both versions modified this property differently (no common ancestor)",
+          conflictReason:
+            'Both versions modified this property differently (no common ancestor)',
           autoResolvable: false,
           confidence: 0.3,
         })
@@ -143,15 +172,15 @@ export class ThreeWayMergeService {
     current: ProjectVersion,
     target: ProjectVersion,
     conflicts: ThreeWayConflict[],
-    autoResolved: ThreeWayChange[],
+    autoResolved: ThreeWayChange[]
   ) {
     const properties = [
-      { key: "name", type: "string" },
-      { key: "description", type: "string" },
-      { key: "type", type: "string" },
-      { key: "framework", type: "string" },
-      { key: "teamSize", type: "string" },
-      { key: "goals", type: "string" },
+      { key: 'name', type: 'string' },
+      { key: 'description', type: 'string' },
+      { key: 'type', type: 'string' },
+      { key: 'framework', type: 'string' },
+      { key: 'teamSize', type: 'string' },
+      { key: 'goals', type: 'string' },
     ]
 
     properties.forEach(({ key, type }) => {
@@ -166,8 +195,8 @@ export class ThreeWayMergeService {
         // No changes - keep ancestor value
         autoResolved.push({
           path: key,
-          changeType: "unchanged",
-          source: "both",
+          changeType: 'unchanged',
+          source: 'both',
           ancestorValue: ancestorVal,
           currentValue: currentVal,
           targetValue: targetVal,
@@ -177,8 +206,8 @@ export class ThreeWayMergeService {
         // Only current changed - use current
         autoResolved.push({
           path: key,
-          changeType: currentVal ? "modified" : "removed",
-          source: "current",
+          changeType: currentVal ? 'modified' : 'removed',
+          source: 'current',
           ancestorValue: ancestorVal,
           currentValue: currentVal,
           targetValue: targetVal,
@@ -188,8 +217,8 @@ export class ThreeWayMergeService {
         // Only target changed - use target
         autoResolved.push({
           path: key,
-          changeType: targetVal ? "modified" : "removed",
-          source: "target",
+          changeType: targetVal ? 'modified' : 'removed',
+          source: 'target',
           ancestorValue: ancestorVal,
           currentValue: currentVal,
           targetValue: targetVal,
@@ -201,8 +230,8 @@ export class ThreeWayMergeService {
           // Both changed to same value - auto resolve
           autoResolved.push({
             path: key,
-            changeType: "modified",
-            source: "both",
+            changeType: 'modified',
+            source: 'both',
             ancestorValue: ancestorVal,
             currentValue: currentVal,
             targetValue: targetVal,
@@ -211,17 +240,26 @@ export class ThreeWayMergeService {
         } else {
           // Both changed to different values - conflict
           const similarity = this.calculateSimilarity(currentVal, targetVal)
-          const confidence = this.calculateConfidence(ancestorVal, currentVal, targetVal)
+          const confidence = this.calculateConfidence(
+            ancestorVal,
+            currentVal,
+            targetVal
+          )
 
           conflicts.push({
             path: key,
-            type: "both-modified",
+            type: 'both-modified',
             ancestorValue: ancestorVal,
             currentValue: currentVal,
             targetValue: targetVal,
             conflictReason: `Both versions modified ${key} differently`,
             autoResolvable: similarity > 0.8,
-            suggestedResolution: this.suggestResolution(ancestorVal, currentVal, targetVal, similarity),
+            suggestedResolution: this.suggestResolution(
+              ancestorVal,
+              currentVal,
+              targetVal,
+              similarity
+            ),
             confidence,
           })
         }
@@ -234,16 +272,20 @@ export class ThreeWayMergeService {
     current: ProjectVersion,
     target: ProjectVersion,
     conflicts: ThreeWayConflict[],
-    autoResolved: ThreeWayChange[],
+    autoResolved: ThreeWayChange[]
   ) {
     const ancestorLangs = new Set(ancestor.details.languages)
     const currentLangs = new Set(current.details.languages)
     const targetLangs = new Set(target.details.languages)
 
     // Find all unique languages across all versions
-    const allLangs = new Set([...ancestorLangs, ...currentLangs, ...targetLangs])
+    const allLangs = new Set([
+      ...ancestorLangs,
+      ...currentLangs,
+      ...targetLangs,
+    ])
 
-    allLangs.forEach((lang) => {
+    allLangs.forEach(lang => {
       const inAncestor = ancestorLangs.has(lang)
       const inCurrent = currentLangs.has(lang)
       const inTarget = targetLangs.has(lang)
@@ -256,8 +298,8 @@ export class ThreeWayMergeService {
         if (inAncestor) {
           autoResolved.push({
             path: `languages/${lang}`,
-            changeType: "unchanged",
-            source: "both",
+            changeType: 'unchanged',
+            source: 'both',
             ancestorValue: lang,
             currentValue: inCurrent ? lang : undefined,
             targetValue: inTarget ? lang : undefined,
@@ -268,8 +310,8 @@ export class ThreeWayMergeService {
         // Only current changed
         autoResolved.push({
           path: `languages/${lang}`,
-          changeType: inCurrent ? "added" : "removed",
-          source: "current",
+          changeType: inCurrent ? 'added' : 'removed',
+          source: 'current',
           ancestorValue: inAncestor ? lang : undefined,
           currentValue: inCurrent ? lang : undefined,
           targetValue: inTarget ? lang : undefined,
@@ -279,8 +321,8 @@ export class ThreeWayMergeService {
         // Only target changed
         autoResolved.push({
           path: `languages/${lang}`,
-          changeType: inTarget ? "added" : "removed",
-          source: "target",
+          changeType: inTarget ? 'added' : 'removed',
+          source: 'target',
           ancestorValue: inAncestor ? lang : undefined,
           currentValue: inCurrent ? lang : undefined,
           targetValue: inTarget ? lang : undefined,
@@ -292,8 +334,8 @@ export class ThreeWayMergeService {
           // Both made the same change
           autoResolved.push({
             path: `languages/${lang}`,
-            changeType: inCurrent ? "added" : "removed",
-            source: "both",
+            changeType: inCurrent ? 'added' : 'removed',
+            source: 'both',
             ancestorValue: inAncestor ? lang : undefined,
             currentValue: inCurrent ? lang : undefined,
             targetValue: inTarget ? lang : undefined,
@@ -303,12 +345,12 @@ export class ThreeWayMergeService {
           // Conflicting changes
           conflicts.push({
             path: `languages/${lang}`,
-            type: inCurrent && inTarget ? "both-added" : "both-modified",
+            type: inCurrent && inTarget ? 'both-added' : 'both-modified',
             ancestorValue: inAncestor ? lang : undefined,
             currentValue: inCurrent ? lang : undefined,
             targetValue: inTarget ? lang : undefined,
-            conflictReason: `Language ${lang} was ${inCurrent ? "added" : "removed"} in current and ${
-              inTarget ? "added" : "removed"
+            conflictReason: `Language ${lang} was ${inCurrent ? 'added' : 'removed'} in current and ${
+              inTarget ? 'added' : 'removed'
             } in target`,
             autoResolvable: false,
             confidence: 0.5,
@@ -324,7 +366,7 @@ export class ThreeWayMergeService {
     target: FileNode | undefined,
     conflicts: ThreeWayConflict[],
     autoResolved: ThreeWayChange[],
-    basePath = "",
+    basePath = ''
   ) {
     if (!ancestor) return
 
@@ -338,8 +380,8 @@ export class ThreeWayMergeService {
       // Both deleted - auto resolve as deleted
       autoResolved.push({
         path: `fileStructure/${path}`,
-        changeType: "removed",
-        source: "both",
+        changeType: 'removed',
+        source: 'both',
         ancestorValue: ancestor,
         finalValue: undefined,
       })
@@ -352,8 +394,8 @@ export class ThreeWayMergeService {
         // Current unchanged, target deleted - use target (delete)
         autoResolved.push({
           path: `fileStructure/${path}`,
-          changeType: "removed",
-          source: "target",
+          changeType: 'removed',
+          source: 'target',
           ancestorValue: ancestor,
           currentValue: current,
           finalValue: undefined,
@@ -362,11 +404,11 @@ export class ThreeWayMergeService {
         // Current modified, target deleted - conflict
         conflicts.push({
           path: `fileStructure/${path}`,
-          type: "both-modified",
+          type: 'both-modified',
           ancestorValue: ancestor,
           currentValue: current,
           targetValue: undefined,
-          conflictReason: "File was modified in current but deleted in target",
+          conflictReason: 'File was modified in current but deleted in target',
           autoResolvable: false,
           confidence: 0.3,
         })
@@ -380,8 +422,8 @@ export class ThreeWayMergeService {
         // Target unchanged, current deleted - use current (delete)
         autoResolved.push({
           path: `fileStructure/${path}`,
-          changeType: "removed",
-          source: "current",
+          changeType: 'removed',
+          source: 'current',
           ancestorValue: ancestor,
           targetValue: target,
           finalValue: undefined,
@@ -390,11 +432,11 @@ export class ThreeWayMergeService {
         // Target modified, current deleted - conflict
         conflicts.push({
           path: `fileStructure/${path}`,
-          type: "both-modified",
+          type: 'both-modified',
           ancestorValue: ancestor,
           currentValue: undefined,
           targetValue: target,
-          conflictReason: "File was deleted in current but modified in target",
+          conflictReason: 'File was deleted in current but modified in target',
           autoResolvable: false,
           confidence: 0.3,
         })
@@ -407,22 +449,22 @@ export class ThreeWayMergeService {
       // Type changed
       conflicts.push({
         path: `fileStructure/${path}`,
-        type: "type",
+        type: 'type',
         ancestorValue: ancestor,
         currentValue: current,
         targetValue: target,
-        conflictReason: "File type changed differently in current and target",
+        conflictReason: 'File type changed differently in current and target',
         autoResolvable: false,
         confidence: 0.2,
       })
       return
     }
 
-    if (ancestor.type === "file") {
+    if (ancestor.type === 'file') {
       // Compare file content
-      const ancestorContent = ancestor.content || ""
-      const currentContent = current!.content || ""
-      const targetContent = target!.content || ""
+      const ancestorContent = ancestor.content || ''
+      const currentContent = current!.content || ''
+      const targetContent = target!.content || ''
 
       const currentChanged = currentContent !== ancestorContent
       const targetChanged = targetContent !== ancestorContent
@@ -431,8 +473,8 @@ export class ThreeWayMergeService {
         // No changes
         autoResolved.push({
           path: `fileStructure/${path}`,
-          changeType: "unchanged",
-          source: "both",
+          changeType: 'unchanged',
+          source: 'both',
           ancestorValue: ancestor,
           currentValue: current,
           targetValue: target,
@@ -442,8 +484,8 @@ export class ThreeWayMergeService {
         // Only current changed
         autoResolved.push({
           path: `fileStructure/${path}`,
-          changeType: "modified",
-          source: "current",
+          changeType: 'modified',
+          source: 'current',
           ancestorValue: ancestor,
           currentValue: current,
           targetValue: target,
@@ -453,8 +495,8 @@ export class ThreeWayMergeService {
         // Only target changed
         autoResolved.push({
           path: `fileStructure/${path}`,
-          changeType: "modified",
-          source: "target",
+          changeType: 'modified',
+          source: 'target',
           ancestorValue: ancestor,
           currentValue: current,
           targetValue: target,
@@ -466,8 +508,8 @@ export class ThreeWayMergeService {
           // Both changed to same content
           autoResolved.push({
             path: `fileStructure/${path}`,
-            changeType: "modified",
-            source: "both",
+            changeType: 'modified',
+            source: 'both',
             ancestorValue: ancestor,
             currentValue: current,
             targetValue: target,
@@ -475,12 +517,16 @@ export class ThreeWayMergeService {
           })
         } else {
           // Different changes - try to merge or conflict
-          const mergedContent = this.attemptTextMerge(ancestorContent, currentContent, targetContent)
+          const mergedContent = this.attemptTextMerge(
+            ancestorContent,
+            currentContent,
+            targetContent
+          )
           if (mergedContent.success) {
             autoResolved.push({
               path: `fileStructure/${path}`,
-              changeType: "modified",
-              source: "both",
+              changeType: 'modified',
+              source: 'both',
               ancestorValue: ancestor,
               currentValue: current,
               targetValue: target,
@@ -489,43 +535,57 @@ export class ThreeWayMergeService {
           } else {
             conflicts.push({
               path: `fileStructure/${path}`,
-              type: "content",
+              type: 'content',
               ancestorValue: ancestor,
               currentValue: current,
               targetValue: target,
-              conflictReason: "File content was modified differently in both versions",
+              conflictReason:
+                'File content was modified differently in both versions',
               autoResolvable: false,
               confidence: 0.4,
             })
           }
         }
       }
-    } else if (ancestor.type === "directory") {
+    } else if (ancestor.type === 'directory') {
       // Recursively analyze directory children
       const ancestorChildren = ancestor.children || []
       const currentChildren = current!.children || []
       const targetChildren = target!.children || []
 
       // Create maps for easier lookup
-      const ancestorChildMap = new Map(ancestorChildren.map((child) => [child.name, child]))
-      const currentChildMap = new Map(currentChildren.map((child) => [child.name, child]))
-      const targetChildMap = new Map(targetChildren.map((child) => [child.name, child]))
+      const ancestorChildMap = new Map(
+        ancestorChildren.map(child => [child.name, child])
+      )
+      const currentChildMap = new Map(
+        currentChildren.map(child => [child.name, child])
+      )
+      const targetChildMap = new Map(
+        targetChildren.map(child => [child.name, child])
+      )
 
       // Get all unique child names
       const allChildNames = new Set([
-        ...ancestorChildren.map((c) => c.name),
-        ...currentChildren.map((c) => c.name),
-        ...targetChildren.map((c) => c.name),
+        ...ancestorChildren.map(c => c.name),
+        ...currentChildren.map(c => c.name),
+        ...targetChildren.map(c => c.name),
       ])
 
-      allChildNames.forEach((childName) => {
+      allChildNames.forEach(childName => {
         const ancestorChild = ancestorChildMap.get(childName)
         const currentChild = currentChildMap.get(childName)
         const targetChild = targetChildMap.get(childName)
 
         if (ancestorChild) {
           // Child existed in ancestor
-          this.analyzeFileStructure(ancestorChild, currentChild, targetChild, conflicts, autoResolved, path)
+          this.analyzeFileStructure(
+            ancestorChild,
+            currentChild,
+            targetChild,
+            conflicts,
+            autoResolved,
+            path
+          )
         } else {
           // Child was added in current or target
           if (currentChild && targetChild) {
@@ -533,8 +593,8 @@ export class ThreeWayMergeService {
             if (this.fileNodeEquals(currentChild, targetChild)) {
               autoResolved.push({
                 path: `fileStructure/${path}/${childName}`,
-                changeType: "added",
-                source: "both",
+                changeType: 'added',
+                source: 'both',
                 currentValue: currentChild,
                 targetValue: targetChild,
                 finalValue: currentChild,
@@ -542,10 +602,10 @@ export class ThreeWayMergeService {
             } else {
               conflicts.push({
                 path: `fileStructure/${path}/${childName}`,
-                type: "both-added",
+                type: 'both-added',
                 currentValue: currentChild,
                 targetValue: targetChild,
-                conflictReason: "File was added differently in both versions",
+                conflictReason: 'File was added differently in both versions',
                 autoResolvable: false,
                 confidence: 0.3,
               })
@@ -554,8 +614,8 @@ export class ThreeWayMergeService {
             // Added only in current
             autoResolved.push({
               path: `fileStructure/${path}/${childName}`,
-              changeType: "added",
-              source: "current",
+              changeType: 'added',
+              source: 'current',
               currentValue: currentChild,
               finalValue: currentChild,
             })
@@ -563,8 +623,8 @@ export class ThreeWayMergeService {
             // Added only in target
             autoResolved.push({
               path: `fileStructure/${path}/${childName}`,
-              changeType: "added",
-              source: "target",
+              changeType: 'added',
+              source: 'target',
               targetValue: targetChild,
               finalValue: targetChild,
             })
@@ -577,18 +637,18 @@ export class ThreeWayMergeService {
   private static fileNodeEquals(a: FileNode, b: FileNode): boolean {
     if (a.type !== b.type || a.name !== b.name) return false
 
-    if (a.type === "file") {
-      return (a.content || "") === (b.content || "")
+    if (a.type === 'file') {
+      return (a.content || '') === (b.content || '')
     }
 
-    if (a.type === "directory") {
+    if (a.type === 'directory') {
       const aChildren = a.children || []
       const bChildren = b.children || []
 
       if (aChildren.length !== bChildren.length) return false
 
-      const aChildMap = new Map(aChildren.map((child) => [child.name, child]))
-      return bChildren.every((bChild) => {
+      const aChildMap = new Map(aChildren.map(child => [child.name, child]))
+      return bChildren.every(bChild => {
         const aChild = aChildMap.get(bChild.name)
         return aChild && this.fileNodeEquals(aChild, bChild)
       })
@@ -600,37 +660,44 @@ export class ThreeWayMergeService {
   private static attemptTextMerge(
     ancestor: string,
     current: string,
-    target: string,
+    target: string
   ): { success: boolean; result: string } {
     // Simple line-based merge
-    const ancestorLines = ancestor.split("\n")
-    const currentLines = current.split("\n")
-    const targetLines = target.split("\n")
+    const ancestorLines = ancestor.split('\n')
+    const currentLines = current.split('\n')
+    const targetLines = target.split('\n')
 
     // If one version is just an extension of the ancestor, and the other has different changes
     if (current.includes(ancestor) && !target.includes(ancestor)) {
-      return { success: false, result: "" }
+      return { success: false, result: '' }
     }
     if (target.includes(ancestor) && !current.includes(ancestor)) {
-      return { success: false, result: "" }
+      return { success: false, result: '' }
     }
 
     // If both are extensions of ancestor in non-conflicting ways
     if (current.includes(ancestor) && target.includes(ancestor)) {
       // Try to combine the extensions
-      const currentAddition = current.replace(ancestor, "")
-      const targetAddition = target.replace(ancestor, "")
+      const currentAddition = current.replace(ancestor, '')
+      const targetAddition = target.replace(ancestor, '')
 
-      if (currentAddition && targetAddition && !currentAddition.includes(targetAddition)) {
-        return { success: true, result: ancestor + currentAddition + targetAddition }
+      if (
+        currentAddition &&
+        targetAddition &&
+        !currentAddition.includes(targetAddition)
+      ) {
+        return {
+          success: true,
+          result: ancestor + currentAddition + targetAddition,
+        }
       }
     }
 
-    return { success: false, result: "" }
+    return { success: false, result: '' }
   }
 
   private static calculateSimilarity(a: any, b: any): number {
-    if (typeof a !== "string" || typeof b !== "string") {
+    if (typeof a !== 'string' || typeof b !== 'string') {
       return a === b ? 1 : 0
     }
 
@@ -659,7 +726,11 @@ export class ThreeWayMergeService {
         if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
           matrix[i][j] = matrix[i - 1][j - 1]
         } else {
-          matrix[i][j] = Math.min(matrix[i - 1][j - 1] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j] + 1)
+          matrix[i][j] = Math.min(
+            matrix[i - 1][j - 1] + 1,
+            matrix[i][j - 1] + 1,
+            matrix[i - 1][j] + 1
+          )
         }
       }
     }
@@ -667,11 +738,15 @@ export class ThreeWayMergeService {
     return matrix[str2.length][str1.length]
   }
 
-  private static calculateConfidence(ancestor: any, current: any, target: any): number {
+  private static calculateConfidence(
+    ancestor: any,
+    current: any,
+    target: any
+  ): number {
     // Calculate confidence based on how different the changes are
-    const ancestorStr = String(ancestor || "")
-    const currentStr = String(current || "")
-    const targetStr = String(target || "")
+    const ancestorStr = String(ancestor || '')
+    const currentStr = String(current || '')
+    const targetStr = String(target || '')
 
     const currentSim = this.calculateSimilarity(ancestorStr, currentStr)
     const targetSim = this.calculateSimilarity(ancestorStr, targetStr)
@@ -685,20 +760,20 @@ export class ThreeWayMergeService {
     ancestor: any,
     current: any,
     target: any,
-    similarity: number,
-  ): "current" | "target" | "ancestor" | "merge" | undefined {
-    if (similarity > 0.8) return "merge"
+    similarity: number
+  ): 'current' | 'target' | 'ancestor' | 'merge' | undefined {
+    if (similarity > 0.8) return 'merge'
 
-    const ancestorStr = String(ancestor || "")
-    const currentStr = String(current || "")
-    const targetStr = String(target || "")
+    const ancestorStr = String(ancestor || '')
+    const currentStr = String(current || '')
+    const targetStr = String(target || '')
 
     // If one is closer to ancestor, suggest the other (the one with more changes)
     const currentSim = this.calculateSimilarity(ancestorStr, currentStr)
     const targetSim = this.calculateSimilarity(ancestorStr, targetStr)
 
     if (Math.abs(currentSim - targetSim) > 0.3) {
-      return currentSim < targetSim ? "current" : "target"
+      return currentSim < targetSim ? 'current' : 'target'
     }
 
     return undefined

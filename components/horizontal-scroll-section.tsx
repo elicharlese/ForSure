@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import { type ReactNode, useRef, useEffect } from "react"
-import { gsap } from "gsap"
-import { ScrollTrigger } from "gsap/dist/ScrollTrigger"
-import { cn } from "@/lib/utils"
+import { type ReactNode, useRef, useEffect } from 'react'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
+import { cn } from '@/lib/utils'
 
 interface HorizontalScrollSectionProps {
   children: ReactNode
@@ -22,7 +22,7 @@ export default function HorizontalScrollSection({
   const contentRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (typeof window === "undefined") return
+    if (typeof window === 'undefined') return
 
     const section = sectionRef.current
     const content = contentRef.current
@@ -43,7 +43,7 @@ export default function HorizontalScrollSection({
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: section,
-        start: "top center",
+        start: 'top center',
         end: `+=${contentWidth - sectionWidth + 100}`,
         scrub: true,
         pin: true,
@@ -54,12 +54,12 @@ export default function HorizontalScrollSection({
 
     tl.to(content, {
       x: -(contentWidth - sectionWidth),
-      ease: "none",
+      ease: 'none',
     })
 
     return () => {
       if (tl) tl.kill()
-      ScrollTrigger.getAll().forEach((trigger) => {
+      ScrollTrigger.getAll().forEach(trigger => {
         if (trigger.vars.trigger === section) {
           trigger.kill()
         }
@@ -68,8 +68,8 @@ export default function HorizontalScrollSection({
   }, [])
 
   return (
-    <div ref={sectionRef} className={cn("overflow-hidden", className)} id={id}>
-      <div ref={contentRef} className={cn("flex", contentClassName)}>
+    <div ref={sectionRef} className={cn('overflow-hidden', className)} id={id}>
+      <div ref={contentRef} className={cn('flex', contentClassName)}>
         {children}
       </div>
     </div>

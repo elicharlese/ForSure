@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { RefreshCwIcon as Refresh, Copy, Check } from "lucide-react"
+import { useState, useEffect } from 'react'
+import { Button } from '@/components/ui/button'
+import { RefreshCwIcon as Refresh, Copy, Check } from 'lucide-react'
 
 const defaultCode = `root:
   - Type: Directory
@@ -43,7 +43,7 @@ const defaultCode = `root:
 
 interface FileNode {
   name: string
-  type: "file" | "directory"
+  type: 'file' | 'directory'
   description?: string
   children?: FileNode[]
 }
@@ -62,17 +62,17 @@ export default function ForSureInteractiveDemo() {
   const parseForSureCode = (code: string): FileNode | null => {
     try {
       // This is a simplified parser for demo purposes
-      const lines = code.split("\n")
+      const lines = code.split('\n')
       const rootNode: FileNode = {
-        name: "root",
-        type: "directory",
+        name: 'root',
+        type: 'directory',
         children: [],
       }
 
       let currentNode = rootNode
       let currentIndentation = 0
       const nodeStack = [rootNode]
-      let currentDescription = ""
+      let currentDescription = ''
       let collectingDescription = false
 
       for (let i = 0; i < lines.length; i++) {
@@ -85,31 +85,36 @@ export default function ForSureInteractiveDemo() {
 
         // Handle description blocks
         if (collectingDescription) {
-          if (trimmedLine === "</description>") {
+          if (trimmedLine === '</description>') {
             collectingDescription = false
             if (nodeStack.length > 0) {
-              nodeStack[nodeStack.length - 1].description = currentDescription.trim()
+              nodeStack[nodeStack.length - 1].description =
+                currentDescription.trim()
             }
-            currentDescription = ""
+            currentDescription = ''
           } else {
-            currentDescription += trimmedLine + "\n"
+            currentDescription += trimmedLine + '\n'
           }
           continue
         }
 
-        if (trimmedLine === "<description>") {
+        if (trimmedLine === '<description>') {
           collectingDescription = true
           continue
         }
 
         // Skip comments and other metadata tags
-        if (trimmedLine.startsWith("#") || trimmedLine.startsWith("<") || trimmedLine === "root:") {
+        if (
+          trimmedLine.startsWith('#') ||
+          trimmedLine.startsWith('<') ||
+          trimmedLine === 'root:'
+        ) {
           continue
         }
 
         // Handle file/directory entries
-        if (trimmedLine.startsWith("- Type:")) {
-          const type = trimmedLine.includes("Directory") ? "directory" : "file"
+        if (trimmedLine.startsWith('- Type:')) {
+          const type = trimmedLine.includes('Directory') ? 'directory' : 'file'
 
           // Adjust the stack based on indentation
           if (indentation > currentIndentation) {
@@ -128,9 +133,9 @@ export default function ForSureInteractiveDemo() {
 
           // Create a new node
           const newNode: FileNode = {
-            name: "unnamed",
+            name: 'unnamed',
             type,
-            children: type === "directory" ? [] : undefined,
+            children: type === 'directory' ? [] : undefined,
           }
 
           // Add to parent's children
@@ -138,15 +143,20 @@ export default function ForSureInteractiveDemo() {
           currentNode.children.push(newNode)
 
           // Push to stack if it's a directory
-          if (type === "directory") {
+          if (type === 'directory') {
             nodeStack.push(newNode)
           }
-        } else if (trimmedLine.startsWith("- Name:")) {
+        } else if (trimmedLine.startsWith('- Name:')) {
           // Set the name of the current node
           const name = trimmedLine.substring(8).trim()
-          if (nodeStack.length > 0 && nodeStack[nodeStack.length - 1].children?.length) {
+          if (
+            nodeStack.length > 0 &&
+            nodeStack[nodeStack.length - 1].children?.length
+          ) {
             const lastChild =
-              nodeStack[nodeStack.length - 1].children![nodeStack[nodeStack.length - 1].children!.length - 1]
+              nodeStack[nodeStack.length - 1].children![
+                nodeStack[nodeStack.length - 1].children!.length - 1
+              ]
             lastChild.name = name
           }
         }
@@ -155,22 +165,22 @@ export default function ForSureInteractiveDemo() {
       // Clean up the root node for display
       if (rootNode.children && rootNode.children.length > 0) {
         return {
-          name: "./",
-          type: "directory",
+          name: './',
+          type: 'directory',
           children: rootNode.children,
         }
       }
 
       return rootNode
     } catch (error) {
-      console.error("Error parsing ForSure code:", error)
+      console.error('Error parsing ForSure code:', error)
       return null
     }
   }
 
   const renderFileStructure = (node: FileNode, level = 0) => {
     const indent = level * 20
-    const isFile = node.type === "file"
+    const isFile = node.type === 'file'
 
     return (
       <div key={`${node.name}-${level}`}>
@@ -220,7 +230,7 @@ export default function ForSureInteractiveDemo() {
             {node.description}
           </div>
         )}
-        {node.children?.map((child) => renderFileStructure(child, level + 1))}
+        {node.children?.map(child => renderFileStructure(child, level + 1))}
       </div>
     )
   }
@@ -240,7 +250,9 @@ export default function ForSureInteractiveDemo() {
       {/* Code Editor */}
       <div className="border-r border-primary/20">
         <div className="p-4 bg-secondary-dark/50 border-b border-primary/20 flex justify-between items-center">
-          <span className="font-mono text-sm text-white/80">project.forsure</span>
+          <span className="font-mono text-sm text-white/80">
+            project.forsure
+          </span>
           <div className="flex gap-2">
             <Button
               variant="ghost"
@@ -273,7 +285,7 @@ export default function ForSureInteractiveDemo() {
         <div className="p-0 bg-secondary-dark">
           <textarea
             value={code}
-            onChange={(e) => setCode(e.target.value)}
+            onChange={e => setCode(e.target.value)}
             className="w-full h-[500px] bg-secondary-dark text-white font-mono text-sm p-4 border-none focus:outline-none resize-none"
             spellCheck="false"
           />
@@ -283,7 +295,9 @@ export default function ForSureInteractiveDemo() {
       {/* Visualization */}
       <div>
         <div className="p-4 bg-secondary-dark/50 border-b border-primary/20">
-          <span className="font-mono text-sm text-white/80">File Structure Preview</span>
+          <span className="font-mono text-sm text-white/80">
+            File Structure Preview
+          </span>
         </div>
         <div className="p-6 bg-white dark:bg-secondary-dark/30 h-[500px] overflow-auto">
           {fileStructure ? (

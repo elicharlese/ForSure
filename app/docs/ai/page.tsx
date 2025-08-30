@@ -1,17 +1,29 @@
-import Link from "next/link"
-import { ArrowRight, Brain, Code, FileText, Lightbulb, Layers, GitBranch, Cpu, Settings, Zap } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import DocsCodeBlock from "@/components/docs-code-block"
-import DocsSearch from "@/components/docs-search"
-import DocsToc from "@/components/docs-toc"
-import DocsFeedback from "@/components/docs-feedback"
+import Link from 'next/link'
+import {
+  ArrowRight,
+  Brain,
+  Code,
+  FileText,
+  Lightbulb,
+  Layers,
+  GitBranch,
+  Cpu,
+  Settings,
+  Zap,
+} from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import DocsCodeBlock from '@/components/docs-code-block'
+import DocsSearch from '@/components/docs-search'
+import DocsToc from '@/components/docs-toc'
+import DocsFeedback from '@/components/docs-feedback'
 
 export const metadata = {
-  title: "Neural Network Documentation - ForSure",
-  description: "Comprehensive documentation for ForSure's neural network and AI capabilities",
+  title: 'Neural Network Documentation - ForSure',
+  description:
+    "Comprehensive documentation for ForSure's neural network and AI capabilities",
 }
 
 export default function AIDocsPage() {
@@ -29,9 +41,12 @@ export default function AIDocsPage() {
                 Beta
               </Badge>
             </div>
-            <h1 className="text-4xl font-bold tracking-tight">Neural Network Documentation</h1>
+            <h1 className="text-4xl font-bold tracking-tight">
+              Neural Network Documentation
+            </h1>
             <p className="text-xl text-muted-foreground">
-              Learn how ForSure's neural network learns from your coding style to create personalized project structures
+              Learn how ForSure's neural network learns from your coding style
+              to create personalized project structures
             </p>
             <div className="pt-2">
               <DocsSearch />
@@ -40,18 +55,24 @@ export default function AIDocsPage() {
 
           {/* Introduction */}
           <div className="space-y-4">
-            <h2 id="introduction" className="text-2xl font-semibold tracking-tight scroll-m-20">
+            <h2
+              id="introduction"
+              className="text-2xl font-semibold tracking-tight scroll-m-20"
+            >
               Introduction
             </h2>
             <p>
-              ForSure's neural network is an advanced AI system designed to learn from your coding style and project
-              structures. As you use ForSure to create and manage projects, the neural network analyzes your patterns,
-              preferences, and conventions to deliver increasingly personalized results.
+              ForSure's neural network is an advanced AI system designed to
+              learn from your coding style and project structures. As you use
+              ForSure to create and manage projects, the neural network analyzes
+              your patterns, preferences, and conventions to deliver
+              increasingly personalized results.
             </p>
             <p>
-              This adaptive learning system helps maintain consistency across projects while reducing the cognitive load
-              of decision-making around project organization. The more you use ForSure, the better it understands your
-              style.
+              This adaptive learning system helps maintain consistency across
+              projects while reducing the cognitive load of decision-making
+              around project organization. The more you use ForSure, the better
+              it understands your style.
             </p>
 
             <div className="bg-muted/50 rounded-lg p-6 my-6 border">
@@ -60,8 +81,9 @@ export default function AIDocsPage() {
                 <div>
                   <h3 className="font-medium mb-2">Beta Feature</h3>
                   <p className="text-muted-foreground">
-                    The neural network feature is currently in beta. While it's fully functional, we're continuously
-                    improving its capabilities and performance based on user feedback.
+                    The neural network feature is currently in beta. While it's
+                    fully functional, we're continuously improving its
+                    capabilities and performance based on user feedback.
                   </p>
                 </div>
               </div>
@@ -70,12 +92,16 @@ export default function AIDocsPage() {
 
           {/* How It Works */}
           <div className="space-y-4">
-            <h2 id="how-it-works" className="text-2xl font-semibold tracking-tight scroll-m-20">
+            <h2
+              id="how-it-works"
+              className="text-2xl font-semibold tracking-tight scroll-m-20"
+            >
               How It Works
             </h2>
             <p>
-              ForSure's neural network operates through a multi-stage process that combines analysis, learning, and
-              application to deliver personalized project structures.
+              ForSure's neural network operates through a multi-stage process
+              that combines analysis, learning, and application to deliver
+              personalized project structures.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
@@ -90,8 +116,9 @@ export default function AIDocsPage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
-                    When you first use ForSure, the neural network analyzes your existing projects (if you choose to
-                    share them) or starts with a neutral baseline. It examines:
+                    When you first use ForSure, the neural network analyzes your
+                    existing projects (if you choose to share them) or starts
+                    with a neutral baseline. It examines:
                   </p>
                   <ul className="list-disc list-inside text-sm text-muted-foreground mt-2 space-y-1">
                     <li>File and directory naming conventions</li>
@@ -113,11 +140,13 @@ export default function AIDocsPage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
-                    The neural network identifies recurring patterns in your work using advanced machine learning
-                    algorithms:
+                    The neural network identifies recurring patterns in your
+                    work using advanced machine learning algorithms:
                   </p>
                   <ul className="list-disc list-inside text-sm text-muted-foreground mt-2 space-y-1">
-                    <li>Consistent naming patterns (camelCase, PascalCase, etc.)</li>
+                    <li>
+                      Consistent naming patterns (camelCase, PascalCase, etc.)
+                    </li>
                     <li>Directory organization strategies</li>
                     <li>File grouping preferences</li>
                     <li>Common project structures you favor</li>
@@ -136,11 +165,14 @@ export default function AIDocsPage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
-                    As you create more projects with ForSure, the neural network refines its understanding:
+                    As you create more projects with ForSure, the neural network
+                    refines its understanding:
                   </p>
                   <ul className="list-disc list-inside text-sm text-muted-foreground mt-2 space-y-1">
                     <li>Updates its model with each new project you create</li>
-                    <li>Learns from your modifications to suggested structures</li>
+                    <li>
+                      Learns from your modifications to suggested structures
+                    </li>
                     <li>Adapts to evolving preferences over time</li>
                     <li>Builds a comprehensive style profile unique to you</li>
                   </ul>
@@ -158,13 +190,22 @@ export default function AIDocsPage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
-                    When generating new project structures, the neural network applies your style profile:
+                    When generating new project structures, the neural network
+                    applies your style profile:
                   </p>
                   <ul className="list-disc list-inside text-sm text-muted-foreground mt-2 space-y-1">
-                    <li>Creates structures that match your organizational preferences</li>
+                    <li>
+                      Creates structures that match your organizational
+                      preferences
+                    </li>
                     <li>Applies your naming conventions consistently</li>
-                    <li>Suggests appropriate file groupings based on your patterns</li>
-                    <li>Balances your preferences with project-specific requirements</li>
+                    <li>
+                      Suggests appropriate file groupings based on your patterns
+                    </li>
+                    <li>
+                      Balances your preferences with project-specific
+                      requirements
+                    </li>
                   </ul>
                 </CardContent>
               </Card>
@@ -173,12 +214,15 @@ export default function AIDocsPage() {
 
           {/* Technical Architecture */}
           <div className="space-y-4">
-            <h2 id="technical-architecture" className="text-2xl font-semibold tracking-tight scroll-m-20">
+            <h2
+              id="technical-architecture"
+              className="text-2xl font-semibold tracking-tight scroll-m-20"
+            >
               Technical Architecture
             </h2>
             <p>
-              ForSure's neural network is built on a sophisticated architecture designed specifically for code and
-              project structure analysis.
+              ForSure's neural network is built on a sophisticated architecture
+              designed specifically for code and project structure analysis.
             </p>
 
             <div className="mt-6">
@@ -193,8 +237,9 @@ export default function AIDocsPage() {
                   </CardHeader>
                   <CardContent className="text-sm text-muted-foreground">
                     <p>
-                      A transformer-based architecture optimized for code structure analysis, with specialized attention
-                      mechanisms for hierarchical data.
+                      A transformer-based architecture optimized for code
+                      structure analysis, with specialized attention mechanisms
+                      for hierarchical data.
                     </p>
                   </CardContent>
                 </Card>
@@ -208,8 +253,9 @@ export default function AIDocsPage() {
                   </CardHeader>
                   <CardContent className="text-sm text-muted-foreground">
                     <p>
-                      Converts project structures into vector representations that capture organizational patterns and
-                      naming conventions.
+                      Converts project structures into vector representations
+                      that capture organizational patterns and naming
+                      conventions.
                     </p>
                   </CardContent>
                 </Card>
@@ -223,8 +269,8 @@ export default function AIDocsPage() {
                   </CardHeader>
                   <CardContent className="text-sm text-muted-foreground">
                     <p>
-                      Identifies recurring patterns in project structures and extracts rules that define your personal
-                      style.
+                      Identifies recurring patterns in project structures and
+                      extracts rules that define your personal style.
                     </p>
                   </CardContent>
                 </Card>
@@ -278,13 +324,17 @@ function generateStructure(projectRequirements) {
             </div>
 
             <div className="mt-8">
-              <h3 className="text-xl font-semibold mb-4">Data Processing Pipeline</h3>
+              <h3 className="text-xl font-semibold mb-4">
+                Data Processing Pipeline
+              </h3>
               <div className="relative overflow-hidden rounded-xl border bg-muted p-6">
                 <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
                   <div className="flex flex-col items-center text-center p-4 bg-background rounded-lg border w-full md:w-1/4">
                     <Code className="h-8 w-8 text-primary mb-2" />
                     <h4 className="font-semibold">Input</h4>
-                    <p className="text-xs text-muted-foreground mt-1">Project files, structures, and user feedback</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Project files, structures, and user feedback
+                    </p>
                   </div>
                   <div className="hidden md:block">
                     <ArrowRight className="h-6 w-6 text-muted-foreground" />
@@ -309,7 +359,9 @@ function generateStructure(projectRequirements) {
                   <div className="flex flex-col items-center text-center p-4 bg-background rounded-lg border w-full md:w-1/4">
                     <Brain className="h-8 w-8 text-primary mb-2" />
                     <h4 className="font-semibold">Processing</h4>
-                    <p className="text-xs text-muted-foreground mt-1">Pattern extraction and style analysis</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Pattern extraction and style analysis
+                    </p>
                   </div>
                   <div className="hidden md:block">
                     <ArrowRight className="h-6 w-6 text-muted-foreground" />
@@ -334,7 +386,9 @@ function generateStructure(projectRequirements) {
                   <div className="flex flex-col items-center text-center p-4 bg-background rounded-lg border w-full md:w-1/4">
                     <Layers className="h-8 w-8 text-primary mb-2" />
                     <h4 className="font-semibold">Model Update</h4>
-                    <p className="text-xs text-muted-foreground mt-1">Neural network training and adaptation</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Neural network training and adaptation
+                    </p>
                   </div>
                   <div className="hidden md:block">
                     <ArrowRight className="h-6 w-6 text-muted-foreground" />
@@ -359,7 +413,9 @@ function generateStructure(projectRequirements) {
                   <div className="flex flex-col items-center text-center p-4 bg-background rounded-lg border w-full md:w-1/4">
                     <FileText className="h-8 w-8 text-primary mb-2" />
                     <h4 className="font-semibold">Output</h4>
-                    <p className="text-xs text-muted-foreground mt-1">Personalized project structures</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Personalized project structures
+                    </p>
                   </div>
                 </div>
               </div>
@@ -368,34 +424,41 @@ function generateStructure(projectRequirements) {
 
           {/* Using the Neural Network */}
           <div className="space-y-4">
-            <h2 id="using-neural-network" className="text-2xl font-semibold tracking-tight scroll-m-20">
+            <h2
+              id="using-neural-network"
+              className="text-2xl font-semibold tracking-tight scroll-m-20"
+            >
               Using the Neural Network
             </h2>
             <p>
-              ForSure's neural network is designed to work seamlessly in the background, but you can also configure and
-              interact with it directly.
+              ForSure's neural network is designed to work seamlessly in the
+              background, but you can also configure and interact with it
+              directly.
             </p>
 
             <div className="mt-6">
               <h3 className="text-xl font-semibold mb-4">Getting Started</h3>
               <p className="mb-4">
-                The neural network is enabled by default for all users. As you create projects with ForSure, it will
-                automatically begin learning your style preferences.
+                The neural network is enabled by default for all users. As you
+                create projects with ForSure, it will automatically begin
+                learning your style preferences.
               </p>
 
               <Alert>
                 <Brain className="h-4 w-4" />
                 <AlertTitle>First-time users</AlertTitle>
                 <AlertDescription>
-                  For new users, the neural network will start with a neutral baseline and gradually adapt as you create
-                  more projects. You'll notice increasing personalization after 3-5 projects.
+                  For new users, the neural network will start with a neutral
+                  baseline and gradually adapt as you create more projects.
+                  You'll notice increasing personalization after 3-5 projects.
                 </AlertDescription>
               </Alert>
 
               <div className="mt-6">
                 <h4 className="text-lg font-semibold mb-2">Initial Setup</h4>
                 <p className="text-sm text-muted-foreground mb-4">
-                  To accelerate the learning process, you can provide existing projects for analysis:
+                  To accelerate the learning process, you can provide existing
+                  projects for analysis:
                 </p>
 
                 <DocsCodeBlock
@@ -413,9 +476,12 @@ forsure new my-new-project --ai-enhanced`}
             </div>
 
             <div className="mt-8">
-              <h3 className="text-xl font-semibold mb-4">Configuration Options</h3>
+              <h3 className="text-xl font-semibold mb-4">
+                Configuration Options
+              </h3>
               <p className="mb-4">
-                You can configure the neural network's behavior through the ForSure CLI or web application settings.
+                You can configure the neural network's behavior through the
+                ForSure CLI or web application settings.
               </p>
 
               <Tabs defaultValue="cli">
@@ -446,18 +512,22 @@ forsure ai reset`}
 
                 <TabsContent value="web">
                   <p className="text-sm text-muted-foreground mb-4">
-                    In the web application, navigate to Settings → AI & Neural Network to access configuration options:
+                    In the web application, navigate to Settings → AI & Neural
+                    Network to access configuration options:
                   </p>
                   <div className="border rounded-lg overflow-hidden">
                     <div className="bg-muted p-4 border-b">
-                      <h4 className="font-medium">AI & Neural Network Settings</h4>
+                      <h4 className="font-medium">
+                        AI & Neural Network Settings
+                      </h4>
                     </div>
                     <div className="p-4 space-y-4">
                       <div className="flex items-center justify-between">
                         <div>
                           <h5 className="font-medium">Enable Neural Network</h5>
                           <p className="text-xs text-muted-foreground">
-                            Allow the AI to learn from your projects and apply personalization
+                            Allow the AI to learn from your projects and apply
+                            personalization
                           </p>
                         </div>
                         <div className="h-6 w-12 bg-primary rounded-full relative">
@@ -468,10 +538,14 @@ forsure ai reset`}
                       <div className="space-y-2">
                         <h5 className="font-medium">Learning Rate</h5>
                         <p className="text-xs text-muted-foreground">
-                          How quickly the neural network adapts to your style (higher = faster adaptation)
+                          How quickly the neural network adapts to your style
+                          (higher = faster adaptation)
                         </p>
                         <div className="h-2 bg-muted rounded-full overflow-hidden">
-                          <div className="h-full bg-primary rounded-full" style={{ width: "50%" }}></div>
+                          <div
+                            className="h-full bg-primary rounded-full"
+                            style={{ width: '50%' }}
+                          ></div>
                         </div>
                         <div className="flex justify-between text-xs text-muted-foreground">
                           <span>Conservative</span>
@@ -484,25 +558,49 @@ forsure ai reset`}
                         <h5 className="font-medium">Analysis Components</h5>
                         <div className="grid grid-cols-2 gap-2">
                           <div className="flex items-center space-x-2">
-                            <input type="checkbox" id="naming" className="rounded" checked readOnly />
+                            <input
+                              type="checkbox"
+                              id="naming"
+                              className="rounded"
+                              checked
+                              readOnly
+                            />
                             <label htmlFor="naming" className="text-sm">
                               Naming Conventions
                             </label>
                           </div>
                           <div className="flex items-center space-x-2">
-                            <input type="checkbox" id="structure" className="rounded" checked readOnly />
+                            <input
+                              type="checkbox"
+                              id="structure"
+                              className="rounded"
+                              checked
+                              readOnly
+                            />
                             <label htmlFor="structure" className="text-sm">
                               Project Structure
                             </label>
                           </div>
                           <div className="flex items-center space-x-2">
-                            <input type="checkbox" id="formatting" className="rounded" checked readOnly />
+                            <input
+                              type="checkbox"
+                              id="formatting"
+                              className="rounded"
+                              checked
+                              readOnly
+                            />
                             <label htmlFor="formatting" className="text-sm">
                               Code Formatting
                             </label>
                           </div>
                           <div className="flex items-center space-x-2">
-                            <input type="checkbox" id="comments" className="rounded" checked readOnly />
+                            <input
+                              type="checkbox"
+                              id="comments"
+                              className="rounded"
+                              checked
+                              readOnly
+                            />
                             <label htmlFor="comments" className="text-sm">
                               Documentation Style
                             </label>
@@ -515,7 +613,8 @@ forsure ai reset`}
 
                 <TabsContent value="config">
                   <p className="text-sm text-muted-foreground mb-4">
-                    You can also configure the neural network by editing the <code>.forsurerc</code> configuration file:
+                    You can also configure the neural network by editing the{' '}
+                    <code>.forsurerc</code> configuration file:
                   </p>
                   <DocsCodeBlock
                     code={`{
@@ -546,9 +645,12 @@ forsure ai reset`}
             </div>
 
             <div className="mt-8">
-              <h3 className="text-xl font-semibold mb-4">Viewing Neural Network Insights</h3>
+              <h3 className="text-xl font-semibold mb-4">
+                Viewing Neural Network Insights
+              </h3>
               <p className="mb-4">
-                ForSure provides tools to view insights about what the neural network has learned about your style.
+                ForSure provides tools to view insights about what the neural
+                network has learned about your style.
               </p>
 
               <DocsCodeBlock
@@ -580,9 +682,10 @@ forsure ai profile export --output my-style-profile.json`}
                   <h4 className="font-semibold">Web Dashboard</h4>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  The web application includes a neural network dashboard that provides visualizations of your style
-                  profile, learning progress, and personalization insights. Access it at Settings → AI & Neural Network
-                  → View Dashboard.
+                  The web application includes a neural network dashboard that
+                  provides visualizations of your style profile, learning
+                  progress, and personalization insights. Access it at Settings
+                  → AI & Neural Network → View Dashboard.
                 </p>
               </div>
             </div>
@@ -590,10 +693,16 @@ forsure ai profile export --output my-style-profile.json`}
 
           {/* Best Practices */}
           <div className="space-y-4">
-            <h2 id="best-practices" className="text-2xl font-semibold tracking-tight scroll-m-20">
+            <h2
+              id="best-practices"
+              className="text-2xl font-semibold tracking-tight scroll-m-20"
+            >
               Best Practices
             </h2>
-            <p>Follow these recommendations to get the most out of ForSure's neural network capabilities.</p>
+            <p>
+              Follow these recommendations to get the most out of ForSure's
+              neural network capabilities.
+            </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
               <Card>
@@ -605,9 +714,18 @@ forsure ai profile export --output my-style-profile.json`}
                 </CardHeader>
                 <CardContent>
                   <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-                    <li>Analyze at least 3-5 existing projects to establish a baseline</li>
-                    <li>Include diverse project types for more comprehensive learning</li>
-                    <li>Manually review and correct initial suggestions to accelerate learning</li>
+                    <li>
+                      Analyze at least 3-5 existing projects to establish a
+                      baseline
+                    </li>
+                    <li>
+                      Include diverse project types for more comprehensive
+                      learning
+                    </li>
+                    <li>
+                      Manually review and correct initial suggestions to
+                      accelerate learning
+                    </li>
                   </ul>
                 </CardContent>
               </Card>
@@ -621,9 +739,17 @@ forsure ai profile export --output my-style-profile.json`}
                 </CardHeader>
                 <CardContent>
                   <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-                    <li>Provide feedback on generated structures to improve accuracy</li>
-                    <li>Periodically check the neural network insights to understand its learning</li>
-                    <li>Use the `--ai-enhanced` flag consistently for best results</li>
+                    <li>
+                      Provide feedback on generated structures to improve
+                      accuracy
+                    </li>
+                    <li>
+                      Periodically check the neural network insights to
+                      understand its learning
+                    </li>
+                    <li>
+                      Use the `--ai-enhanced` flag consistently for best results
+                    </li>
                   </ul>
                 </CardContent>
               </Card>
@@ -637,9 +763,17 @@ forsure ai profile export --output my-style-profile.json`}
                 </CardHeader>
                 <CardContent>
                   <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-                    <li>Create a shared team profile for consistent project structures</li>
-                    <li>Export and share style profiles with new team members</li>
-                    <li>Use project templates alongside neural network for standardization</li>
+                    <li>
+                      Create a shared team profile for consistent project
+                      structures
+                    </li>
+                    <li>
+                      Export and share style profiles with new team members
+                    </li>
+                    <li>
+                      Use project templates alongside neural network for
+                      standardization
+                    </li>
                   </ul>
                 </CardContent>
               </Card>
@@ -653,45 +787,60 @@ forsure ai profile export --output my-style-profile.json`}
                 </CardHeader>
                 <CardContent>
                   <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-                    <li>Adjust learning rate based on how quickly you want adaptation</li>
-                    <li>Focus analysis on aspects most important to your workflow</li>
-                    <li>Reset the neural network if your style preferences change significantly</li>
+                    <li>
+                      Adjust learning rate based on how quickly you want
+                      adaptation
+                    </li>
+                    <li>
+                      Focus analysis on aspects most important to your workflow
+                    </li>
+                    <li>
+                      Reset the neural network if your style preferences change
+                      significantly
+                    </li>
                   </ul>
                 </CardContent>
               </Card>
             </div>
 
             <div className="mt-6 p-6 bg-primary/5 rounded-lg border border-primary/10">
-              <h3 className="text-lg font-semibold mb-2">Pro Tip: Balancing AI and Manual Control</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                Pro Tip: Balancing AI and Manual Control
+              </h3>
               <p className="text-sm text-muted-foreground">
-                For optimal results, use the neural network as a starting point but maintain manual control over
-                critical aspects of your project structure. This hybrid approach ensures you get the benefits of AI
-                assistance while preserving your specific requirements for each project.
+                For optimal results, use the neural network as a starting point
+                but maintain manual control over critical aspects of your
+                project structure. This hybrid approach ensures you get the
+                benefits of AI assistance while preserving your specific
+                requirements for each project.
               </p>
               <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex items-start gap-2">
                   <div className="text-green-500 mt-0.5">✓</div>
                   <p className="text-sm">
-                    <span className="font-medium">Do:</span> Review and adjust AI-generated structures before finalizing
+                    <span className="font-medium">Do:</span> Review and adjust
+                    AI-generated structures before finalizing
                   </p>
                 </div>
                 <div className="flex items-start gap-2">
                   <div className="text-red-500 mt-0.5">✗</div>
                   <p className="text-sm">
-                    <span className="font-medium">Don't:</span> Rely solely on AI without reviewing the output
+                    <span className="font-medium">Don't:</span> Rely solely on
+                    AI without reviewing the output
                   </p>
                 </div>
                 <div className="flex items-start gap-2">
                   <div className="text-green-500 mt-0.5">✓</div>
                   <p className="text-sm">
-                    <span className="font-medium">Do:</span> Provide feedback to improve future suggestions
+                    <span className="font-medium">Do:</span> Provide feedback to
+                    improve future suggestions
                   </p>
                 </div>
                 <div className="flex items-start gap-2">
                   <div className="text-red-500 mt-0.5">✗</div>
                   <p className="text-sm">
-                    <span className="font-medium">Don't:</span> Ignore the learning process by constantly overriding
-                    without feedback
+                    <span className="font-medium">Don't:</span> Ignore the
+                    learning process by constantly overriding without feedback
                   </p>
                 </div>
               </div>
@@ -700,30 +849,47 @@ forsure ai profile export --output my-style-profile.json`}
 
           {/* Troubleshooting */}
           <div className="space-y-4">
-            <h2 id="troubleshooting" className="text-2xl font-semibold tracking-tight scroll-m-20">
+            <h2
+              id="troubleshooting"
+              className="text-2xl font-semibold tracking-tight scroll-m-20"
+            >
               Troubleshooting
             </h2>
             <p>
-              If you encounter issues with the neural network feature, here are some common problems and their
-              solutions.
+              If you encounter issues with the neural network feature, here are
+              some common problems and their solutions.
             </p>
 
             <div className="mt-6 space-y-6">
               <div className="border rounded-lg overflow-hidden">
                 <div className="bg-muted p-4 border-b">
-                  <h3 className="font-medium">Neural Network Not Learning My Style</h3>
+                  <h3 className="font-medium">
+                    Neural Network Not Learning My Style
+                  </h3>
                 </div>
                 <div className="p-4 space-y-4">
                   <p className="text-sm text-muted-foreground">
-                    If the neural network doesn't seem to be adapting to your style preferences:
+                    If the neural network doesn't seem to be adapting to your
+                    style preferences:
                   </p>
                   <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-                    <li>Verify that the neural network is enabled in your settings</li>
-                    <li>Check that you've created enough projects (at least 3-5) for effective learning</li>
-                    <li>Try increasing the learning rate in your configuration</li>
-                    <li>Run `forsure analyze` on your existing projects to provide more training data</li>
                     <li>
-                      Ensure you're using the `--ai-enhanced` flag when generating new projects to apply personalization
+                      Verify that the neural network is enabled in your settings
+                    </li>
+                    <li>
+                      Check that you've created enough projects (at least 3-5)
+                      for effective learning
+                    </li>
+                    <li>
+                      Try increasing the learning rate in your configuration
+                    </li>
+                    <li>
+                      Run `forsure analyze` on your existing projects to provide
+                      more training data
+                    </li>
+                    <li>
+                      Ensure you're using the `--ai-enhanced` flag when
+                      generating new projects to apply personalization
                     </li>
                   </ul>
                   <DocsCodeBlock
@@ -746,13 +912,23 @@ forsure config set ai.learningRate 0.8`}
                 </div>
                 <div className="p-4 space-y-4">
                   <p className="text-sm text-muted-foreground">
-                    If the neural network is generating structures that don't match your preferences:
+                    If the neural network is generating structures that don't
+                    match your preferences:
                   </p>
                   <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-                    <li>View your style profile to understand what the AI has learned</li>
+                    <li>
+                      View your style profile to understand what the AI has
+                      learned
+                    </li>
                     <li>Provide explicit feedback on generated structures</li>
-                    <li>Consider resetting the neural network if your preferences have changed significantly</li>
-                    <li>Focus the analysis on specific aspects that are most important to you</li>
+                    <li>
+                      Consider resetting the neural network if your preferences
+                      have changed significantly
+                    </li>
+                    <li>
+                      Focus the analysis on specific aspects that are most
+                      important to you
+                    </li>
                   </ul>
                   <DocsCodeBlock
                     code={`# View your current style profile
@@ -774,13 +950,25 @@ forsure ai reset`}
                 </div>
                 <div className="p-4 space-y-4">
                   <p className="text-sm text-muted-foreground">
-                    If you experience slowdowns or performance issues with the neural network:
+                    If you experience slowdowns or performance issues with the
+                    neural network:
                   </p>
                   <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-                    <li>Reduce the scope of analysis by focusing on fewer aspects</li>
-                    <li>Use local storage instead of cloud storage for the neural network model</li>
-                    <li>Update to the latest version of ForSure for performance improvements</li>
-                    <li>Consider disabling the neural network for very large projects if necessary</li>
+                    <li>
+                      Reduce the scope of analysis by focusing on fewer aspects
+                    </li>
+                    <li>
+                      Use local storage instead of cloud storage for the neural
+                      network model
+                    </li>
+                    <li>
+                      Update to the latest version of ForSure for performance
+                      improvements
+                    </li>
+                    <li>
+                      Consider disabling the neural network for very large
+                      projects if necessary
+                    </li>
                   </ul>
                   <DocsCodeBlock
                     code={`# Focus analysis on specific aspects only
@@ -803,37 +991,51 @@ forsure new large-project --no-ai`}
 
           {/* FAQ */}
           <div className="space-y-4">
-            <h2 id="faq" className="text-2xl font-semibold tracking-tight scroll-m-20">
+            <h2
+              id="faq"
+              className="text-2xl font-semibold tracking-tight scroll-m-20"
+            >
               Frequently Asked Questions
             </h2>
 
             <div className="mt-6 space-y-4">
               <div className="border rounded-lg p-4">
-                <h3 className="font-medium mb-2">Is my code or project data shared with others?</h3>
+                <h3 className="font-medium mb-2">
+                  Is my code or project data shared with others?
+                </h3>
                 <p className="text-sm text-muted-foreground">
-                  No. Your code and project data remain private. The neural network runs locally on your machine by
-                  default. You can optionally enable anonymous data sharing to help improve the system, but this is
-                  disabled by default and only shares non-identifying pattern information, never your actual code.
-                </p>
-              </div>
-
-              <div className="border rounded-lg p-4">
-                <h3 className="font-medium mb-2">How long does it take for the neural network to learn my style?</h3>
-                <p className="text-sm text-muted-foreground">
-                  The neural network begins learning immediately, but you'll typically see noticeable personalization
-                  after creating 3-5 projects. The more projects you create, the more refined the personalization
-                  becomes. You can accelerate this process by analyzing existing projects.
+                  No. Your code and project data remain private. The neural
+                  network runs locally on your machine by default. You can
+                  optionally enable anonymous data sharing to help improve the
+                  system, but this is disabled by default and only shares
+                  non-identifying pattern information, never your actual code.
                 </p>
               </div>
 
               <div className="border rounded-lg p-4">
                 <h3 className="font-medium mb-2">
-                  Can I have multiple style profiles for different types of projects?
+                  How long does it take for the neural network to learn my
+                  style?
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  Yes. You can create and switch between multiple style profiles. This is useful if you work on
-                  different types of projects (e.g., frontend vs. backend) that require different organizational
-                  approaches.
+                  The neural network begins learning immediately, but you'll
+                  typically see noticeable personalization after creating 3-5
+                  projects. The more projects you create, the more refined the
+                  personalization becomes. You can accelerate this process by
+                  analyzing existing projects.
+                </p>
+              </div>
+
+              <div className="border rounded-lg p-4">
+                <h3 className="font-medium mb-2">
+                  Can I have multiple style profiles for different types of
+                  projects?
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Yes. You can create and switch between multiple style
+                  profiles. This is useful if you work on different types of
+                  projects (e.g., frontend vs. backend) that require different
+                  organizational approaches.
                 </p>
                 <DocsCodeBlock
                   code={`# Create a new profile
@@ -849,9 +1051,12 @@ forsure ai profile list`}
               </div>
 
               <div className="border rounded-lg p-4">
-                <h3 className="font-medium mb-2">Can I export my style profile to use on another machine?</h3>
+                <h3 className="font-medium mb-2">
+                  Can I export my style profile to use on another machine?
+                </h3>
                 <p className="text-sm text-muted-foreground">
-                  Yes. You can export your style profile and import it on another machine or share it with team members.
+                  Yes. You can export your style profile and import it on
+                  another machine or share it with team members.
                 </p>
                 <DocsCodeBlock
                   code={`# Export your style profile
@@ -864,18 +1069,25 @@ forsure ai profile import --input my-style.json`}
               </div>
 
               <div className="border rounded-lg p-4">
-                <h3 className="font-medium mb-2">Does the neural network work with all programming languages?</h3>
+                <h3 className="font-medium mb-2">
+                  Does the neural network work with all programming languages?
+                </h3>
                 <p className="text-sm text-muted-foreground">
-                  Yes. The neural network focuses on project structure and naming conventions, which are
-                  language-agnostic. It works with any programming language or framework that ForSure supports.
+                  Yes. The neural network focuses on project structure and
+                  naming conventions, which are language-agnostic. It works with
+                  any programming language or framework that ForSure supports.
                 </p>
               </div>
 
               <div className="border rounded-lg p-4">
-                <h3 className="font-medium mb-2">What if I want to override the neural network's suggestions?</h3>
+                <h3 className="font-medium mb-2">
+                  What if I want to override the neural network's suggestions?
+                </h3>
                 <p className="text-sm text-muted-foreground">
-                  You always have full control. The neural network provides suggestions, but you can modify or override
-                  them at any time. You can also provide feedback to help the system learn from your corrections.
+                  You always have full control. The neural network provides
+                  suggestions, but you can modify or override them at any time.
+                  You can also provide feedback to help the system learn from
+                  your corrections.
                 </p>
               </div>
             </div>
@@ -883,16 +1095,22 @@ forsure ai profile import --input my-style.json`}
 
           {/* Advanced Topics */}
           <div className="space-y-4">
-            <h2 id="advanced-topics" className="text-2xl font-semibold tracking-tight scroll-m-20">
+            <h2
+              id="advanced-topics"
+              className="text-2xl font-semibold tracking-tight scroll-m-20"
+            >
               Advanced Topics
             </h2>
 
             <div className="mt-6 space-y-6">
               <div>
-                <h3 className="text-xl font-semibold mb-4">Team Collaboration</h3>
+                <h3 className="text-xl font-semibold mb-4">
+                  Team Collaboration
+                </h3>
                 <p className="mb-4">
-                  ForSure's neural network can be used in team environments to maintain consistency across projects
-                  while still respecting individual preferences.
+                  ForSure's neural network can be used in team environments to
+                  maintain consistency across projects while still respecting
+                  individual preferences.
                 </p>
 
                 <Card>
@@ -901,8 +1119,8 @@ forsure ai profile import --input my-style.json`}
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <p className="text-sm text-muted-foreground">
-                      Teams can create shared style profiles that combine the preferences of all team members or enforce
-                      team standards.
+                      Teams can create shared style profiles that combine the
+                      preferences of all team members or enforce team standards.
                     </p>
                     <DocsCodeBlock
                       code={`# Create a team profile
@@ -927,10 +1145,12 @@ forsure new project-name --team dev-team`}
               </div>
 
               <div>
-                <h3 className="text-xl font-semibold mb-4">Custom Neural Network Training</h3>
+                <h3 className="text-xl font-semibold mb-4">
+                  Custom Neural Network Training
+                </h3>
                 <p className="mb-4">
-                  Advanced users can customize how the neural network learns and what aspects of your style it focuses
-                  on.
+                  Advanced users can customize how the neural network learns and
+                  what aspects of your style it focuses on.
                 </p>
 
                 <Card>
@@ -939,7 +1159,8 @@ forsure new project-name --team dev-team`}
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <p className="text-sm text-muted-foreground">
-                      You can create a custom training configuration to focus on specific aspects of your coding style.
+                      You can create a custom training configuration to focus on
+                      specific aspects of your coding style.
                     </p>
                     <DocsCodeBlock
                       code={`{
@@ -964,17 +1185,25 @@ forsure new project-name --team dev-team`}
                       language="json"
                       fileName="ai-training-config.json"
                     />
-                    <p className="text-sm text-muted-foreground">Apply the custom configuration:</p>
-                    <DocsCodeBlock code={`forsure ai configure --config ai-training-config.json`} language="bash" />
+                    <p className="text-sm text-muted-foreground">
+                      Apply the custom configuration:
+                    </p>
+                    <DocsCodeBlock
+                      code={`forsure ai configure --config ai-training-config.json`}
+                      language="bash"
+                    />
                   </CardContent>
                 </Card>
               </div>
 
               <div>
-                <h3 className="text-xl font-semibold mb-4">Integration with CI/CD Pipelines</h3>
+                <h3 className="text-xl font-semibold mb-4">
+                  Integration with CI/CD Pipelines
+                </h3>
                 <p className="mb-4">
-                  You can integrate ForSure's neural network capabilities into your CI/CD pipelines to ensure consistent
-                  project structures across your organization.
+                  You can integrate ForSure's neural network capabilities into
+                  your CI/CD pipelines to ensure consistent project structures
+                  across your organization.
                 </p>
 
                 <Card>
@@ -982,7 +1211,9 @@ forsure new project-name --team dev-team`}
                     <CardTitle>CI/CD Integration</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <p className="text-sm text-muted-foreground">Example of integrating ForSure with GitHub Actions:</p>
+                    <p className="text-sm text-muted-foreground">
+                      Example of integrating ForSure with GitHub Actions:
+                    </p>
                     <DocsCodeBlock
                       code={`name: ForSure Project Structure Check
 
@@ -1022,11 +1253,15 @@ jobs:
 
           {/* API Reference */}
           <div className="space-y-4">
-            <h2 id="api-reference" className="text-2xl font-semibold tracking-tight scroll-m-20">
+            <h2
+              id="api-reference"
+              className="text-2xl font-semibold tracking-tight scroll-m-20"
+            >
               API Reference
             </h2>
             <p>
-              ForSure provides a comprehensive API for programmatic interaction with the neural network capabilities.
+              ForSure provides a comprehensive API for programmatic interaction
+              with the neural network capabilities.
             </p>
 
             <div className="mt-6">
@@ -1103,7 +1338,8 @@ async function importModel() {
 
                 <TabsContent value="rest">
                   <p className="text-sm text-muted-foreground mb-4">
-                    ForSure also provides a REST API for interacting with the neural network capabilities:
+                    ForSure also provides a REST API for interacting with the
+                    neural network capabilities:
                   </p>
                   <DocsCodeBlock
                     code={`# Start the ForSure API server
@@ -1116,7 +1352,9 @@ forsure api start --port 3000
                     <div className="border rounded-lg overflow-hidden">
                       <div className="bg-muted p-4 border-b flex items-center justify-between">
                         <div className="flex items-center">
-                          <span className="bg-green-500 text-white text-xs px-2 py-1 rounded mr-2">GET</span>
+                          <span className="bg-green-500 text-white text-xs px-2 py-1 rounded mr-2">
+                            GET
+                          </span>
                           <code>/api/neural-network/status</code>
                         </div>
                       </div>
@@ -1141,13 +1379,19 @@ forsure api start --port 3000
                     <div className="border rounded-lg overflow-hidden">
                       <div className="bg-muted p-4 border-b flex items-center justify-between">
                         <div className="flex items-center">
-                          <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded mr-2">POST</span>
+                          <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded mr-2">
+                            POST
+                          </span>
                           <code>/api/neural-network/analyze</code>
                         </div>
                       </div>
                       <div className="p-4">
-                        <p className="text-sm text-muted-foreground mb-2">Analyze a project structure</p>
-                        <p className="text-xs text-muted-foreground mb-2">Request:</p>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Analyze a project structure
+                        </p>
+                        <p className="text-xs text-muted-foreground mb-2">
+                          Request:
+                        </p>
                         <DocsCodeBlock
                           code={`{
   "path": "./my-project",
@@ -1156,7 +1400,9 @@ forsure api start --port 3000
 }`}
                           language="json"
                         />
-                        <p className="text-xs text-muted-foreground mt-2 mb-2">Response:</p>
+                        <p className="text-xs text-muted-foreground mt-2 mb-2">
+                          Response:
+                        </p>
                         <DocsCodeBlock
                           code={`{
   "analysisId": "a1b2c3d4",
@@ -1180,7 +1426,9 @@ forsure api start --port 3000
                     <div className="border rounded-lg overflow-hidden">
                       <div className="bg-muted p-4 border-b flex items-center justify-between">
                         <div className="flex items-center">
-                          <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded mr-2">POST</span>
+                          <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded mr-2">
+                            POST
+                          </span>
                           <code>/api/neural-network/generate</code>
                         </div>
                       </div>
@@ -1188,7 +1436,9 @@ forsure api start --port 3000
                         <p className="text-sm text-muted-foreground mb-2">
                           Generate a project structure with AI assistance
                         </p>
-                        <p className="text-xs text-muted-foreground mb-2">Request:</p>
+                        <p className="text-xs text-muted-foreground mb-2">
+                          Request:
+                        </p>
                         <DocsCodeBlock
                           code={`{
   "name": "my-new-project",
@@ -1198,7 +1448,9 @@ forsure api start --port 3000
 }`}
                           language="json"
                         />
-                        <p className="text-xs text-muted-foreground mt-2 mb-2">Response:</p>
+                        <p className="text-xs text-muted-foreground mt-2 mb-2">
+                          Response:
+                        </p>
                         <DocsCodeBlock
                           code={`{
   "projectId": "p1q2r3s4",
@@ -1222,13 +1474,22 @@ forsure api start --port 3000
 
           {/* Next Steps */}
           <div className="space-y-4">
-            <h2 id="next-steps" className="text-2xl font-semibold tracking-tight scroll-m-20">
+            <h2
+              id="next-steps"
+              className="text-2xl font-semibold tracking-tight scroll-m-20"
+            >
               Next Steps
             </h2>
-            <p>Now that you understand ForSure's neural network capabilities, here are some next steps to explore:</p>
+            <p>
+              Now that you understand ForSure's neural network capabilities,
+              here are some next steps to explore:
+            </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-              <Link href="/docs/ai/examples" className="block p-6 border rounded-lg hover:bg-muted transition-colors">
+              <Link
+                href="/docs/ai/examples"
+                className="block p-6 border rounded-lg hover:bg-muted transition-colors"
+              >
                 <div className="flex items-center mb-2">
                   <FileText className="h-5 w-5 mr-2 text-primary" />
                   <div className="font-semibold">AI Examples</div>
@@ -1238,15 +1499,23 @@ forsure api start --port 3000
                 </div>
               </Link>
 
-              <Link href="/docs/ai/advanced" className="block p-6 border rounded-lg hover:bg-muted transition-colors">
+              <Link
+                href="/docs/ai/advanced"
+                className="block p-6 border rounded-lg hover:bg-muted transition-colors"
+              >
                 <div className="flex items-center mb-2">
                   <Brain className="h-5 w-5 mr-2 text-primary" />
                   <div className="font-semibold">Advanced AI Features</div>
                 </div>
-                <div className="text-sm text-muted-foreground">Explore advanced neural network capabilities</div>
+                <div className="text-sm text-muted-foreground">
+                  Explore advanced neural network capabilities
+                </div>
               </Link>
 
-              <Link href="/docs/ai/team-usage" className="block p-6 border rounded-lg hover:bg-muted transition-colors">
+              <Link
+                href="/docs/ai/team-usage"
+                className="block p-6 border rounded-lg hover:bg-muted transition-colors"
+              >
                 <div className="flex items-center mb-2">
                   <GitBranch className="h-5 w-5 mr-2 text-primary" />
                   <div className="font-semibold">Team Usage Guide</div>
@@ -1256,12 +1525,17 @@ forsure api start --port 3000
                 </div>
               </Link>
 
-              <Link href="/docs/ai/api" className="block p-6 border rounded-lg hover:bg-muted transition-colors">
+              <Link
+                href="/docs/ai/api"
+                className="block p-6 border rounded-lg hover:bg-muted transition-colors"
+              >
                 <div className="flex items-center mb-2">
                   <Code className="h-5 w-5 mr-2 text-primary" />
                   <div className="font-semibold">Complete API Reference</div>
                 </div>
-                <div className="text-sm text-muted-foreground">Full documentation of the neural network API</div>
+                <div className="text-sm text-muted-foreground">
+                  Full documentation of the neural network API
+                </div>
               </Link>
             </div>
           </div>

@@ -1,18 +1,24 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { useState } from "react"
-import { useAuth } from "@/contexts/auth-context"
-import { ProtectedRoute } from "@/components/protected-route"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Loader2, User, Key, LogOut } from "lucide-react"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import { useState } from 'react'
+import { useAuth } from '@/contexts/auth-context'
+import { ProtectedRoute } from '@/components/protected-route'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Loader2, User, Key, LogOut } from 'lucide-react'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 
 export default function AccountPage() {
   return (
@@ -24,12 +30,15 @@ export default function AccountPage() {
 
 function AccountContent() {
   const { user, logout, updateProfile, isLoading } = useAuth()
-  const [name, setName] = useState(user?.name || "")
-  const [email, setEmail] = useState(user?.email || "")
-  const [currentPassword, setCurrentPassword] = useState("")
-  const [newPassword, setNewPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
+  const [name, setName] = useState(user?.name || '')
+  const [email, setEmail] = useState(user?.email || '')
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [message, setMessage] = useState<{
+    type: 'success' | 'error'
+    text: string
+  } | null>(null)
 
   if (!user) return null
 
@@ -39,9 +48,9 @@ function AccountContent() {
 
     try {
       await updateProfile({ name, email })
-      setMessage({ type: "success", text: "Profile updated successfully" })
+      setMessage({ type: 'success', text: 'Profile updated successfully' })
     } catch (error) {
-      setMessage({ type: "error", text: "Failed to update profile" })
+      setMessage({ type: 'error', text: 'Failed to update profile' })
     }
   }
 
@@ -50,33 +59,60 @@ function AccountContent() {
     setMessage(null)
 
     if (newPassword !== confirmPassword) {
-      setMessage({ type: "error", text: "New passwords do not match" })
+      setMessage({ type: 'error', text: 'New passwords do not match' })
       return
     }
 
     if (newPassword.length < 8) {
-      setMessage({ type: "error", text: "Password must be at least 8 characters long" })
+      setMessage({
+        type: 'error',
+        text: 'Password must be at least 8 characters long',
+      })
       return
     }
 
-    // In a real app, this would call an API endpoint
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      setMessage({ type: "success", text: "Password updated successfully" })
-      setCurrentPassword("")
-      setNewPassword("")
-      setConfirmPassword("")
+      const token = localStorage.getItem('fs_access_token')
+      if (!token) {
+        setMessage({ type: 'error', text: 'Not authenticated' })
+        return
+      }
+
+      const response = await fetch('/api/v1/auth/password', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          currentPassword,
+          newPassword,
+        }),
+      })
+
+      const result = await response.json()
+
+      if (response.ok) {
+        setMessage({ type: 'success', text: 'Password updated successfully' })
+        setCurrentPassword('')
+        setNewPassword('')
+        setConfirmPassword('')
+      } else {
+        setMessage({
+          type: 'error',
+          text: result.error || 'Failed to update password',
+        })
+      }
     } catch (error) {
-      setMessage({ type: "error", text: "Failed to update password" })
+      setMessage({ type: 'error', text: 'Network error occurred' })
     }
   }
 
   const getInitials = (name: string) => {
     return name
-      .split(" ")
-      .map((part) => part[0])
-      .join("")
+      .split(' ')
+      .map(part => part[0])
+      .join('')
       .toUpperCase()
       .substring(0, 2)
   }
@@ -86,9 +122,9 @@ function AccountContent() {
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
-            <Avatar className="h-16 w-16">
-              <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.name} />
-              <AvatarFallback className="text-lg">{getInitials(user.name)}</AvatarFallback>
+            <Avatar className="h-24 w-24">
+              <AvatarImage src={user.avatar_url || ''} alt={user.name} />
+              <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
             </Avatar>
             <div>
               <h1 className="text-2xl font-bold">{user.name}</h1>
@@ -117,18 +153,30 @@ function AccountContent() {
             <Card>
               <CardHeader>
                 <CardTitle>Profile Information</CardTitle>
-                <CardDescription>Update your account profile information</CardDescription>
+                <CardDescription>
+                  Update your account profile information
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 {message && (
-                  <Alert variant={message.type === "error" ? "destructive" : "default"} className="mb-4">
+                  <Alert
+                    variant={
+                      message.type === 'error' ? 'destructive' : 'default'
+                    }
+                    className="mb-4"
+                  >
                     <AlertDescription>{message.text}</AlertDescription>
                   </Alert>
                 )}
                 <form onSubmit={handleProfileUpdate} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="name">Full Name</Label>
-                    <Input id="name" value={name} onChange={(e) => setName(e.target.value)} disabled={isLoading} />
+                    <Input
+                      id="name"
+                      value={name}
+                      onChange={e => setName(e.target.value)}
+                      disabled={isLoading}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
@@ -136,7 +184,7 @@ function AccountContent() {
                       id="email"
                       type="email"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={e => setEmail(e.target.value)}
                       disabled={isLoading}
                     />
                   </div>
@@ -147,7 +195,7 @@ function AccountContent() {
                         Saving...
                       </>
                     ) : (
-                      "Save changes"
+                      'Save changes'
                     )}
                   </Button>
                 </form>
@@ -159,11 +207,18 @@ function AccountContent() {
             <Card>
               <CardHeader>
                 <CardTitle>Change Password</CardTitle>
-                <CardDescription>Update your password to keep your account secure</CardDescription>
+                <CardDescription>
+                  Update your password to keep your account secure
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 {message && (
-                  <Alert variant={message.type === "error" ? "destructive" : "default"} className="mb-4">
+                  <Alert
+                    variant={
+                      message.type === 'error' ? 'destructive' : 'default'
+                    }
+                    className="mb-4"
+                  >
                     <AlertDescription>{message.text}</AlertDescription>
                   </Alert>
                 )}
@@ -174,7 +229,7 @@ function AccountContent() {
                       id="currentPassword"
                       type="password"
                       value={currentPassword}
-                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      onChange={e => setCurrentPassword(e.target.value)}
                       disabled={isLoading}
                     />
                   </div>
@@ -184,17 +239,19 @@ function AccountContent() {
                       id="newPassword"
                       type="password"
                       value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
+                      onChange={e => setNewPassword(e.target.value)}
                       disabled={isLoading}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                    <Label htmlFor="confirmPassword">
+                      Confirm New Password
+                    </Label>
                     <Input
                       id="confirmPassword"
                       type="password"
                       value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      onChange={e => setConfirmPassword(e.target.value)}
                       disabled={isLoading}
                     />
                   </div>
@@ -205,7 +262,7 @@ function AccountContent() {
                         Updating...
                       </>
                     ) : (
-                      "Update password"
+                      'Update password'
                     )}
                   </Button>
                 </form>

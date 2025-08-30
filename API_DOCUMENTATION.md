@@ -7,11 +7,14 @@ The ForSure application provides a RESTful API built with Next.js API routes, in
 ## Authentication
 
 ### Base URL
+
 - Development: `http://localhost:3000/api`
 - Production: `https://your-app.vercel.app/api`
 
 ### Authentication Header
+
 All protected endpoints require a Bearer token in the Authorization header:
+
 ```
 Authorization: Bearer <your-supabase-jwt-token>
 ```
@@ -27,6 +30,7 @@ Authorization: Bearer <your-supabase-jwt-token>
 All API responses follow this consistent format:
 
 ### Success Response
+
 ```json
 {
   "success": true,
@@ -36,6 +40,7 @@ All API responses follow this consistent format:
 ```
 
 ### Error Response
+
 ```json
 {
   "success": false,
@@ -49,9 +54,11 @@ All API responses follow this consistent format:
 ### Authentication
 
 #### POST /api/auth/register
+
 Register a new user account.
 
 **Request Body:**
+
 ```json
 {
   "email": "user@example.com",
@@ -61,6 +68,7 @@ Register a new user account.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -77,9 +85,11 @@ Register a new user account.
 ```
 
 #### POST /api/auth/login
+
 Authenticate user and return session.
 
 **Request Body:**
+
 ```json
 {
   "email": "user@example.com",
@@ -88,6 +98,7 @@ Authenticate user and return session.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -107,11 +118,13 @@ Authenticate user and return session.
 ```
 
 #### POST /api/auth/logout
+
 Logout current user session.
 
 **Headers:** `Authorization: Bearer <token>`
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -122,11 +135,13 @@ Logout current user session.
 ```
 
 #### GET /api/auth/me
+
 Get current user information.
 
 **Headers:** `Authorization: Bearer <token>`
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -144,11 +159,13 @@ Get current user information.
 ### User Management
 
 #### GET /api/users/profile
+
 Get current user's profile.
 
 **Headers:** `Authorization: Bearer <token>`
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -168,11 +185,13 @@ Get current user's profile.
 ```
 
 #### PUT /api/users/profile
+
 Update current user's profile.
 
 **Headers:** `Authorization: Bearer <token>`
 
 **Request Body:**
+
 ```json
 {
   "name": "John Smith",
@@ -184,6 +203,7 @@ Update current user's profile.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -196,11 +216,13 @@ Update current user's profile.
 ### Projects
 
 #### GET /api/projects
+
 Get user's projects with pagination.
 
 **Headers:** `Authorization: Bearer <token>`
 
 **Query Parameters:**
+
 - `page` (number): Page number (default: 1)
 - `limit` (number): Items per page (default: 10, max: 50)
 - `search` (string): Search in title and description
@@ -209,6 +231,7 @@ Get user's projects with pagination.
 - `status` (string): Filter by status - active/archived/draft/completed
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -243,11 +266,13 @@ Get user's projects with pagination.
 ```
 
 #### POST /api/projects
+
 Create a new project.
 
 **Headers:** `Authorization: Bearer <token>`
 
 **Request Body:**
+
 ```json
 {
   "name": "New Project",
@@ -260,6 +285,7 @@ Create a new project.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -270,11 +296,13 @@ Create a new project.
 ```
 
 #### GET /api/projects/[id]
+
 Get a specific project by ID.
 
 **Headers:** `Authorization: Bearer <token>`
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -285,11 +313,13 @@ Get a specific project by ID.
 ```
 
 #### PUT /api/projects/[id]
+
 Update a project.
 
 **Headers:** `Authorization: Bearer <token>`
 
 **Request Body:**
+
 ```json
 {
   "name": "Updated Project Name",
@@ -300,6 +330,7 @@ Update a project.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -310,11 +341,13 @@ Update a project.
 ```
 
 #### DELETE /api/projects/[id]
+
 Delete a project.
 
 **Headers:** `Authorization: Bearer <token>`
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -327,18 +360,22 @@ Delete a project.
 ### File Upload
 
 #### POST /api/upload
+
 Upload a file to Supabase Storage.
 
-**Headers:** 
+**Headers:**
+
 - `Authorization: Bearer <token>`
 - `Content-Type: multipart/form-data`
 
 **Request Body:**
+
 - `file`: File to upload
 - `bucket`: Storage bucket name (optional, default: uploads)
 - `path`: File path in bucket (optional)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -369,6 +406,7 @@ Upload a file to Supabase Storage.
 All request bodies are validated using Zod schemas. Common validation rules:
 
 ### User Registration
+
 ```typescript
 {
   email: string (valid email format)
@@ -378,6 +416,7 @@ All request bodies are validated using Zod schemas. Common validation rules:
 ```
 
 ### Project Creation
+
 ```typescript
 {
   name: string (min 3 chars, max 100 chars)
@@ -392,6 +431,7 @@ All request bodies are validated using Zod schemas. Common validation rules:
 ## Rate Limiting Headers
 
 When rate limits are applied, responses include these headers:
+
 - `X-RateLimit-Limit`: Maximum requests allowed
 - `X-RateLimit-Remaining`: Remaining requests in current window
 - `X-RateLimit-Reset`: Time when the limit resets
@@ -400,6 +440,7 @@ When rate limits are applied, responses include these headers:
 ## Development Notes
 
 ### Environment Variables Required
+
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
@@ -408,9 +449,11 @@ JWT_SECRET=your-jwt-secret
 ```
 
 ### Database Setup
+
 Run the SQL schema from `database-schema.sql` in your Supabase SQL editor to set up all required tables and policies.
 
 ### Testing
+
 Use tools like Postman, Insomnia, or curl to test the API endpoints:
 
 ```bash

@@ -1,26 +1,28 @@
 import { NextRequest } from 'next/server'
 import { withAuth } from '@/lib/auth-middleware'
-import { supabase } from '@/lib/supabase'
 import { apiResponse, apiError } from '@/lib/api-utils'
+import { prisma } from '@/lib/prisma'
 
 export const GET = withAuth(async (request: NextRequest, { user }) => {
   try {
-    // Get user profile
-    const { data: profile, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single()
+    const profile = await prisma.profile.findUnique({
+      where: { id: user.id },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        avatar_url: true,
+        bio: true,
+        created_at: true,
+      },
+    })
 
-    if (error) {
-      return apiError('Failed to fetch user profile', 500)
+    if (!profile) {
+      return apiError('User not found', 404)
     }
 
-    return apiResponse({
-      id: user.id,
-      email: user.email,
-      ...profile,
-    })
+    return apiResponse(profile)
   } catch (error) {
     console.error('Get user error:', error)
     return apiError('Internal server error', 500)

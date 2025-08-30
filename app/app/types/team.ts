@@ -1,4 +1,4 @@
-export type TeamRole = "owner" | "admin" | "member"
+export type TeamRole = 'owner' | 'admin' | 'member'
 
 export interface TeamMember {
   userId: string
@@ -8,7 +8,7 @@ export interface TeamMember {
   joinedAt: string
   avatar?: string
   lastActive?: string
-  status?: "online" | "offline" | "away" | "busy"
+  status?: 'online' | 'offline' | 'away' | 'busy'
 }
 
 export interface TeamChat {
@@ -34,7 +34,7 @@ export type TeamChatMessage = {
   content: string
   timestamp: string
   attachments?: {
-    type: "file" | "image" | "link" | "project"
+    type: 'file' | 'image' | 'link' | 'project'
     name: string
     url?: string
     id?: string

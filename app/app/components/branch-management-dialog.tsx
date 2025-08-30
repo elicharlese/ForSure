@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
+import { useState, useEffect } from 'react'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -12,18 +12,29 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { GitBranch, Check, Trash2, Edit, Clock, ArrowRight } from "lucide-react"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Badge } from "@/components/ui/badge"
-import { Switch } from "@/components/ui/switch"
-import type { Branch, ProjectVersion } from "../hooks/use-saved-projects"
+} from '@/components/ui/dialog'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { GitBranch, Check, Trash2, Edit, Clock, ArrowRight } from 'lucide-react'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+import { Badge } from '@/components/ui/badge'
+import { Switch } from '@/components/ui/switch'
+import type { Branch, ProjectVersion } from '../hooks/use-saved-projects'
 
 interface BranchManagementDialogProps {
   projectId: string
@@ -31,7 +42,12 @@ interface BranchManagementDialogProps {
   versions: ProjectVersion[]
   currentBranchId: string
   currentVersionId: string
-  onCreateBranch: (sourceVersionId: string, name: string, description?: string, switchToBranch?: boolean) => void
+  onCreateBranch: (
+    sourceVersionId: string,
+    name: string,
+    description?: string,
+    switchToBranch?: boolean
+  ) => void
   onSwitchBranch: (branchId: string) => void
   onDeleteBranch: (branchId: string) => void
   onRenameBranch: (branchId: string, newName: string) => void
@@ -51,20 +67,20 @@ export function BranchManagementDialog({
   trigger,
 }: BranchManagementDialogProps) {
   const [open, setOpen] = useState(false)
-  const [activeTab, setActiveTab] = useState("list")
-  const [newBranchName, setNewBranchName] = useState("")
-  const [newBranchDescription, setNewBranchDescription] = useState("")
+  const [activeTab, setActiveTab] = useState('list')
+  const [newBranchName, setNewBranchName] = useState('')
+  const [newBranchDescription, setNewBranchDescription] = useState('')
   const [sourceVersionId, setSourceVersionId] = useState(currentVersionId)
   const [switchToNewBranch, setSwitchToNewBranch] = useState(true)
   const [editingBranchId, setEditingBranchId] = useState<string | null>(null)
-  const [editedBranchName, setEditedBranchName] = useState("")
+  const [editedBranchName, setEditedBranchName] = useState('')
   const [isCreatingBranch, setIsCreatingBranch] = useState(false)
 
   // Reset form when dialog opens
   useEffect(() => {
     if (open) {
-      setNewBranchName("")
-      setNewBranchDescription("")
+      setNewBranchName('')
+      setNewBranchDescription('')
       setSourceVersionId(currentVersionId)
       setSwitchToNewBranch(true)
       setEditingBranchId(null)
@@ -74,10 +90,15 @@ export function BranchManagementDialog({
   const handleCreateBranch = () => {
     if (!newBranchName.trim()) return
 
-    onCreateBranch(sourceVersionId, newBranchName.trim(), newBranchDescription.trim() || undefined, switchToNewBranch)
+    onCreateBranch(
+      sourceVersionId,
+      newBranchName.trim(),
+      newBranchDescription.trim() || undefined,
+      switchToNewBranch
+    )
     setIsCreatingBranch(false)
-    setNewBranchName("")
-    setNewBranchDescription("")
+    setNewBranchName('')
+    setNewBranchDescription('')
   }
 
   const handleRenameBranch = (branchId: string) => {
@@ -93,23 +114,25 @@ export function BranchManagementDialog({
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
-    return new Intl.DateTimeFormat("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "numeric",
-      minute: "numeric",
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
     }).format(date)
   }
 
   const getBranchVersionCount = (branchId: string) => {
-    return versions.filter((v) => v.branchId === branchId).length
+    return versions.filter(v => v.branchId === branchId).length
   }
 
   const getVersionName = (versionId: string) => {
-    const version = versions.find((v) => v.versionId === versionId)
-    if (!version) return "Unknown version"
-    return version.notes?.includes("Merge of") ? "Merge result" : `Version ${versionId.substring(0, 7)}`
+    const version = versions.find(v => v.versionId === versionId)
+    if (!version) return 'Unknown version'
+    return version.notes?.includes('Merge of')
+      ? 'Merge result'
+      : `Version ${versionId.substring(0, 7)}`
   }
 
   return (
@@ -125,17 +148,28 @@ export function BranchManagementDialog({
       <DialogContent className="sm:max-w-2xl max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>Branch Management</DialogTitle>
-          <DialogDescription>Create, switch, and manage branches for your project.</DialogDescription>
+          <DialogDescription>
+            Create, switch, and manage branches for your project.
+          </DialogDescription>
         </DialogHeader>
 
-        <Tabs defaultValue="list" value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
+        <Tabs
+          defaultValue="list"
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="flex-1 flex flex-col"
+        >
           <div className="flex justify-between items-center mb-4">
             <TabsList>
               <TabsTrigger value="list" className="flex items-center gap-1">
                 <GitBranch className="h-4 w-4" />
                 <span>Branches</span>
               </TabsTrigger>
-              <TabsTrigger value="create" className="flex items-center gap-1" onClick={() => setIsCreatingBranch(true)}>
+              <TabsTrigger
+                value="create"
+                className="flex items-center gap-1"
+                onClick={() => setIsCreatingBranch(true)}
+              >
                 <GitBranch className="h-4 w-4" />
                 <span>Create Branch</span>
               </TabsTrigger>
@@ -152,7 +186,7 @@ export function BranchManagementDialog({
                   size="sm"
                   className="mt-4"
                   onClick={() => {
-                    setActiveTab("create")
+                    setActiveTab('create')
                     setIsCreatingBranch(true)
                   }}
                 >
@@ -162,15 +196,17 @@ export function BranchManagementDialog({
             ) : (
               <ScrollArea className="max-h-[60vh]">
                 <div className="space-y-3 pr-4">
-                  {branches.map((branch) => (
+                  {branches.map(branch => (
                     <div
                       key={branch.id}
                       className={`p-3 border rounded-md transition-colors ${
-                        branch.id === currentBranchId ? "border-primary bg-primary/5" : "hover:bg-muted/50"
+                        branch.id === currentBranchId
+                          ? 'border-primary bg-primary/5'
+                          : 'hover:bg-muted/50'
                       }`}
                       style={{
                         borderLeftColor: branch.color,
-                        borderLeftWidth: "4px",
+                        borderLeftWidth: '4px',
                       }}
                     >
                       <div className="flex items-start justify-between">
@@ -179,7 +215,9 @@ export function BranchManagementDialog({
                             <div className="flex items-center gap-2 mb-2">
                               <Input
                                 value={editedBranchName}
-                                onChange={(e) => setEditedBranchName(e.target.value)}
+                                onChange={e =>
+                                  setEditedBranchName(e.target.value)
+                                }
                                 className="h-8"
                                 placeholder="Branch name"
                                 autoFocus
@@ -205,7 +243,10 @@ export function BranchManagementDialog({
                             <div className="flex items-center gap-2">
                               <h4 className="font-medium">{branch.name}</h4>
                               {branch.isDefault && (
-                                <Badge variant="outline" className="bg-primary/10 text-primary">
+                                <Badge
+                                  variant="outline"
+                                  className="bg-primary/10 text-primary"
+                                >
                                   Default
                                 </Badge>
                               )}
@@ -227,7 +268,9 @@ export function BranchManagementDialog({
 
                           <div className="flex items-center text-xs text-muted-foreground mt-1">
                             <Clock className="h-3 w-3 mr-1" />
-                            <span>Last updated: {formatDate(branch.lastUpdated)}</span>
+                            <span>
+                              Last updated: {formatDate(branch.lastUpdated)}
+                            </span>
                           </div>
 
                           {branch.description && (
@@ -237,15 +280,20 @@ export function BranchManagementDialog({
                           )}
 
                           <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
-                            <span>{getBranchVersionCount(branch.id)} versions</span>
+                            <span>
+                              {getBranchVersionCount(branch.id)} versions
+                            </span>
                             <span>•</span>
-                            <span className="flex items-center">Head: {getVersionName(branch.headVersionId)}</span>
+                            <span className="flex items-center">
+                              Head: {getVersionName(branch.headVersionId)}
+                            </span>
                           </div>
 
                           {branch.sourceVersionId !== branch.headVersionId && (
                             <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
                               <span className="flex items-center">
-                                Created from: {getVersionName(branch.sourceVersionId)}
+                                Created from:{' '}
+                                {getVersionName(branch.sourceVersionId)}
                               </span>
                             </div>
                           )}
@@ -329,17 +377,19 @@ export function BranchManagementDialog({
                 <Input
                   id="branch-name"
                   value={newBranchName}
-                  onChange={(e) => setNewBranchName(e.target.value)}
+                  onChange={e => setNewBranchName(e.target.value)}
                   placeholder="feature/new-feature"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="branch-description">Description (Optional)</Label>
+                <Label htmlFor="branch-description">
+                  Description (Optional)
+                </Label>
                 <Textarea
                   id="branch-description"
                   value={newBranchDescription}
-                  onChange={(e) => setNewBranchDescription(e.target.value)}
+                  onChange={e => setNewBranchDescription(e.target.value)}
                   placeholder="What is this branch for?"
                   rows={3}
                 />
@@ -347,21 +397,27 @@ export function BranchManagementDialog({
 
               <div className="space-y-2">
                 <Label htmlFor="source-version">Create From</Label>
-                <Select value={sourceVersionId} onValueChange={setSourceVersionId}>
+                <Select
+                  value={sourceVersionId}
+                  onValueChange={setSourceVersionId}
+                >
                   <SelectTrigger id="source-version">
                     <SelectValue placeholder="Select a version" />
                   </SelectTrigger>
                   <SelectContent>
-                    {versions.map((version) => (
-                      <SelectItem key={version.versionId} value={version.versionId}>
+                    {versions.map(version => (
+                      <SelectItem
+                        key={version.versionId}
+                        value={version.versionId}
+                      >
                         {version.versionId === currentVersionId
-                          ? "Current Version"
-                          : version.notes?.includes("Merge of")
+                          ? 'Current Version'
+                          : version.notes?.includes('Merge of')
                             ? `Merge Result (${version.versionId.substring(0, 7)})`
                             : `Version ${version.versionId.substring(0, 7)}`}
                         {version.notes &&
-                          !version.notes.includes("Merge of") &&
-                          ` - ${version.notes.substring(0, 30)}${version.notes.length > 30 ? "..." : ""}`}
+                          !version.notes.includes('Merge of') &&
+                          ` - ${version.notes.substring(0, 30)}${version.notes.length > 30 ? '...' : ''}`}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -369,8 +425,14 @@ export function BranchManagementDialog({
               </div>
 
               <div className="flex items-center space-x-2">
-                <Switch id="switch-to-branch" checked={switchToNewBranch} onCheckedChange={setSwitchToNewBranch} />
-                <Label htmlFor="switch-to-branch">Switch to new branch after creation</Label>
+                <Switch
+                  id="switch-to-branch"
+                  checked={switchToNewBranch}
+                  onCheckedChange={setSwitchToNewBranch}
+                />
+                <Label htmlFor="switch-to-branch">
+                  Switch to new branch after creation
+                </Label>
               </div>
             </div>
           </TabsContent>
@@ -378,11 +440,11 @@ export function BranchManagementDialog({
 
         <DialogFooter className="sm:justify-between">
           <div>
-            {activeTab === "list" && (
+            {activeTab === 'list' && (
               <Button
                 variant="outline"
                 onClick={() => {
-                  setActiveTab("create")
+                  setActiveTab('create')
                   setIsCreatingBranch(true)
                 }}
               >
@@ -392,8 +454,12 @@ export function BranchManagementDialog({
             )}
           </div>
           <div className="flex gap-2">
-            {activeTab === "create" && (
-              <Button variant="default" onClick={handleCreateBranch} disabled={!newBranchName.trim()}>
+            {activeTab === 'create' && (
+              <Button
+                variant="default"
+                onClick={handleCreateBranch}
+                disabled={!newBranchName.trim()}
+              >
                 Create Branch
               </Button>
             )}

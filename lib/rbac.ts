@@ -9,7 +9,9 @@ export interface AuthenticatedUser {
   role: UserRole
 }
 
-export async function getUserWithRole(userId: string): Promise<AuthenticatedUser | null> {
+export async function getUserWithRole(
+  userId: string
+): Promise<AuthenticatedUser | null> {
   try {
     const { data: profile, error } = await supabaseAdmin
       .from('profiles')
@@ -24,7 +26,7 @@ export async function getUserWithRole(userId: string): Promise<AuthenticatedUser
     return {
       id: profile.id,
       email: profile.email,
-      role: profile.role as UserRole
+      role: profile.role as UserRole,
     }
   } catch (error) {
     console.error('Error fetching user role:', error)
@@ -36,20 +38,25 @@ export function hasRole(userRole: UserRole, requiredRole: UserRole): boolean {
   const roleHierarchy: Record<UserRole, number> = {
     user: 1,
     moderator: 2,
-    admin: 3
+    admin: 3,
   }
 
   return roleHierarchy[userRole] >= roleHierarchy[requiredRole]
 }
 
 export function requireRole(requiredRole: UserRole) {
-  return function (handler: (request: NextRequest, context: { user: AuthenticatedUser }) => Promise<NextResponse>) {
+  return function (
+    handler: (
+      request: NextRequest,
+      context: { user: AuthenticatedUser }
+    ) => Promise<NextResponse>
+  ) {
     return async (request: NextRequest) => {
       const authHeader = request.headers.get('authorization')
-      
+
       if (!authHeader?.startsWith('Bearer ')) {
         return NextResponse.json(
-          { error: 'Missing or invalid authorization header' }, 
+          { error: 'Missing or invalid authorization header' },
           { status: 401 }
         )
       }
@@ -57,27 +64,30 @@ export function requireRole(requiredRole: UserRole) {
       const token = authHeader.substring(7)
 
       try {
-        const { data: { user }, error } = await supabaseAdmin.auth.getUser(token)
-        
+        const {
+          data: { user },
+          error,
+        } = await supabaseAdmin.auth.getUser(token)
+
         if (error || !user) {
           return NextResponse.json(
-            { error: 'Invalid or expired token' }, 
+            { error: 'Invalid or expired token' },
             { status: 401 }
           )
         }
 
         const userWithRole = await getUserWithRole(user.id)
-        
+
         if (!userWithRole) {
           return NextResponse.json(
-            { error: 'User profile not found' }, 
+            { error: 'User profile not found' },
             { status: 404 }
           )
         }
 
         if (!hasRole(userWithRole.role, requiredRole)) {
           return NextResponse.json(
-            { error: `${requiredRole} role required` }, 
+            { error: `${requiredRole} role required` },
             { status: 403 }
           )
         }
@@ -86,7 +96,7 @@ export function requireRole(requiredRole: UserRole) {
       } catch (error) {
         console.error('Role-based auth error:', error)
         return NextResponse.json(
-          { error: 'Authentication failed' }, 
+          { error: 'Authentication failed' },
           { status: 500 }
         )
       }

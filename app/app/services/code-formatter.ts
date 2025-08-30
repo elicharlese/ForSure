@@ -7,7 +7,7 @@ export type FormatterOptions = {
   semicolons: boolean
   bracketSpacing: boolean
   jsxBracketSameLine: boolean
-  arrowParens: "avoid" | "always"
+  arrowParens: 'avoid' | 'always'
 }
 
 // Default formatter options
@@ -19,11 +19,14 @@ export const defaultFormatterOptions: FormatterOptions = {
   semicolons: true,
   bracketSpacing: true,
   jsxBracketSameLine: false,
-  arrowParens: "always",
+  arrowParens: 'always',
 }
 
 // Format JavaScript/TypeScript code
-export function formatJavaScript(code: string, options: Partial<FormatterOptions> = {}): string {
+export function formatJavaScript(
+  code: string,
+  options: Partial<FormatterOptions> = {}
+): string {
   const mergedOptions = { ...defaultFormatterOptions, ...options }
 
   try {
@@ -51,13 +54,16 @@ export function formatJavaScript(code: string, options: Partial<FormatterOptions
 
     return formatted
   } catch (error) {
-    console.error("Error formatting JavaScript:", error)
+    console.error('Error formatting JavaScript:', error)
     return code // Return original code if formatting fails
   }
 }
 
 // Format HTML code
-export function formatHTML(code: string, options: Partial<FormatterOptions> = {}): string {
+export function formatHTML(
+  code: string,
+  options: Partial<FormatterOptions> = {}
+): string {
   const mergedOptions = { ...defaultFormatterOptions, ...options }
 
   try {
@@ -72,13 +78,16 @@ export function formatHTML(code: string, options: Partial<FormatterOptions> = {}
 
     return formatted
   } catch (error) {
-    console.error("Error formatting HTML:", error)
+    console.error('Error formatting HTML:', error)
     return code // Return original code if formatting fails
   }
 }
 
 // Format CSS code
-export function formatCSS(code: string, options: Partial<FormatterOptions> = {}): string {
+export function formatCSS(
+  code: string,
+  options: Partial<FormatterOptions> = {}
+): string {
   const mergedOptions = { ...defaultFormatterOptions, ...options }
 
   try {
@@ -93,13 +102,16 @@ export function formatCSS(code: string, options: Partial<FormatterOptions> = {})
 
     return formatted
   } catch (error) {
-    console.error("Error formatting CSS:", error)
+    console.error('Error formatting CSS:', error)
     return code // Return original code if formatting fails
   }
 }
 
 // Format JSON code
-export function formatJSON(code: string, options: Partial<FormatterOptions> = {}): string {
+export function formatJSON(
+  code: string,
+  options: Partial<FormatterOptions> = {}
+): string {
   const mergedOptions = { ...defaultFormatterOptions, ...options }
 
   try {
@@ -107,53 +119,60 @@ export function formatJSON(code: string, options: Partial<FormatterOptions> = {}
     const parsed = JSON.parse(code)
     return JSON.stringify(parsed, null, mergedOptions.tabSize)
   } catch (error) {
-    console.error("Error formatting JSON:", error)
+    console.error('Error formatting JSON:', error)
     return code // Return original code if formatting fails
   }
 }
 
 // Format Markdown code
-export function formatMarkdown(code: string, options: Partial<FormatterOptions> = {}): string {
+export function formatMarkdown(
+  code: string,
+  options: Partial<FormatterOptions> = {}
+): string {
   // This is a simplified formatter for demonstration
   // In a real implementation, you would use a library like prettier
 
   try {
     // Normalize line endings
-    let formatted = code.replace(/\r\n/g, "\n")
+    let formatted = code.replace(/\r\n/g, '\n')
 
     // Ensure consistent headings (space after #)
-    formatted = formatted.replace(/^(#{1,6})([^#\s])/gm, "$1 $2")
+    formatted = formatted.replace(/^(#{1,6})([^#\s])/gm, '$1 $2')
 
     // Ensure lists have proper spacing
-    formatted = formatted.replace(/^(\s*[-*+])[^\s]/gm, "$1 ")
+    formatted = formatted.replace(/^(\s*[-*+])[^\s]/gm, '$1 ')
 
     // Normalize multiple blank lines to a maximum of two
-    formatted = formatted.replace(/\n{3,}/g, "\n\n")
+    formatted = formatted.replace(/\n{3,}/g, '\n\n')
 
     return formatted
   } catch (error) {
-    console.error("Error formatting Markdown:", error)
+    console.error('Error formatting Markdown:', error)
     return code // Return original code if formatting fails
   }
 }
 
 // Format code based on file extension
-export function formatCode(code: string, fileName: string, options: Partial<FormatterOptions> = {}): string {
-  const extension = fileName.split(".").pop()?.toLowerCase() || ""
+export function formatCode(
+  code: string,
+  fileName: string,
+  options: Partial<FormatterOptions> = {}
+): string {
+  const extension = fileName.split('.').pop()?.toLowerCase() || ''
 
   switch (extension) {
-    case "js":
-    case "jsx":
-    case "ts":
-    case "tsx":
+    case 'js':
+    case 'jsx':
+    case 'ts':
+    case 'tsx':
       return formatJavaScript(code, options)
-    case "html":
+    case 'html':
       return formatHTML(code, options)
-    case "css":
+    case 'css':
       return formatCSS(code, options)
-    case "json":
+    case 'json':
       return formatJSON(code, options)
-    case "md":
+    case 'md':
       return formatMarkdown(code, options)
     default:
       return code // Return original code for unsupported file types
@@ -165,7 +184,7 @@ export function formatAllFiles(
   fileStructure: any,
   options: FormatterOptions,
   fileTypes: string[],
-  onProgress?: (formattedCount: number, totalFiles: number) => void,
+  onProgress?: (formattedCount: number, totalFiles: number) => void
 ): { newStructure: any; formattedCount: number; totalFiles: number } {
   // Count total files to format
   const totalFiles = countFilesToFormat(fileStructure, fileTypes)
@@ -175,7 +194,7 @@ export function formatAllFiles(
   const newStructure = JSON.parse(JSON.stringify(fileStructure))
 
   // Format all files recursively
-  formatFilesRecursive(newStructure, options, fileTypes, (count) => {
+  formatFilesRecursive(newStructure, options, fileTypes, count => {
     formattedCount = count
     if (onProgress) {
       onProgress(formattedCount, totalFiles)
@@ -189,8 +208,8 @@ export function formatAllFiles(
 function countFilesToFormat(node: any, fileTypes: string[]): number {
   let count = 0
 
-  if (node.type === "file") {
-    const extension = node.name.split(".").pop()?.toLowerCase()
+  if (node.type === 'file') {
+    const extension = node.name.split('.').pop()?.toLowerCase()
     if (extension && fileTypes.includes(extension)) {
       count++
     }
@@ -211,10 +230,10 @@ function formatFilesRecursive(
   options: FormatterOptions,
   fileTypes: string[],
   onProgress: (count: number) => void,
-  count = 0,
+  count = 0
 ): number {
-  if (node.type === "file") {
-    const extension = node.name.split(".").pop()?.toLowerCase()
+  if (node.type === 'file') {
+    const extension = node.name.split('.').pop()?.toLowerCase()
     if (extension && fileTypes.includes(extension) && node.content) {
       node.content = formatCode(node.content, node.name, options)
       count++
@@ -236,22 +255,25 @@ function formatFilesRecursive(
 // Format code blocks with proper indentation
 function formatBlocks(code: string, options: FormatterOptions): string {
   const { tabSize, insertSpaces } = options
-  const indent = insertSpaces ? " ".repeat(tabSize) : "\t"
+  const indent = insertSpaces ? ' '.repeat(tabSize) : '\t'
 
-  let formatted = ""
+  let formatted = ''
   let indentLevel = 0
   let inString = false
-  let stringChar = ""
+  let stringChar = ''
 
   for (let i = 0; i < code.length; i++) {
     const char = code[i]
-    const nextChar = code[i + 1] || ""
+    const nextChar = code[i + 1] || ''
 
     // Handle strings
-    if ((char === "'" || char === '"' || char === "`") && (i === 0 || code[i - 1] !== "\\")) {
+    if (
+      (char === "'" || char === '"' || char === '`') &&
+      (i === 0 || code[i - 1] !== '\\')
+    ) {
       if (inString && char === stringChar) {
         inString = false
-        stringChar = ""
+        stringChar = ''
       } else if (!inString) {
         inString = true
         stringChar = char
@@ -260,28 +282,28 @@ function formatBlocks(code: string, options: FormatterOptions): string {
 
     // Only process braces if not in a string
     if (!inString) {
-      if (char === "{" || char === "[" || char === "(") {
+      if (char === '{' || char === '[' || char === '(') {
         formatted += char
-        if (nextChar !== "}" && nextChar !== "]" && nextChar !== ")") {
+        if (nextChar !== '}' && nextChar !== ']' && nextChar !== ')') {
           indentLevel++
-          formatted += "\n" + indent.repeat(indentLevel)
+          formatted += '\n' + indent.repeat(indentLevel)
         }
         continue
       }
 
-      if (char === "}" || char === "]" || char === ")") {
-        if (code[i - 1] !== "{" && code[i - 1] !== "[" && code[i - 1] !== "(") {
+      if (char === '}' || char === ']' || char === ')') {
+        if (code[i - 1] !== '{' && code[i - 1] !== '[' && code[i - 1] !== '(') {
           indentLevel = Math.max(0, indentLevel - 1)
-          formatted += "\n" + indent.repeat(indentLevel)
+          formatted += '\n' + indent.repeat(indentLevel)
         }
         formatted += char
         continue
       }
 
-      if (char === ";") {
+      if (char === ';') {
         formatted += char
-        if (nextChar !== "}" && nextChar !== "]" && nextChar !== ")") {
-          formatted += "\n" + indent.repeat(indentLevel)
+        if (nextChar !== '}' && nextChar !== ']' && nextChar !== ')') {
+          formatted += '\n' + indent.repeat(indentLevel)
         }
         continue
       }

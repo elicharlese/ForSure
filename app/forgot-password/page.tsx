@@ -1,18 +1,25 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { useState } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Loader2 } from "lucide-react"
+import { useState } from 'react'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Loader2 } from 'lucide-react'
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState("")
+  const [email, setEmail] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -22,7 +29,7 @@ export default function ForgotPasswordPage() {
     setError(null)
 
     if (!email) {
-      setError("Please enter your email address")
+      setError('Please enter your email address')
       return
     }
 
@@ -31,10 +38,10 @@ export default function ForgotPasswordPage() {
     try {
       // In a real app, this would call an API endpoint
       // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      await new Promise(resolve => setTimeout(resolve, 1500))
       setIsSubmitted(true)
     } catch (error) {
-      setError("An error occurred. Please try again.")
+      setError('An error occurred. Please try again.')
     } finally {
       setIsSubmitting(false)
     }
@@ -45,14 +52,17 @@ export default function ForgotPasswordPage() {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-2xl">Reset your password</CardTitle>
-          <CardDescription>Enter your email address and we'll send you a link to reset your password</CardDescription>
+          <CardDescription>
+            Enter your email address and we'll send you a link to reset your
+            password
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {isSubmitted ? (
             <Alert className="bg-primary/10 border-primary/20">
               <AlertDescription>
-                If an account exists with the email <strong>{email}</strong>, you will receive a password reset link
-                shortly.
+                If an account exists with the email <strong>{email}</strong>,
+                you will receive a password reset link shortly.
               </AlertDescription>
             </Alert>
           ) : (
@@ -69,7 +79,7 @@ export default function ForgotPasswordPage() {
                   type="email"
                   placeholder="you@example.com"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={e => setEmail(e.target.value)}
                   disabled={isSubmitting}
                   required
                 />
@@ -81,7 +91,7 @@ export default function ForgotPasswordPage() {
                     Sending...
                   </>
                 ) : (
-                  "Send reset link"
+                  'Send reset link'
                 )}
               </Button>
             </form>
@@ -89,7 +99,7 @@ export default function ForgotPasswordPage() {
         </CardContent>
         <CardFooter className="flex justify-center">
           <p className="text-sm text-muted-foreground">
-            Remember your password?{" "}
+            Remember your password?{' '}
             <Link href="/login" className="text-primary hover:underline">
               Back to login
             </Link>

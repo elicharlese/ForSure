@@ -6,13 +6,17 @@ import { apiResponse, apiError, validateRequestBody } from '@/lib/api-utils'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    
+
     const validation = validateRequestBody(body, registerSchema)
     if (!validation.success) {
       return apiError('Validation failed', 422, validation.errors)
     }
 
-    const { email, password, name } = validation.data as { email: string; password: string; name: string }
+    const { email, password, name } = validation.data as {
+      email: string
+      password: string
+      name: string
+    }
 
     // Create auth user
     const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -47,14 +51,18 @@ export async function POST(request: NextRequest) {
       return apiError('Failed to create user profile', 500)
     }
 
-    return apiResponse({
-      user: {
-        id: authData.user.id,
-        email: authData.user.email,
-        ...profile,
+    return apiResponse(
+      {
+        user: {
+          id: authData.user.id,
+          email: authData.user.email,
+          ...profile,
+        },
+        message:
+          'Registration successful. Please check your email to verify your account.',
       },
-      message: 'Registration successful. Please check your email to verify your account.',
-    }, 201)
+      201
+    )
   } catch (error) {
     console.error('Registration error:', error)
     return apiError('Internal server error', 500)

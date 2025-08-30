@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
-import { type ReactNode, useEffect, useState } from "react"
-import { gsap } from "gsap"
-import { ScrollTrigger } from "gsap/dist/ScrollTrigger"
+import { type ReactNode, useEffect, useState } from 'react'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 
 interface GSAPProviderProps {
   children: ReactNode
@@ -13,7 +13,7 @@ export default function GSAPProvider({ children }: GSAPProviderProps) {
 
   useEffect(() => {
     // Register ScrollTrigger plugin
-    if (typeof window !== "undefined") {
+    if (typeof window !== 'undefined') {
       gsap.registerPlugin(ScrollTrigger)
 
       // Set up defaults
@@ -27,8 +27,8 @@ export default function GSAPProvider({ children }: GSAPProviderProps) {
 
     // Clean up ScrollTrigger on unmount
     return () => {
-      if (typeof window !== "undefined") {
-        ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
+      if (typeof window !== 'undefined') {
+        ScrollTrigger.getAll().forEach(trigger => trigger.kill())
         ScrollTrigger.clearMatchMedia()
       }
     }

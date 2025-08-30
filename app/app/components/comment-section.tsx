@@ -1,15 +1,33 @@
-"use client"
+'use client'
 
-import { useState, useRef, useEffect } from "react"
-import { formatDistanceToNow } from "date-fns"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Input } from "@/components/ui/input"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { MessageSquare, MoreVertical, Reply, Edit, Trash2, Send } from "lucide-react"
-import type { Comment } from "../hooks/use-saved-projects"
+import { useState, useRef, useEffect } from 'react'
+import { formatDistanceToNow } from 'date-fns'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
+import { Input } from '@/components/ui/input'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import {
+  MessageSquare,
+  MoreVertical,
+  Reply,
+  Edit,
+  Trash2,
+  Send,
+} from 'lucide-react'
+import type { Comment } from '../hooks/use-saved-projects'
 
 interface CommentSectionProps {
   shareId: string
@@ -18,7 +36,10 @@ interface CommentSectionProps {
   onAddComment: (comment: { author: string; content: string }) => void
   onEditComment: (commentId: string, content: string) => void
   onDeleteComment: (commentId: string) => void
-  onAddReply: (commentId: string, reply: { author: string; content: string }) => void
+  onAddReply: (
+    commentId: string,
+    reply: { author: string; content: string }
+  ) => void
 }
 
 export function CommentSection({
@@ -30,30 +51,30 @@ export function CommentSection({
   onDeleteComment,
   onAddReply,
 }: CommentSectionProps) {
-  const [newComment, setNewComment] = useState("")
+  const [newComment, setNewComment] = useState('')
   const [authorName, setAuthorName] = useState(() => {
     // Try to get the author name from localStorage
-    const savedName = localStorage.getItem("forsure-comment-author")
-    return savedName || ""
+    const savedName = localStorage.getItem('forsure-comment-author')
+    return savedName || ''
   })
   const [showAuthorInput, setShowAuthorInput] = useState(!authorName)
   const [replyingTo, setReplyingTo] = useState<string | null>(null)
-  const [replyContent, setReplyContent] = useState("")
+  const [replyContent, setReplyContent] = useState('')
   const [editingComment, setEditingComment] = useState<string | null>(null)
-  const [editContent, setEditContent] = useState("")
+  const [editContent, setEditContent] = useState('')
   const commentEndRef = useRef<HTMLDivElement>(null)
 
   // Save author name to localStorage when it changes
   useEffect(() => {
     if (authorName) {
-      localStorage.setItem("forsure-comment-author", authorName)
+      localStorage.setItem('forsure-comment-author', authorName)
     }
   }, [authorName])
 
   // Scroll to bottom when new comments are added
   useEffect(() => {
     if (commentEndRef.current) {
-      commentEndRef.current.scrollIntoView({ behavior: "smooth" })
+      commentEndRef.current.scrollIntoView({ behavior: 'smooth' })
     }
   }, [comments.length])
 
@@ -65,7 +86,7 @@ export function CommentSection({
       content: newComment,
     })
 
-    setNewComment("")
+    setNewComment('')
     setShowAuthorInput(false)
   }
 
@@ -77,7 +98,7 @@ export function CommentSection({
       content: replyContent,
     })
 
-    setReplyContent("")
+    setReplyContent('')
     setReplyingTo(null)
   }
 
@@ -91,19 +112,19 @@ export function CommentSection({
 
     onEditComment(commentId, editContent)
     setEditingComment(null)
-    setEditContent("")
+    setEditContent('')
   }
 
   const handleCancelEdit = () => {
     setEditingComment(null)
-    setEditContent("")
+    setEditContent('')
   }
 
   const getInitials = (name: string) => {
     return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
+      .split(' ')
+      .map(n => n[0])
+      .join('')
       .toUpperCase()
       .substring(0, 2)
   }
@@ -131,44 +152,68 @@ export function CommentSection({
           <div className="text-center py-8 text-muted-foreground">
             <MessageSquare className="h-12 w-12 mx-auto mb-2 opacity-20" />
             <p>No comments yet</p>
-            {allowComments && <p className="text-sm">Be the first to leave a comment!</p>}
+            {allowComments && (
+              <p className="text-sm">Be the first to leave a comment!</p>
+            )}
           </div>
         ) : (
           <div className="space-y-4">
-            {comments.map((comment) => (
+            {comments.map(comment => (
               <div key={comment.id} className="space-y-2">
                 <div className="flex gap-3">
-                  <Avatar className="h-8 w-8" style={{ backgroundColor: getAvatarColor(comment.author) }}>
-                    <AvatarFallback>{getInitials(comment.author)}</AvatarFallback>
+                  <Avatar
+                    className="h-8 w-8"
+                    style={{ backgroundColor: getAvatarColor(comment.author) }}
+                  >
+                    <AvatarFallback>
+                      {getInitials(comment.author)}
+                    </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 space-y-1">
                     <div className="flex items-center justify-between">
                       <div>
                         <span className="font-medium">{comment.author}</span>
                         <span className="text-xs text-muted-foreground ml-2">
-                          {formatDistanceToNow(new Date(comment.timestamp), { addSuffix: true })}
+                          {formatDistanceToNow(new Date(comment.timestamp), {
+                            addSuffix: true,
+                          })}
                         </span>
-                        {comment.isEdited && <span className="text-xs text-muted-foreground ml-2">(edited)</span>}
+                        {comment.isEdited && (
+                          <span className="text-xs text-muted-foreground ml-2">
+                            (edited)
+                          </span>
+                        )}
                       </div>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                          >
                             <MoreVertical className="h-4 w-4" />
                             <span className="sr-only">Comment actions</span>
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => setReplyingTo(comment.id)}>
+                          <DropdownMenuItem
+                            onClick={() => setReplyingTo(comment.id)}
+                          >
                             <Reply className="mr-2 h-4 w-4" />
                             Reply
                           </DropdownMenuItem>
                           {comment.author === authorName && (
                             <>
-                              <DropdownMenuItem onClick={() => handleStartEdit(comment)}>
+                              <DropdownMenuItem
+                                onClick={() => handleStartEdit(comment)}
+                              >
                                 <Edit className="mr-2 h-4 w-4" />
                                 Edit
                               </DropdownMenuItem>
-                              <DropdownMenuItem className="text-red-600" onClick={() => onDeleteComment(comment.id)}>
+                              <DropdownMenuItem
+                                className="text-red-600"
+                                onClick={() => onDeleteComment(comment.id)}
+                              >
                                 <Trash2 className="mr-2 h-4 w-4" />
                                 Delete
                               </DropdownMenuItem>
@@ -182,14 +227,21 @@ export function CommentSection({
                       <div className="space-y-2">
                         <Textarea
                           value={editContent}
-                          onChange={(e) => setEditContent(e.target.value)}
+                          onChange={e => setEditContent(e.target.value)}
                           className="min-h-[100px]"
                         />
                         <div className="flex justify-end gap-2">
-                          <Button variant="outline" size="sm" onClick={handleCancelEdit}>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleCancelEdit}
+                          >
                             Cancel
                           </Button>
-                          <Button size="sm" onClick={() => handleSubmitEdit(comment.id)}>
+                          <Button
+                            size="sm"
+                            onClick={() => handleSubmitEdit(comment.id)}
+                          >
                             Save
                           </Button>
                         </div>
@@ -203,17 +255,29 @@ export function CommentSection({
                 {/* Replies */}
                 {comment.replies && comment.replies.length > 0 && (
                   <div className="ml-11 space-y-3 border-l-2 border-muted pl-4 mt-2">
-                    {comment.replies.map((reply) => (
+                    {comment.replies.map(reply => (
                       <div key={reply.id} className="flex gap-3">
-                        <Avatar className="h-6 w-6" style={{ backgroundColor: getAvatarColor(reply.author) }}>
-                          <AvatarFallback className="text-xs">{getInitials(reply.author)}</AvatarFallback>
+                        <Avatar
+                          className="h-6 w-6"
+                          style={{
+                            backgroundColor: getAvatarColor(reply.author),
+                          }}
+                        >
+                          <AvatarFallback className="text-xs">
+                            {getInitials(reply.author)}
+                          </AvatarFallback>
                         </Avatar>
                         <div className="flex-1 space-y-1">
                           <div className="flex items-center justify-between">
                             <div>
-                              <span className="font-medium text-sm">{reply.author}</span>
+                              <span className="font-medium text-sm">
+                                {reply.author}
+                              </span>
                               <span className="text-xs text-muted-foreground ml-2">
-                                {formatDistanceToNow(new Date(reply.timestamp), { addSuffix: true })}
+                                {formatDistanceToNow(
+                                  new Date(reply.timestamp),
+                                  { addSuffix: true }
+                                )}
                               </span>
                             </div>
                           </div>
@@ -230,22 +294,35 @@ export function CommentSection({
                     <div className="flex gap-3">
                       <Avatar
                         className="h-6 w-6"
-                        style={{ backgroundColor: getAvatarColor(authorName || "Anonymous") }}
+                        style={{
+                          backgroundColor: getAvatarColor(
+                            authorName || 'Anonymous'
+                          ),
+                        }}
                       >
-                        <AvatarFallback className="text-xs">{getInitials(authorName || "A")}</AvatarFallback>
+                        <AvatarFallback className="text-xs">
+                          {getInitials(authorName || 'A')}
+                        </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 space-y-2">
                         <Textarea
                           placeholder="Write a reply..."
                           value={replyContent}
-                          onChange={(e) => setReplyContent(e.target.value)}
+                          onChange={e => setReplyContent(e.target.value)}
                           className="min-h-[80px]"
                         />
                         <div className="flex justify-end gap-2">
-                          <Button variant="outline" size="sm" onClick={() => setReplyingTo(null)}>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setReplyingTo(null)}
+                          >
                             Cancel
                           </Button>
-                          <Button size="sm" onClick={() => handleSubmitReply(comment.id)}>
+                          <Button
+                            size="sm"
+                            onClick={() => handleSubmitReply(comment.id)}
+                          >
                             Reply
                           </Button>
                         </div>
@@ -272,20 +349,27 @@ export function CommentSection({
                   id="author-name"
                   placeholder="Enter your name"
                   value={authorName}
-                  onChange={(e) => setAuthorName(e.target.value)}
+                  onChange={e => setAuthorName(e.target.value)}
                 />
               </div>
             )}
 
             <div className="flex gap-3">
-              <Avatar className="h-8 w-8" style={{ backgroundColor: getAvatarColor(authorName || "Anonymous") }}>
-                <AvatarFallback>{getInitials(authorName || "A")}</AvatarFallback>
+              <Avatar
+                className="h-8 w-8"
+                style={{
+                  backgroundColor: getAvatarColor(authorName || 'Anonymous'),
+                }}
+              >
+                <AvatarFallback>
+                  {getInitials(authorName || 'A')}
+                </AvatarFallback>
               </Avatar>
               <div className="flex-1">
                 <Textarea
                   placeholder="Write a comment..."
                   value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
+                  onChange={e => setNewComment(e.target.value)}
                   className="min-h-[100px]"
                 />
               </div>
@@ -293,12 +377,19 @@ export function CommentSection({
 
             <div className="flex justify-between items-center">
               {!showAuthorInput && authorName && (
-                <Button variant="ghost" size="sm" onClick={() => setShowAuthorInput(true)}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowAuthorInput(true)}
+                >
                   Change name
                 </Button>
               )}
               <div className="ml-auto">
-                <Button onClick={handleSubmitComment} disabled={!newComment.trim() || !authorName.trim()}>
+                <Button
+                  onClick={handleSubmitComment}
+                  disabled={!newComment.trim() || !authorName.trim()}
+                >
                   <Send className="mr-2 h-4 w-4" />
                   Post Comment
                 </Button>

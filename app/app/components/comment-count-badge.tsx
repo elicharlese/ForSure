@@ -1,13 +1,16 @@
-import { MessageSquare } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import type { Comment } from "../hooks/use-saved-projects"
+import { MessageSquare } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import type { Comment } from '../hooks/use-saved-projects'
 
 interface CommentCountBadgeProps {
   comments: Comment[] | undefined
   className?: string
 }
 
-export function CommentCountBadge({ comments, className = "" }: CommentCountBadgeProps) {
+export function CommentCountBadge({
+  comments,
+  className = '',
+}: CommentCountBadgeProps) {
   if (!comments || comments.length === 0) return null
 
   // Count total comments including replies

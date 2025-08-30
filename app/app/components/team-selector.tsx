@@ -1,7 +1,7 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,12 +9,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Users, UserPlus, ChevronDown } from "lucide-react"
-import { TeamManagementDialog } from "./team-management-dialog"
-import { useTeams } from "../hooks/use-teams"
-import type { Team } from "../types/team"
+} from '@/components/ui/dropdown-menu'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Users, UserPlus, ChevronDown } from 'lucide-react'
+import { TeamManagementDialog } from './team-management-dialog'
+import { useTeams } from '../hooks/use-teams'
+import type { Team } from '../types/team'
 
 interface TeamSelectorProps {
   onTeamChange: (team: Team | null) => void
@@ -43,9 +43,13 @@ export function TeamSelector({ onTeamChange, currentTeam }: TeamSelectorProps) {
             {currentTeam ? (
               <>
                 <Avatar className="h-5 w-5">
-                  <AvatarFallback className="text-xs">{currentTeam.name.charAt(0)}</AvatarFallback>
+                  <AvatarFallback className="text-xs">
+                    {currentTeam.name.charAt(0)}
+                  </AvatarFallback>
                 </Avatar>
-                <span className="max-w-[100px] truncate">{currentTeam.name}</span>
+                <span className="max-w-[100px] truncate">
+                  {currentTeam.name}
+                </span>
               </>
             ) : (
               <>
@@ -59,24 +63,29 @@ export function TeamSelector({ onTeamChange, currentTeam }: TeamSelectorProps) {
         <DropdownMenuContent align="end" className="w-56">
           <DropdownMenuLabel>Switch Team</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className={!currentTeam ? "bg-accent" : ""} onClick={() => handleTeamSelect(null)}>
+          <DropdownMenuItem
+            className={!currentTeam ? 'bg-accent' : ''}
+            onClick={() => handleTeamSelect(null)}
+          >
             <div className="flex items-center gap-2">
               <Avatar className="h-6 w-6">
                 <AvatarFallback>P</AvatarFallback>
               </Avatar>
               <div className="flex flex-col">
                 <span>Personal</span>
-                <span className="text-xs text-muted-foreground">Your personal projects</span>
+                <span className="text-xs text-muted-foreground">
+                  Your personal projects
+                </span>
               </div>
             </div>
           </DropdownMenuItem>
 
           {teams.length > 0 && <DropdownMenuSeparator />}
 
-          {teams.map((team) => (
+          {teams.map(team => (
             <DropdownMenuItem
               key={team.id}
-              className={currentTeam?.id === team.id ? "bg-accent" : ""}
+              className={currentTeam?.id === team.id ? 'bg-accent' : ''}
               onClick={() => handleTeamSelect(team)}
             >
               <div className="flex items-center gap-2">
@@ -85,7 +94,9 @@ export function TeamSelector({ onTeamChange, currentTeam }: TeamSelectorProps) {
                 </Avatar>
                 <div className="flex flex-col">
                   <span>{team.name}</span>
-                  <span className="text-xs text-muted-foreground">{team.members.length} members</span>
+                  <span className="text-xs text-muted-foreground">
+                    {team.members.length} members
+                  </span>
                 </div>
               </div>
             </DropdownMenuItem>
@@ -107,7 +118,7 @@ export function TeamSelector({ onTeamChange, currentTeam }: TeamSelectorProps) {
 
       <TeamManagementDialog
         currentTeam={managingTeam}
-        onTeamChange={(team) => {
+        onTeamChange={team => {
           if (team) {
             onTeamChange(team)
           }

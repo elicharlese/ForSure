@@ -18,7 +18,11 @@ export const forgotPasswordSchema = z.object({
 
 // Profile schemas
 export const updateProfileSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(100, 'Name too long').optional(),
+  name: z
+    .string()
+    .min(1, 'Name is required')
+    .max(100, 'Name too long')
+    .optional(),
   bio: z.string().max(500, 'Bio too long').optional(),
   avatar_url: z.string().url('Invalid URL').optional(),
 })
@@ -26,13 +30,24 @@ export const updateProfileSchema = z.object({
 // Project schemas
 export const createProjectSchema = z.object({
   title: z.string().min(1, 'Title is required').max(200, 'Title too long'),
-  description: z.string().min(1, 'Description is required').max(1000, 'Description too long'),
+  description: z
+    .string()
+    .min(1, 'Description is required')
+    .max(1000, 'Description too long'),
   status: z.enum(['active', 'completed', 'archived']).optional(),
 })
 
 export const updateProjectSchema = z.object({
-  title: z.string().min(1, 'Title is required').max(200, 'Title too long').optional(),
-  description: z.string().min(1, 'Description is required').max(1000, 'Description too long').optional(),
+  title: z
+    .string()
+    .min(1, 'Title is required')
+    .max(200, 'Title too long')
+    .optional(),
+  description: z
+    .string()
+    .min(1, 'Description is required')
+    .max(1000, 'Description too long')
+    .optional(),
   status: z.enum(['active', 'completed', 'archived']).optional(),
   collaborators: z.array(z.string().uuid()).optional(),
 })
@@ -41,7 +56,10 @@ export const updateProjectSchema = z.object({
 export const createBlogPostSchema = z.object({
   title: z.string().min(1, 'Title is required').max(200, 'Title too long'),
   content: z.string().min(1, 'Content is required'),
-  excerpt: z.string().min(1, 'Excerpt is required').max(300, 'Excerpt too long'),
+  excerpt: z
+    .string()
+    .min(1, 'Excerpt is required')
+    .max(300, 'Excerpt too long'),
   slug: z.string().min(1, 'Slug is required').max(200, 'Slug too long'),
   tags: z.array(z.string()).optional(),
   featured_image: z.string().url('Invalid URL').optional(),
@@ -67,7 +85,10 @@ export const updateCareerSchema = createCareerSchema.partial()
 // Template schemas
 export const createTemplateSchema = z.object({
   name: z.string().min(1, 'Name is required').max(200, 'Name too long'),
-  description: z.string().min(1, 'Description is required').max(500, 'Description too long'),
+  description: z
+    .string()
+    .min(1, 'Description is required')
+    .max(500, 'Description too long'),
   category: z.string().min(1, 'Category is required'),
   code: z.string().min(1, 'Code is required'),
   featured: z.boolean().optional(),
@@ -90,3 +111,16 @@ export const paginationSchema = z.object({
   sort: z.string().optional(),
   order: z.enum(['asc', 'desc']).optional().default('desc'),
 })
+
+// Component schemas
+export const createComponentSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(200, 'Name too long'),
+  description: z.string().max(500, 'Description too long').optional(),
+  category: z.string().min(1, 'Category is required'),
+  tags: z.array(z.string()).optional().default([]),
+  prompt: z.string().min(1, 'Prompt is required'),
+  preview_image_url: z.string().url('Invalid URL').optional(),
+  is_public: z.boolean().optional().default(true),
+})
+
+export const updateComponentSchema = createComponentSchema.partial()

@@ -1,11 +1,11 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { useAuth } from "@/contexts/auth-context"
-import { Loader2 } from "lucide-react"
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/contexts/auth-context'
+import { Loader2 } from 'lucide-react'
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading, isDemoMode } = useAuth()
@@ -13,7 +13,9 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated && !isDemoMode) {
-      router.push("/login?redirect=" + encodeURIComponent(window.location.pathname))
+      router.push(
+        '/login?redirect=' + encodeURIComponent(window.location.pathname)
+      )
     }
   }, [isAuthenticated, isLoading, isDemoMode, router])
 

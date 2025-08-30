@@ -1,16 +1,13 @@
-import { NextRequest } from 'next/server'
+// Note: Use plain request-like objects; avoid importing NextRequest in tests
 import { authMiddleware } from '@/lib/auth-middleware'
 
-// Mock the Supabase admin
-jest.mock('@/lib/supabase', () => ({
-  supabaseAdmin: {
-    auth: {
-      getUser: jest.fn(),
-    },
-  },
+// Mock JWT verification helpers
+jest.mock('@/lib/auth', () => ({
+  getBearerToken: jest.requireActual('@/lib/auth').getBearerToken,
+  verifyAccessToken: jest.fn(),
 }))
 
-const { supabaseAdmin } = require('@/lib/supabase')
+const { verifyAccessToken } = require('@/lib/auth')
 
 describe('Auth Middleware', () => {
   beforeEach(() => {
@@ -19,81 +16,78 @@ describe('Auth Middleware', () => {
 
   describe('authMiddleware', () => {
     it('should return error for missing authorization header', async () => {
-      const request = new NextRequest('http://localhost:3000/api/test')
-      
+      const request = { headers: { get: () => null } } as any
+
       const result = await authMiddleware(request)
-      
+
       expect(result.error).toBe('Missing or invalid authorization header')
       expect(result.status).toBe(401)
     })
 
     it('should return error for invalid authorization header format', async () => {
-      const request = new NextRequest('http://localhost:3000/api/test', {
-        headers: {
-          authorization: 'InvalidFormat token123'
-        }
-      })
-      
+      const request = {
+        headers: { get: () => 'InvalidFormat token123' },
+      } as any
+
       const result = await authMiddleware(request)
-      
+
       expect(result.error).toBe('Missing or invalid authorization header')
       expect(result.status).toBe(401)
     })
 
     it('should return error for invalid token', async () => {
-      supabaseAdmin.auth.getUser.mockResolvedValue({
-        data: { user: null },
-        error: { message: 'Invalid token' }
+      ;(verifyAccessToken as jest.Mock).mockImplementation(() => {
+        throw new Error('jwt malformed')
       })
 
-      const request = new NextRequest('http://localhost:3000/api/test', {
+      const request = {
         headers: {
-          authorization: 'Bearer invalid-token'
-        }
-      })
-      
+          get: (k: string) =>
+            k === 'authorization' ? 'Bearer invalid-token' : null,
+        },
+      } as any
+
       const result = await authMiddleware(request)
-      
+
       expect(result.error).toBe('Invalid or expired token')
       expect(result.status).toBe(401)
     })
 
     it('should return user for valid token', async () => {
-      const mockUser = {
-        id: 'user-123',
-        email: 'test@example.com'
-      }
-
-      supabaseAdmin.auth.getUser.mockResolvedValue({
-        data: { user: mockUser },
-        error: null
+      ;(verifyAccessToken as jest.Mock).mockReturnValue({
+        sub: 'user-123',
+        email: 'test@example.com',
       })
 
-      const request = new NextRequest('http://localhost:3000/api/test', {
+      const request = {
         headers: {
-          authorization: 'Bearer valid-token'
-        }
-      })
-      
+          get: (k: string) =>
+            k === 'authorization' ? 'Bearer valid-token' : null,
+        },
+      } as any
+
       const result = await authMiddleware(request)
-      
-      expect(result.user).toEqual(mockUser)
+
+      expect(result.user).toEqual({ id: 'user-123', email: 'test@example.com' })
       expect(result.error).toBeNull()
     })
 
-    it('should handle unexpected errors', async () => {
-      supabaseAdmin.auth.getUser.mockRejectedValue(new Error('Database error'))
-
-      const request = new NextRequest('http://localhost:3000/api/test', {
-        headers: {
-          authorization: 'Bearer valid-token'
-        }
+    it('should treat unexpected errors as invalid token', async () => {
+      ;(verifyAccessToken as jest.Mock).mockImplementation(() => {
+        throw new Error('Unexpected')
       })
-      
+
+      const request = {
+        headers: {
+          get: (k: string) =>
+            k === 'authorization' ? 'Bearer valid-token' : null,
+        },
+      } as any
+
       const result = await authMiddleware(request)
-      
-      expect(result.error).toBe('Authentication failed')
-      expect(result.status).toBe(500)
+
+      expect(result.error).toBe('Invalid or expired token')
+      expect(result.status).toBe(401)
     })
   })
 })

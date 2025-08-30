@@ -27,6 +27,7 @@
 ## 🛠️ Tech Stack
 
 ### Frontend
+
 - **Framework**: Next.js 15.2.4 with App Router
 - **Language**: TypeScript 5
 - **Styling**: Tailwind CSS 3.4.17
@@ -37,6 +38,7 @@
 - **Theme**: next-themes for dark/light mode
 
 ### Backend
+
 - **Runtime**: Node.js with Next.js API routes
 - **Database**: MongoDB with Mongoose ODM
 - **Authentication**: JWT with bcryptjs
@@ -44,6 +46,7 @@
 - **File Upload**: Built-in file handling
 
 ### Development Tools
+
 - **Bundler**: Turbopack (development) / Webpack (production)
 - **Linting**: ESLint with Next.js config
 - **Package Manager**: npm/pnpm
@@ -53,19 +56,21 @@
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - npm or pnpm
 - MongoDB (local or Atlas)
 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/elicharlese/ForSure.git
    cd ForSure
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    # or
@@ -73,24 +78,27 @@
    ```
 
 3. **Set up environment variables**
+
    ```bash
    cp .env.example .env.local
    ```
-   
+
    Configure your environment variables:
+
    ```env
    # Database
    MONGODB_URI=mongodb://localhost:27017/forsure
-   
+
    # Authentication
    JWT_SECRET=your-super-secret-jwt-key-here
-   
+
    # App Configuration
    NEXT_PUBLIC_APP_URL=http://localhost:3000
    NODE_ENV=development
    ```
 
 4. **Start the development server**
+
    ```bash
    npm run dev
    # or with Turbopack (recommended)
@@ -201,6 +209,7 @@ POST /api/auth/refresh     # Refresh JWT token
 ## 📊 Database Models
 
 ### User Model
+
 ```typescript
 {
   _id: ObjectId
@@ -215,6 +224,7 @@ POST /api/auth/refresh     # Refresh JWT token
 ```
 
 ### Project Model
+
 ```typescript
 {
   _id: ObjectId
@@ -241,9 +251,9 @@ The application uses a comprehensive set of UI components built on Radix UI:
 ### Example Usage
 
 ```tsx
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card } from "@/components/ui/card"
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card } from '@/components/ui/card'
 
 export function MyComponent() {
   return (
@@ -260,6 +270,7 @@ export function MyComponent() {
 ### Vercel (Recommended)
 
 1. **Connect to Vercel**
+
    ```bash
    npm i -g vercel
    vercel

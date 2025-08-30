@@ -1,8 +1,8 @@
-import type { FileNode } from "../components/file-structure-visualization"
+import type { FileNode } from '../components/file-structure-visualization'
 
 export type Message = {
   id: string
-  role: "user" | "assistant"
+  role: 'user' | 'assistant'
   content: string
   fileStructure?: FileNode
 }
@@ -16,7 +16,7 @@ export type TeamChatMessage = {
   content: string
   timestamp: string
   attachments?: {
-    type: "file" | "image" | "link" | "project"
+    type: 'file' | 'image' | 'link' | 'project'
     name: string
     url?: string
     id?: string

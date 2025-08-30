@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
-import { useState, useEffect } from "react"
-import type { ProjectDetails } from "../components/project-details-form"
-import type { MergeOptions } from "../components/version-merge-dialog"
+import { useState, useEffect } from 'react'
+import type { ProjectDetails } from '../components/project-details-form'
+import type { MergeOptions } from '../components/version-merge-dialog'
 
 export type ProjectVersion = {
   versionId: string
@@ -50,7 +50,7 @@ export type Tag = {
   name: string
   description?: string
   versionId: string // The version this tag points to
-  type: "release" | "milestone" | "hotfix" | "feature" | "custom"
+  type: 'release' | 'milestone' | 'hotfix' | 'feature' | 'custom'
   createdAt: string
   createdBy?: string
   isProtected?: boolean // Whether this tag can be deleted
@@ -89,7 +89,7 @@ export type ThreeWayMergeOptions = {
       finalValue: any
     }[]
   }
-  resolutions: { [path: string]: "current" | "target" | "ancestor" | "custom" }
+  resolutions: { [path: string]: 'current' | 'target' | 'ancestor' | 'custom' }
   customResolutions: { [path: string]: any }
   createNewVersion: boolean
   mergeNotes?: string
@@ -97,16 +97,16 @@ export type ThreeWayMergeOptions = {
 
 // Branch colors for visual distinction
 export const BRANCH_COLORS = [
-  "#3b82f6", // blue-500
-  "#ef4444", // red-500
-  "#10b981", // emerald-500
-  "#f59e0b", // amber-500
-  "#8b5cf6", // violet-500
-  "#ec4899", // pink-500
-  "#06b6d4", // cyan-500
-  "#f97316", // orange-500
-  "#14b8a6", // teal-500
-  "#a855f7", // purple-500
+  '#3b82f6', // blue-500
+  '#ef4444', // red-500
+  '#10b981', // emerald-500
+  '#f59e0b', // amber-500
+  '#8b5cf6', // violet-500
+  '#ec4899', // pink-500
+  '#06b6d4', // cyan-500
+  '#f97316', // orange-500
+  '#14b8a6', // teal-500
+  '#a855f7', // purple-500
 ]
 
 export function useSavedProjects() {
@@ -117,11 +117,11 @@ export function useSavedProjects() {
   useEffect(() => {
     const loadSavedProjects = () => {
       try {
-        const saved = localStorage.getItem("forsure-saved-projects")
+        const saved = localStorage.getItem('forsure-saved-projects')
         if (saved) {
           // Handle migration from old format to new format with versions and branches
           const parsedProjects = JSON.parse(saved) as SavedProject[]
-          const migratedProjects = parsedProjects.map((project) => {
+          const migratedProjects = parsedProjects.map(project => {
             // Create initial version if missing
             if (!project.versions) {
               const initialVersion: ProjectVersion = {
@@ -141,7 +141,7 @@ export function useSavedProjects() {
               const mainBranchId = crypto.randomUUID()
               const mainBranch: Branch = {
                 id: mainBranchId,
-                name: "main",
+                name: 'main',
                 createdAt: project.versions[0].timestamp,
                 lastUpdated: project.lastUpdated,
                 sourceVersionId: project.versions[0].versionId,
@@ -151,7 +151,7 @@ export function useSavedProjects() {
               }
 
               // Assign all existing versions to the main branch
-              const updatedVersions = project.versions.map((version) => ({
+              const updatedVersions = project.versions.map(version => ({
                 ...version,
                 branchId: mainBranchId,
               }))
@@ -169,7 +169,7 @@ export function useSavedProjects() {
           setSavedProjects(migratedProjects)
         }
       } catch (error) {
-        console.error("Failed to load saved projects:", error)
+        console.error('Failed to load saved projects:', error)
       } finally {
         setIsLoaded(true)
       }
@@ -181,7 +181,10 @@ export function useSavedProjects() {
   // Save projects to localStorage whenever they change
   useEffect(() => {
     if (isLoaded) {
-      localStorage.setItem("forsure-saved-projects", JSON.stringify(savedProjects))
+      localStorage.setItem(
+        'forsure-saved-projects',
+        JSON.stringify(savedProjects)
+      )
     }
   }, [savedProjects, isLoaded])
 
@@ -190,18 +193,20 @@ export function useSavedProjects() {
     const newVersionId = crypto.randomUUID()
 
     const existingIndex = savedProjects.findIndex(
-      (project) => project.id === details.id || project.name === details.name,
+      project => project.id === details.id || project.name === details.name
     )
 
     if (existingIndex >= 0) {
       // Update existing project with new version
-      setSavedProjects((prev) => {
+      setSavedProjects(prev => {
         const updated = [...prev]
         const existingProject = updated[existingIndex]
-        const currentBranch = existingProject.branches.find((b) => b.id === existingProject.currentBranchId)
+        const currentBranch = existingProject.branches.find(
+          b => b.id === existingProject.currentBranchId
+        )
 
         if (!currentBranch) {
-          console.error("Current branch not found")
+          console.error('Current branch not found')
           return prev
         }
 
@@ -214,14 +219,14 @@ export function useSavedProjects() {
         }
 
         // Update the branch's head version
-        const updatedBranches = existingProject.branches.map((branch) =>
+        const updatedBranches = existingProject.branches.map(branch =>
           branch.id === currentBranch.id
             ? {
                 ...branch,
                 headVersionId: newVersionId,
                 lastUpdated: now,
               }
-            : branch,
+            : branch
         )
 
         updated[existingIndex] = {
@@ -254,7 +259,7 @@ export function useSavedProjects() {
 
       const mainBranch: Branch = {
         id: mainBranchId,
-        name: "main",
+        name: 'main',
         createdAt: now,
         lastUpdated: now,
         sourceVersionId: newVersionId,
@@ -278,17 +283,17 @@ export function useSavedProjects() {
         tags: [],
       }
 
-      setSavedProjects((prev) => [...prev, newProject])
+      setSavedProjects(prev => [...prev, newProject])
       return newProjectId
     }
   }
 
   const deleteProject = (id: string) => {
-    setSavedProjects((prev) => prev.filter((project) => project.id !== id))
+    setSavedProjects(prev => prev.filter(project => project.id !== id))
   }
 
   const getProject = (id: string) => {
-    return savedProjects.find((project) => project.id === id)
+    return savedProjects.find(project => project.id === id)
   }
 
   const getProjectVersions = (projectId: string) => {
@@ -304,13 +309,16 @@ export function useSavedProjects() {
   const getCurrentBranch = (projectId: string) => {
     const project = getProject(projectId)
     if (!project) return null
-    return project.branches.find((branch) => branch.id === project.currentBranchId) || null
+    return (
+      project.branches.find(branch => branch.id === project.currentBranchId) ||
+      null
+    )
   }
 
   const getBranchVersions = (projectId: string, branchId: string) => {
     const project = getProject(projectId)
     if (!project) return []
-    return project.versions.filter((version) => version.branchId === branchId)
+    return project.versions.filter(version => version.branchId === branchId)
   }
 
   const createBranch = (
@@ -318,21 +326,25 @@ export function useSavedProjects() {
     sourceVersionId: string,
     branchName: string,
     branchDescription?: string,
-    switchToBranch = true,
+    switchToBranch = true
   ) => {
-    setSavedProjects((prev) => {
-      return prev.map((project) => {
+    setSavedProjects(prev => {
+      return prev.map(project => {
         if (project.id !== projectId) return project
 
-        const sourceVersion = project.versions.find((v) => v.versionId === sourceVersionId)
+        const sourceVersion = project.versions.find(
+          v => v.versionId === sourceVersionId
+        )
         if (!sourceVersion) return project
 
         const now = new Date().toISOString()
         const newBranchId = crypto.randomUUID()
 
         // Assign a color to the new branch
-        const usedColors = project.branches.map((b) => b.color)
-        const availableColors = BRANCH_COLORS.filter((color) => !usedColors.includes(color))
+        const usedColors = project.branches.map(b => b.color)
+        const availableColors = BRANCH_COLORS.filter(
+          color => !usedColors.includes(color)
+        )
         const branchColor =
           availableColors.length > 0
             ? availableColors[0]
@@ -353,18 +365,20 @@ export function useSavedProjects() {
         return {
           ...project,
           branches: [...project.branches, newBranch],
-          currentBranchId: switchToBranch ? newBranchId : project.currentBranchId,
+          currentBranchId: switchToBranch
+            ? newBranchId
+            : project.currentBranchId,
         }
       })
     })
   }
 
   const switchBranch = (projectId: string, branchId: string) => {
-    setSavedProjects((prev) => {
-      return prev.map((project) => {
+    setSavedProjects(prev => {
+      return prev.map(project => {
         if (project.id !== projectId) return project
 
-        const branch = project.branches.find((b) => b.id === branchId)
+        const branch = project.branches.find(b => b.id === branchId)
         if (!branch) return project
 
         return {
@@ -372,7 +386,8 @@ export function useSavedProjects() {
           currentBranchId: branchId,
           currentVersionId: branch.headVersionId,
           details: {
-            ...project.versions.find((v) => v.versionId === branch.headVersionId)?.details,
+            ...project.versions.find(v => v.versionId === branch.headVersionId)
+              ?.details,
           },
         }
       })
@@ -380,19 +395,19 @@ export function useSavedProjects() {
   }
 
   const deleteBranch = (projectId: string, branchId: string) => {
-    setSavedProjects((prev) => {
-      return prev.map((project) => {
+    setSavedProjects(prev => {
+      return prev.map(project => {
         if (project.id !== projectId) return project
 
         // Don't allow deleting the default branch
-        const branchToDelete = project.branches.find((b) => b.id === branchId)
+        const branchToDelete = project.branches.find(b => b.id === branchId)
         if (!branchToDelete || branchToDelete.isDefault) return project
 
         // Don't allow deleting the current branch
         if (project.currentBranchId === branchId) return project
 
         // Remove the branch
-        const updatedBranches = project.branches.filter((b) => b.id !== branchId)
+        const updatedBranches = project.branches.filter(b => b.id !== branchId)
 
         // Optionally, you could also remove versions that belong only to this branch
         // This is a design decision - in Git, deleting a branch doesn't delete the commits
@@ -406,19 +421,23 @@ export function useSavedProjects() {
     })
   }
 
-  const renameBranch = (projectId: string, branchId: string, newName: string) => {
-    setSavedProjects((prev) => {
-      return prev.map((project) => {
+  const renameBranch = (
+    projectId: string,
+    branchId: string,
+    newName: string
+  ) => {
+    setSavedProjects(prev => {
+      return prev.map(project => {
         if (project.id !== projectId) return project
 
-        const updatedBranches = project.branches.map((branch) =>
+        const updatedBranches = project.branches.map(branch =>
           branch.id === branchId
             ? {
                 ...branch,
                 name: newName,
                 lastUpdated: new Date().toISOString(),
               }
-            : branch,
+            : branch
         )
 
         return {
@@ -430,23 +449,23 @@ export function useSavedProjects() {
   }
 
   const restoreVersion = (projectId: string, versionId: string) => {
-    setSavedProjects((prev) => {
-      return prev.map((project) => {
+    setSavedProjects(prev => {
+      return prev.map(project => {
         if (project.id !== projectId) return project
 
-        const version = project.versions.find((v) => v.versionId === versionId)
+        const version = project.versions.find(v => v.versionId === versionId)
         if (!version) return project
 
         // When restoring a version, we need to update the current branch's head
         const currentBranchId = project.currentBranchId
-        const updatedBranches = project.branches.map((branch) =>
+        const updatedBranches = project.branches.map(branch =>
           branch.id === currentBranchId
             ? {
                 ...branch,
                 headVersionId: versionId,
                 lastUpdated: new Date().toISOString(),
               }
-            : branch,
+            : branch
         )
 
         return {
@@ -461,8 +480,8 @@ export function useSavedProjects() {
   }
 
   const deleteVersion = (projectId: string, versionId: string) => {
-    setSavedProjects((prev) => {
-      return prev.map((project) => {
+    setSavedProjects(prev => {
+      return prev.map(project => {
         if (project.id !== projectId) return project
 
         // Don't allow deleting if there's only one version
@@ -472,29 +491,40 @@ export function useSavedProjects() {
         if (project.currentVersionId === versionId) return project
 
         // Don't allow deleting a version that is a branch head
-        const isBranchHead = project.branches.some((branch) => branch.headVersionId === versionId)
+        const isBranchHead = project.branches.some(
+          branch => branch.headVersionId === versionId
+        )
         if (isBranchHead) return project
 
         return {
           ...project,
-          versions: project.versions.filter((v) => v.versionId !== versionId),
+          versions: project.versions.filter(v => v.versionId !== versionId),
         }
       })
     })
   }
 
-  const findCommonAncestor = (projectId: string, version1Id: string, version2Id: string) => {
+  const findCommonAncestor = (
+    projectId: string,
+    version1Id: string,
+    version2Id: string
+  ) => {
     const project = getProject(projectId)
     if (!project) return null
 
     // Get the versions in chronological order (oldest first)
     const sortedVersions = [...project.versions].sort(
-      (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+      (a, b) =>
+        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
     )
 
     // Find the latest version that comes before both version1 and version2
-    const version1Index = sortedVersions.findIndex((v) => v.versionId === version1Id)
-    const version2Index = sortedVersions.findIndex((v) => v.versionId === version2Id)
+    const version1Index = sortedVersions.findIndex(
+      v => v.versionId === version1Id
+    )
+    const version2Index = sortedVersions.findIndex(
+      v => v.versionId === version2Id
+    )
 
     if (version1Index === -1 || version2Index === -1) return null
 
@@ -518,15 +548,19 @@ export function useSavedProjects() {
     projectId: string,
     sourceVersionId: string,
     targetVersionId: string,
-    options: MergeOptions,
+    options: MergeOptions
   ) => {
-    setSavedProjects((prev) => {
-      return prev.map((project) => {
+    setSavedProjects(prev => {
+      return prev.map(project => {
         if (project.id !== projectId) return project
 
         // Find the source and target versions
-        const sourceVersion = project.versions.find((v) => v.versionId === sourceVersionId)
-        const targetVersion = project.versions.find((v) => v.versionId === targetVersionId)
+        const sourceVersion = project.versions.find(
+          v => v.versionId === sourceVersionId
+        )
+        const targetVersion = project.versions.find(
+          v => v.versionId === targetVersionId
+        )
 
         if (!sourceVersion || !targetVersion) return project
 
@@ -534,7 +568,7 @@ export function useSavedProjects() {
         const mergedDetails = { ...sourceVersion.details }
 
         // Apply selected changes based on merge strategy
-        if (options.mergeStrategy === "theirs") {
+        if (options.mergeStrategy === 'theirs') {
           // Use all changes from target version
           mergedDetails.name = targetVersion.details.name
           mergedDetails.description = targetVersion.details.description
@@ -546,34 +580,42 @@ export function useSavedProjects() {
 
           // Merge file structure if available
           if (targetVersion.details.fileStructure) {
-            mergedDetails.fileStructure = JSON.parse(JSON.stringify(targetVersion.details.fileStructure))
+            mergedDetails.fileStructure = JSON.parse(
+              JSON.stringify(targetVersion.details.fileStructure)
+            )
           }
-        } else if (options.mergeStrategy === "ours") {
+        } else if (options.mergeStrategy === 'ours') {
           // Keep current version (already copied)
-        } else if (options.mergeStrategy === "manual") {
+        } else if (options.mergeStrategy === 'manual') {
           // Apply selected changes manually
           Object.entries(options.selectedChanges).forEach(([path, version]) => {
-            const pathParts = path.split("/")
+            const pathParts = path.split('/')
 
-            if (version === "target") {
+            if (version === 'target') {
               // Apply target version's value
-              if (path === "name") mergedDetails.name = targetVersion.details.name
-              else if (path === "description") mergedDetails.description = targetVersion.details.description
-              else if (path === "type") mergedDetails.type = targetVersion.details.type
-              else if (path === "framework") mergedDetails.framework = targetVersion.details.framework
-              else if (path === "teamSize") mergedDetails.teamSize = targetVersion.details.teamSize
-              else if (path === "goals") mergedDetails.goals = targetVersion.details.goals
-              else if (path.startsWith("languages/")) {
+              if (path === 'name')
+                mergedDetails.name = targetVersion.details.name
+              else if (path === 'description')
+                mergedDetails.description = targetVersion.details.description
+              else if (path === 'type')
+                mergedDetails.type = targetVersion.details.type
+              else if (path === 'framework')
+                mergedDetails.framework = targetVersion.details.framework
+              else if (path === 'teamSize')
+                mergedDetails.teamSize = targetVersion.details.teamSize
+              else if (path === 'goals')
+                mergedDetails.goals = targetVersion.details.goals
+              else if (path.startsWith('languages/')) {
                 const lang = pathParts[1]
                 if (!mergedDetails.languages.includes(lang)) {
                   mergedDetails.languages.push(lang)
                 }
-              } else if (path.startsWith("fileStructure/")) {
+              } else if (path.startsWith('fileStructure/')) {
                 // Handle file structure changes
                 if (!mergedDetails.fileStructure) {
                   mergedDetails.fileStructure = {
-                    name: "root",
-                    type: "directory",
+                    name: 'root',
+                    type: 'directory',
                     children: [],
                   }
                 }
@@ -581,22 +623,28 @@ export function useSavedProjects() {
                 // This is a simplified approach - in a real app, you'd need more sophisticated
                 // file structure merging logic
                 if (targetVersion.details.fileStructure) {
-                  mergedDetails.fileStructure = JSON.parse(JSON.stringify(targetVersion.details.fileStructure))
+                  mergedDetails.fileStructure = JSON.parse(
+                    JSON.stringify(targetVersion.details.fileStructure)
+                  )
                 }
               }
-            } else if (version === "current") {
+            } else if (version === 'current') {
               // Keep current version's value (already set)
               // For languages, we might need to remove a language that was removed
-              if (path.startsWith("languages/")) {
+              if (path.startsWith('languages/')) {
                 const lang = pathParts[1]
-                mergedDetails.languages = mergedDetails.languages.filter((l) => l !== lang)
+                mergedDetails.languages = mergedDetails.languages.filter(
+                  l => l !== lang
+                )
               }
             }
           })
         }
 
         // Create merge notes
-        const mergeNotes = options.mergeNotes || `Merge of versions ${sourceVersionId} and ${targetVersionId}`
+        const mergeNotes =
+          options.mergeNotes ||
+          `Merge of versions ${sourceVersionId} and ${targetVersionId}`
 
         // Create a new version or update the current one
         if (options.createNewVersion) {
@@ -615,14 +663,14 @@ export function useSavedProjects() {
           }
 
           // Update the branch's head version
-          const updatedBranches = project.branches.map((branch) =>
+          const updatedBranches = project.branches.map(branch =>
             branch.id === currentBranchId
               ? {
                   ...branch,
                   headVersionId: newVersionId,
                   lastUpdated: now,
                 }
-              : branch,
+              : branch
           )
 
           return {
@@ -641,8 +689,10 @@ export function useSavedProjects() {
             name: mergedDetails.name,
             details: mergedDetails,
             lastUpdated: new Date().toISOString(),
-            versions: project.versions.map((v) =>
-              v.versionId === sourceVersionId ? { ...v, details: mergedDetails, notes: mergeNotes } : v,
+            versions: project.versions.map(v =>
+              v.versionId === sourceVersionId
+                ? { ...v, details: mergedDetails, notes: mergeNotes }
+                : v
             ),
           }
         }
@@ -655,15 +705,19 @@ export function useSavedProjects() {
     projectId: string,
     sourceVersionId: string,
     targetVersionId: string,
-    options: ThreeWayMergeOptions,
+    options: ThreeWayMergeOptions
   ) => {
-    setSavedProjects((prev) => {
-      return prev.map((project) => {
+    setSavedProjects(prev => {
+      return prev.map(project => {
         if (project.id !== projectId) return project
 
         // Find the source and target versions
-        const sourceVersion = project.versions.find((v) => v.versionId === sourceVersionId)
-        const targetVersion = project.versions.find((v) => v.versionId === targetVersionId)
+        const sourceVersion = project.versions.find(
+          v => v.versionId === sourceVersionId
+        )
+        const targetVersion = project.versions.find(
+          v => v.versionId === targetVersionId
+        )
 
         if (!sourceVersion || !targetVersion) return project
 
@@ -672,14 +726,19 @@ export function useSavedProjects() {
 
         // Apply resolutions from three-way merge
         Object.entries(options.resolutions).forEach(([path, resolution]) => {
-          const conflict = options.mergeResult.conflicts.find((c) => c.path === path)
+          const conflict = options.mergeResult.conflicts.find(
+            c => c.path === path
+          )
           if (!conflict) return
 
-          if (resolution === "target") {
+          if (resolution === 'target') {
             applyValueToPath(mergedDetails, path, conflict.targetValue)
-          } else if (resolution === "ancestor" && conflict.ancestorValue !== undefined) {
+          } else if (
+            resolution === 'ancestor' &&
+            conflict.ancestorValue !== undefined
+          ) {
             applyValueToPath(mergedDetails, path, conflict.ancestorValue)
-          } else if (resolution === "custom") {
+          } else if (resolution === 'custom') {
             const customValue = options.customResolutions[path]
             if (customValue !== undefined) {
               applyValueToPath(mergedDetails, path, customValue)
@@ -689,12 +748,14 @@ export function useSavedProjects() {
         })
 
         // Apply auto-resolved changes
-        options.mergeResult.autoResolved.forEach((change) => {
+        options.mergeResult.autoResolved.forEach(change => {
           applyValueToPath(mergedDetails, change.path, change.finalValue)
         })
 
         // Create merge notes
-        const mergeNotes = options.mergeNotes || `Three-way merge of versions ${sourceVersionId} and ${targetVersionId}`
+        const mergeNotes =
+          options.mergeNotes ||
+          `Three-way merge of versions ${sourceVersionId} and ${targetVersionId}`
 
         // Create a new version or update the current one
         if (options.createNewVersion) {
@@ -713,14 +774,14 @@ export function useSavedProjects() {
           }
 
           // Update the branch's head version
-          const updatedBranches = project.branches.map((branch) =>
+          const updatedBranches = project.branches.map(branch =>
             branch.id === currentBranchId
               ? {
                   ...branch,
                   headVersionId: newVersionId,
                   lastUpdated: now,
                 }
-              : branch,
+              : branch
           )
 
           return {
@@ -739,8 +800,10 @@ export function useSavedProjects() {
             name: mergedDetails.name,
             details: mergedDetails,
             lastUpdated: new Date().toISOString(),
-            versions: project.versions.map((v) =>
-              v.versionId === sourceVersionId ? { ...v, details: mergedDetails, notes: mergeNotes } : v,
+            versions: project.versions.map(v =>
+              v.versionId === sourceVersionId
+                ? { ...v, details: mergedDetails, notes: mergeNotes }
+                : v
             ),
           }
         }
@@ -750,12 +813,12 @@ export function useSavedProjects() {
 
   // Helper function to apply a value to a nested path
   const applyValueToPath = (obj: any, path: string, value: any) => {
-    const pathParts = path.split("/")
+    const pathParts = path.split('/')
 
     if (pathParts.length === 1) {
       // Simple property
       obj[path] = value
-    } else if (path.startsWith("languages/")) {
+    } else if (path.startsWith('languages/')) {
       // Language handling
       const lang = pathParts[1]
       if (value === undefined) {
@@ -767,7 +830,7 @@ export function useSavedProjects() {
           obj.languages.push(lang)
         }
       }
-    } else if (path.startsWith("fileStructure/")) {
+    } else if (path.startsWith('fileStructure/')) {
       // File structure handling - simplified for this example
       if (value !== undefined) {
         obj.fileStructure = value
@@ -778,71 +841,161 @@ export function useSavedProjects() {
   }
 
   const shareProject = async (projectId: string, settings: ShareSettings) => {
-    // Placeholder for shareProject implementation
-    console.log("shareProject called", projectId, settings)
+    // Apply share settings to a project
+    setSavedProjects(prev =>
+      prev.map(project => {
+        if (project.id !== projectId) return project
+        const shareSettings: ShareSettings = {
+          isShared: true,
+          shareId: settings.shareId,
+          sharePassword: settings.sharePassword,
+          allowCopy: settings.allowCopy,
+          expiresAt: settings.expiresAt,
+          viewCount: settings.viewCount ?? 0,
+          maxViews: settings.maxViews,
+          allowComments: settings.allowComments,
+        }
+        return { ...project, shareSettings }
+      })
+    )
   }
 
   const unshareProject = async (projectId: string) => {
-    // Placeholder for unshareProject implementation
-    console.log("unshareProject called", projectId)
+    setSavedProjects(prev =>
+      prev.map(project => {
+        if (project.id !== projectId) return project
+        return {
+          ...project,
+          shareSettings: {
+            ...(project.shareSettings || {}),
+            isShared: false,
+          } as ShareSettings,
+        }
+      })
+    )
   }
 
-  const getProjectByShareId = async (shareId: string) => {
-    // Placeholder for getProjectByShareId implementation
-    console.log("getProjectByShareId called", shareId)
-    return null
+  const getProjectByShareId = (shareId: string) => {
+    const project = savedProjects.find(
+      p => p.shareSettings?.shareId === shareId
+    )
+    return project || null
   }
 
-  const incrementViewCount = async (shareId: string) => {
-    // Placeholder for incrementViewCount implementation
-    console.log("incrementViewCount called", shareId)
+  const incrementViewCount = (shareId: string) => {
+    setSavedProjects(prev =>
+      prev.map(project => {
+        if (project.shareSettings?.shareId !== shareId) return project
+        const newCount = (project.shareSettings.viewCount ?? 0) + 1
+        return {
+          ...project,
+          shareSettings: {
+            ...project.shareSettings,
+            viewCount: newCount,
+          } as ShareSettings,
+        }
+      })
+    )
   }
 
-  const addComment = async (shareId: string, author: string, content: string) => {
-    // Placeholder for addComment implementation
-    console.log("addComment called", shareId, author, content)
+  const addComment = (
+    shareId: string,
+    comment: { author: string; content: string }
+  ) => {
+    const now = new Date().toISOString()
+    setSavedProjects(prev =>
+      prev.map(project => {
+        if (project.shareSettings?.shareId !== shareId) return project
+        if (project.shareSettings?.allowComments === false) return project
+        const newComment: Comment = {
+          id: crypto.randomUUID(),
+          shareId,
+          author: comment.author,
+          content: comment.content,
+          timestamp: now,
+          replies: [],
+        }
+        const comments = [...(project.comments || []), newComment]
+        return { ...project, comments }
+      })
+    )
   }
 
-  const editComment = async (commentId: string, content: string) => {
-    // Placeholder for editComment implementation
-    console.log("editComment called", commentId, content)
+  const editComment = (shareId: string, commentId: string, content: string) => {
+    setSavedProjects(prev =>
+      prev.map(project => {
+        if (project.shareSettings?.shareId !== shareId) return project
+        const comments = (project.comments || []).map(c =>
+          c.id === commentId ? { ...c, content, isEdited: true } : c
+        )
+        return { ...project, comments }
+      })
+    )
   }
 
-  const deleteComment = async (commentId: string) => {
-    // Placeholder for deleteComment implementation
-    console.log("deleteComment called", commentId)
+  const deleteComment = (shareId: string, commentId: string) => {
+    setSavedProjects(prev =>
+      prev.map(project => {
+        if (project.shareSettings?.shareId !== shareId) return project
+        const comments = (project.comments || []).filter(
+          c => c.id !== commentId
+        )
+        return { ...project, comments }
+      })
+    )
   }
 
-  const addReply = async (commentId: string, author: string, content: string) => {
-    // Placeholder for addReply implementation
-    console.log("addReply called", commentId, author, content)
+  const addReply = (
+    shareId: string,
+    commentId: string,
+    reply: { author: string; content: string }
+  ) => {
+    const now = new Date().toISOString()
+    setSavedProjects(prev =>
+      prev.map(project => {
+        if (project.shareSettings?.shareId !== shareId) return project
+        const comments = (project.comments || []).map(c => {
+          if (c.id !== commentId) return c
+          const newReply: Comment = {
+            id: crypto.randomUUID(),
+            shareId,
+            author: reply.author,
+            content: reply.content,
+            timestamp: now,
+          }
+          return { ...c, replies: [...(c.replies || []), newReply] }
+        })
+        return { ...project, comments }
+      })
+    )
   }
 
-  const getComments = async (shareId: string) => {
-    // Placeholder for getComments implementation
-    console.log("getComments called", shareId)
-    return []
+  const getComments = (shareId: string) => {
+    const project = savedProjects.find(
+      p => p.shareSettings?.shareId === shareId
+    )
+    return project?.comments || []
   }
 
   const createTag = (
     projectId: string,
     versionId: string,
     tagName: string,
-    tagType: Tag["type"] = "custom",
+    tagType: Tag['type'] = 'custom',
     description?: string,
-    metadata?: Tag["metadata"],
+    metadata?: Tag['metadata']
   ) => {
-    setSavedProjects((prev) => {
-      return prev.map((project) => {
+    setSavedProjects(prev => {
+      return prev.map(project => {
         if (project.id !== projectId) return project
 
-        const version = project.versions.find((v) => v.versionId === versionId)
+        const version = project.versions.find(v => v.versionId === versionId)
         if (!version) return project
 
         // Check if tag name already exists
-        const existingTag = project.tags?.find((tag) => tag.name === tagName)
+        const existingTag = project.tags?.find(tag => tag.name === tagName)
         if (existingTag) {
-          console.error("Tag name already exists")
+          console.error('Tag name already exists')
           return project
         }
 
@@ -868,17 +1021,17 @@ export function useSavedProjects() {
   }
 
   const deleteTag = (projectId: string, tagId: string) => {
-    setSavedProjects((prev) => {
-      return prev.map((project) => {
+    setSavedProjects(prev => {
+      return prev.map(project => {
         if (project.id !== projectId) return project
 
         // Don't allow deleting protected tags
-        const tagToDelete = project.tags?.find((tag) => tag.id === tagId)
+        const tagToDelete = project.tags?.find(tag => tag.id === tagId)
         if (tagToDelete?.isProtected) return project
 
         return {
           ...project,
-          tags: project.tags?.filter((tag) => tag.id !== tagId) || [],
+          tags: project.tags?.filter(tag => tag.id !== tagId) || [],
         }
       })
     })
@@ -887,20 +1040,20 @@ export function useSavedProjects() {
   const updateTag = (
     projectId: string,
     tagId: string,
-    updates: Partial<Pick<Tag, "name" | "description" | "metadata">>,
+    updates: Partial<Pick<Tag, 'name' | 'description' | 'metadata'>>
   ) => {
-    setSavedProjects((prev) => {
-      return prev.map((project) => {
+    setSavedProjects(prev => {
+      return prev.map(project => {
         if (project.id !== projectId) return project
 
         const updatedTags =
-          project.tags?.map((tag) =>
+          project.tags?.map(tag =>
             tag.id === tagId
               ? {
                   ...tag,
                   ...updates,
                 }
-              : tag,
+              : tag
           ) || []
 
         return {
@@ -919,25 +1072,25 @@ export function useSavedProjects() {
   const getTagsForVersion = (projectId: string, versionId: string) => {
     const project = getProject(projectId)
     if (!project) return []
-    return project.tags?.filter((tag) => tag.versionId === versionId) || []
+    return project.tags?.filter(tag => tag.versionId === versionId) || []
   }
 
   const moveTag = (projectId: string, tagId: string, newVersionId: string) => {
-    setSavedProjects((prev) => {
-      return prev.map((project) => {
+    setSavedProjects(prev => {
+      return prev.map(project => {
         if (project.id !== projectId) return project
 
-        const version = project.versions.find((v) => v.versionId === newVersionId)
+        const version = project.versions.find(v => v.versionId === newVersionId)
         if (!version) return project
 
         const updatedTags =
-          project.tags?.map((tag) =>
+          project.tags?.map(tag =>
             tag.id === tagId
               ? {
                   ...tag,
                   versionId: newVersionId,
                 }
-              : tag,
+              : tag
           ) || []
 
         return {

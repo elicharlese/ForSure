@@ -1,34 +1,56 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { useState, useEffect } from "react"
-import { useParams, useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { FileStructureVisualization } from "@/app/app/components/file-structure-visualization"
-import { CommentSection } from "@/app/app/components/comment-section"
-import { generateFileStructure } from "@/app/app/services/file-structure-service"
-import { useSavedProjects } from "@/app/app/hooks/use-saved-projects"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
-import { Copy, ArrowLeft, Lock, Eye, Calendar, AlertTriangle, MessageSquare } from "lucide-react"
-import { formatDistanceToNow } from "date-fns"
+import { useState, useEffect } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { FileStructureVisualization } from '@/app/app/components/file-structure-visualization'
+import { CommentSection } from '@/app/app/components/comment-section'
+import { generateFileStructure } from '@/app/app/services/file-structure-service'
+import { useSavedProjects } from '@/app/app/hooks/use-saved-projects'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Badge } from '@/components/ui/badge'
+import {
+  Copy,
+  ArrowLeft,
+  Lock,
+  Eye,
+  Calendar,
+  AlertTriangle,
+  MessageSquare,
+} from 'lucide-react'
+import { formatDistanceToNow } from 'date-fns'
 
 export default function SharedProjectPage() {
   const params = useParams()
   const router = useRouter()
-  const { getProjectByShareId, incrementViewCount, addComment, editComment, deleteComment, addReply, getComments } =
-    useSavedProjects()
+  const {
+    getProjectByShareId,
+    incrementViewCount,
+    addComment,
+    editComment,
+    deleteComment,
+    addReply,
+    getComments,
+  } = useSavedProjects()
   const [project, setProject] = useState<any>(null)
   const [fileStructure, setFileStructure] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [password, setPassword] = useState("")
+  const [password, setPassword] = useState('')
   const [passwordError, setPasswordError] = useState(false)
   const [viewIncremented, setViewIncremented] = useState(false)
-  const [activeTab, setActiveTab] = useState("structure")
+  const [activeTab, setActiveTab] = useState('structure')
 
   const shareId = params.shareId as string
 
@@ -38,7 +60,7 @@ export default function SharedProjectPage() {
     const sharedProject = getProjectByShareId(shareId)
 
     if (!sharedProject) {
-      setError("Project not found or no longer shared")
+      setError('Project not found or no longer shared')
       setLoading(false)
       return
     }
@@ -47,7 +69,7 @@ export default function SharedProjectPage() {
     if (sharedProject.shareSettings?.expiresAt) {
       const expiryDate = new Date(sharedProject.shareSettings.expiresAt)
       if (expiryDate < new Date()) {
-        setError("This shared project has expired")
+        setError('This shared project has expired')
         setLoading(false)
         return
       }
@@ -56,9 +78,10 @@ export default function SharedProjectPage() {
     // Check if max views reached
     if (
       sharedProject.shareSettings?.maxViews &&
-      sharedProject.shareSettings.viewCount >= sharedProject.shareSettings.maxViews
+      sharedProject.shareSettings.viewCount >=
+        sharedProject.shareSettings.maxViews
     ) {
-      setError("This shared project has reached its maximum view count")
+      setError('This shared project has reached its maximum view count')
       setLoading(false)
       return
     }
@@ -105,7 +128,7 @@ export default function SharedProjectPage() {
     if (project && fileStructure) {
       // Logic to copy project would go here
       // For now, just navigate to app
-      router.push("/app")
+      router.push('/app')
     }
   }
 
@@ -127,7 +150,10 @@ export default function SharedProjectPage() {
     }
   }
 
-  const handleAddReply = (commentId: string, reply: { author: string; content: string }) => {
+  const handleAddReply = (
+    commentId: string,
+    reply: { author: string; content: string }
+  ) => {
     if (shareId) {
       addReply(shareId, commentId, reply)
     }
@@ -163,7 +189,7 @@ export default function SharedProjectPage() {
               <p>{error}</p>
             </CardContent>
             <CardFooter>
-              <Button variant="outline" onClick={() => router.push("/")}>
+              <Button variant="outline" onClick={() => router.push('/')}>
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Return to Home
               </Button>
@@ -184,7 +210,9 @@ export default function SharedProjectPage() {
                 <Lock className="h-5 w-5 text-primary" />
                 <CardTitle>Password Protected Project</CardTitle>
               </div>
-              <CardDescription>This shared project requires a password to view</CardDescription>
+              <CardDescription>
+                This shared project requires a password to view
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handlePasswordSubmit}>
@@ -195,10 +223,14 @@ export default function SharedProjectPage() {
                       type="password"
                       placeholder="Enter password"
                       value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className={passwordError ? "border-red-500" : ""}
+                      onChange={e => setPassword(e.target.value)}
+                      className={passwordError ? 'border-red-500' : ''}
                     />
-                    {passwordError && <p className="text-red-500 text-sm mt-1">Incorrect password</p>}
+                    {passwordError && (
+                      <p className="text-red-500 text-sm mt-1">
+                        Incorrect password
+                      </p>
+                    )}
                   </div>
                   <Button type="submit" className="w-full">
                     Unlock Project
@@ -207,7 +239,11 @@ export default function SharedProjectPage() {
               </form>
             </CardContent>
             <CardFooter className="flex justify-between">
-              <Button variant="outline" size="sm" onClick={() => router.push("/")}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => router.push('/')}
+              >
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Return to Home
               </Button>
@@ -220,8 +256,12 @@ export default function SharedProjectPage() {
 
   if (project && fileStructure) {
     const shareSettings = project.shareSettings
-    const expiryDate = shareSettings?.expiresAt ? new Date(shareSettings.expiresAt) : null
-    const viewsLeft = shareSettings?.maxViews ? shareSettings.maxViews - (shareSettings.viewCount || 0) : null
+    const expiryDate = shareSettings?.expiresAt
+      ? new Date(shareSettings.expiresAt)
+      : null
+    const viewsLeft = shareSettings?.maxViews
+      ? shareSettings.maxViews - (shareSettings.viewCount || 0)
+      : null
     const comments = project.comments || []
     const allowComments = shareSettings?.allowComments !== false
 
@@ -230,7 +270,11 @@ export default function SharedProjectPage() {
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={() => router.push("/")}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => router.push('/')}
+              >
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Home
               </Button>
@@ -256,20 +300,24 @@ export default function SharedProjectPage() {
             {viewsLeft !== null && (
               <Badge variant="outline" className="flex items-center gap-1">
                 <Eye className="h-3 w-3" />
-                {viewsLeft} {viewsLeft === 1 ? "view" : "views"} remaining
+                {viewsLeft} {viewsLeft === 1 ? 'view' : 'views'} remaining
               </Badge>
             )}
 
             <Badge
               variant="outline"
-              className={`flex items-center gap-1 ${allowComments ? "" : "text-muted-foreground"}`}
+              className={`flex items-center gap-1 ${allowComments ? '' : 'text-muted-foreground'}`}
             >
               <MessageSquare className="h-3 w-3" />
-              {allowComments ? "Comments enabled" : "Comments disabled"}
+              {allowComments ? 'Comments enabled' : 'Comments disabled'}
             </Badge>
           </div>
 
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="space-y-4"
+          >
             <TabsList>
               <TabsTrigger value="structure">File Structure</TabsTrigger>
               <TabsTrigger value="details">Project Details</TabsTrigger>
@@ -288,11 +336,15 @@ export default function SharedProjectPage() {
                 <CardHeader>
                   <CardTitle>Project Structure</CardTitle>
                   <CardDescription>
-                    File structure for {project.name}, a {project.details.type} project
+                    File structure for {project.name}, a {project.details.type}{' '}
+                    project
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <FileStructureVisualization structure={fileStructure} readOnly={true} />
+                  <FileStructureVisualization
+                    structure={fileStructure}
+                    readOnly={true}
+                  />
                 </CardContent>
               </Card>
             </TabsContent>
@@ -301,7 +353,9 @@ export default function SharedProjectPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>Project Details</CardTitle>
-                  <CardDescription>Information about this project</CardDescription>
+                  <CardDescription>
+                    Information about this project
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -311,10 +365,12 @@ export default function SharedProjectPage() {
                         <div className="rounded-lg border p-4">
                           <div className="grid grid-cols-1 gap-2 text-sm">
                             <div>
-                              <span className="font-medium">Name:</span> {project.details.name}
+                              <span className="font-medium">Name:</span>{' '}
+                              {project.details.name}
                             </div>
                             <div>
-                              <span className="font-medium">Description:</span> {project.details.description}
+                              <span className="font-medium">Description:</span>{' '}
+                              {project.details.description}
                             </div>
                           </div>
                         </div>
@@ -325,13 +381,16 @@ export default function SharedProjectPage() {
                         <div className="rounded-lg border p-4">
                           <div className="grid grid-cols-1 gap-2 text-sm">
                             <div>
-                              <span className="font-medium">Project Type:</span> {project.details.type}
+                              <span className="font-medium">Project Type:</span>{' '}
+                              {project.details.type}
                             </div>
                             <div>
-                              <span className="font-medium">Framework:</span> {project.details.framework}
+                              <span className="font-medium">Framework:</span>{' '}
+                              {project.details.framework}
                             </div>
                             <div>
-                              <span className="font-medium">Languages:</span> {project.details.languages.join(", ")}
+                              <span className="font-medium">Languages:</span>{' '}
+                              {project.details.languages.join(', ')}
                             </div>
                           </div>
                         </div>
@@ -343,10 +402,12 @@ export default function SharedProjectPage() {
                       <div className="rounded-lg border p-4">
                         <div className="grid grid-cols-1 gap-2 text-sm">
                           <div>
-                            <span className="font-medium">Team Size:</span> {project.details.teamSize}
+                            <span className="font-medium">Team Size:</span>{' '}
+                            {project.details.teamSize}
                           </div>
                           <div>
-                            <span className="font-medium">Goals:</span> {project.details.goals}
+                            <span className="font-medium">Goals:</span>{' '}
+                            {project.details.goals}
                           </div>
                         </div>
                       </div>

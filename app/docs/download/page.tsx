@@ -1,8 +1,8 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Download, Code, Terminal, Github } from "lucide-react"
-import DocsCodeBlock from "@/components/docs-code-block"
-import VSCodePreview from "@/components/vscode-preview"
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Download, Code, Terminal, Github } from 'lucide-react'
+import DocsCodeBlock from '@/components/docs-code-block'
+import VSCodePreview from '@/components/vscode-preview'
 
 export default function DownloadPage() {
   return (
@@ -21,9 +21,12 @@ export default function DownloadPage() {
             <Terminal className="h-8 w-8" />
           </div>
           <div className="w-full">
-            <h2 className="text-2xl font-semibold tracking-tight">ForSure CLI</h2>
+            <h2 className="text-2xl font-semibold tracking-tight">
+              ForSure CLI
+            </h2>
             <p className="text-muted-foreground mb-4">
-              Command-line interface for generating and validating file structures.
+              Command-line interface for generating and validating file
+              structures.
             </p>
 
             <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mb-6">
@@ -32,7 +35,11 @@ export default function DownloadPage() {
                 <p className="text-sm text-muted-foreground mb-4 flex-grow">
                   Install globally via npm package manager.
                 </p>
-                <DocsCodeBlock code={`npm install -g forsure-cli`} language="bash" className="overflow-x-auto" />
+                <DocsCodeBlock
+                  code={`npm install -g forsure-cli`}
+                  language="bash"
+                  className="overflow-x-auto"
+                />
               </div>
 
               <div className="border rounded-md p-4 flex flex-col">
@@ -58,7 +65,9 @@ export default function DownloadPage() {
               </div>
             </div>
 
-            <h3 className="text-xl font-medium mb-2">Installation Instructions</h3>
+            <h3 className="text-xl font-medium mb-2">
+              Installation Instructions
+            </h3>
             <div className="space-y-4">
               <div>
                 <h4 className="font-medium">From npm</h4>
@@ -91,12 +100,16 @@ sudo mv forsure /usr/local/bin/`}
 
               <div>
                 <h4 className="font-medium">From Binary (Windows)</h4>
-                <p className="text-sm text-muted-foreground mb-2">1. Download the Windows executable</p>
                 <p className="text-sm text-muted-foreground mb-2">
-                  2. Add the executable location to your PATH environment variable
+                  1. Download the Windows executable
+                </p>
+                <p className="text-sm text-muted-foreground mb-2">
+                  2. Add the executable location to your PATH environment
+                  variable
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  3. Open a new command prompt and verify with <code>forsure --version</code>
+                  3. Open a new command prompt and verify with{' '}
+                  <code>forsure --version</code>
                 </p>
               </div>
             </div>
@@ -111,9 +124,12 @@ sudo mv forsure /usr/local/bin/`}
             <Code className="h-8 w-8" />
           </div>
           <div className="w-full">
-            <h2 className="text-2xl font-semibold tracking-tight">VS Code Extension</h2>
+            <h2 className="text-2xl font-semibold tracking-tight">
+              VS Code Extension
+            </h2>
             <p className="text-muted-foreground mb-4">
-              Enhance your development experience with syntax highlighting, snippets, and more.
+              Enhance your development experience with syntax highlighting,
+              snippets, and more.
             </p>
 
             <div className="flex flex-col lg:flex-row gap-6 mb-6">
@@ -121,10 +137,14 @@ sudo mv forsure /usr/local/bin/`}
                 <div className="p-4">
                   <h3 className="font-medium mb-2">ForSure for VS Code</h3>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Official VS Code extension with syntax highlighting, snippets, and validation.
+                    Official VS Code extension with syntax highlighting,
+                    snippets, and validation.
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    <Button asChild className="h-auto py-2 px-4 whitespace-normal">
+                    <Button
+                      asChild
+                      className="h-auto py-2 px-4 whitespace-normal"
+                    >
                       <a
                         href="https://marketplace.visualstudio.com/items?itemName=forsure.forsure-vscode"
                         target="_blank"
@@ -133,8 +153,16 @@ sudo mv forsure /usr/local/bin/`}
                         Install from Marketplace
                       </a>
                     </Button>
-                    <Button variant="outline" asChild className="h-auto py-2 px-4 whitespace-normal">
-                      <a href="https://github.com/elicharlese/ForSure-vscode" target="_blank" rel="noopener noreferrer">
+                    <Button
+                      variant="outline"
+                      asChild
+                      className="h-auto py-2 px-4 whitespace-normal"
+                    >
+                      <a
+                        href="https://github.com/elicharlese/ForSure-vscode"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         <Github className="mr-2 h-4 w-4 shrink-0" /> View Source
                       </a>
                     </Button>
@@ -155,7 +183,9 @@ sudo mv forsure /usr/local/bin/`}
               <div className="flex-1 border rounded-md overflow-hidden">
                 <div className="p-4 h-full flex flex-col">
                   <h3 className="font-medium mb-2">Installation</h3>
-                  <p className="text-sm text-muted-foreground mb-4">Install directly from VS Code:</p>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Install directly from VS Code:
+                  </p>
                   <ol className="text-sm space-y-2 list-decimal pl-5 flex-grow">
                     <li>Open VS Code</li>
                     <li>Go to Extensions (Ctrl+Shift+X / Cmd+Shift+X)</li>
@@ -163,9 +193,15 @@ sudo mv forsure /usr/local/bin/`}
                     <li>Click "Install"</li>
                   </ol>
                   <div className="mt-4 pt-4 border-t">
-                    <p className="text-sm text-muted-foreground">Or install from VSIX file:</p>
-                    <Button variant="outline" className="mt-2 w-full h-auto py-2 px-4 whitespace-normal">
-                      <Download className="mr-2 h-4 w-4 shrink-0" /> Download VSIX
+                    <p className="text-sm text-muted-foreground">
+                      Or install from VSIX file:
+                    </p>
+                    <Button
+                      variant="outline"
+                      className="mt-2 w-full h-auto py-2 px-4 whitespace-normal"
+                    >
+                      <Download className="mr-2 h-4 w-4 shrink-0" /> Download
+                      VSIX
                     </Button>
                   </div>
                 </div>
@@ -187,23 +223,33 @@ sudo mv forsure /usr/local/bin/`}
             <Code className="h-8 w-8" />
           </div>
           <div className="w-full">
-            <h2 className="text-2xl font-semibold tracking-tight">Syntax Highlighting</h2>
-            <p className="text-muted-foreground mb-4">Syntax highlighting for various text editors and IDEs.</p>
+            <h2 className="text-2xl font-semibold tracking-tight">
+              Syntax Highlighting
+            </h2>
+            <p className="text-muted-foreground mb-4">
+              Syntax highlighting for various text editors and IDEs.
+            </p>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-6">
               <div className="border rounded-md p-4">
                 <h3 className="font-medium mb-2">Sublime Text</h3>
-                <p className="text-sm text-muted-foreground mb-4">Syntax highlighting package for Sublime Text.</p>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Syntax highlighting package for Sublime Text.
+                </p>
                 <Button className="w-full h-auto py-2 px-4 whitespace-normal">
-                  <Download className="mr-2 h-4 w-4 shrink-0" /> Download Package
+                  <Download className="mr-2 h-4 w-4 shrink-0" /> Download
+                  Package
                 </Button>
               </div>
 
               <div className="border rounded-md p-4">
                 <h3 className="font-medium mb-2">Atom</h3>
-                <p className="text-sm text-muted-foreground mb-4">Syntax highlighting package for Atom editor.</p>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Syntax highlighting package for Atom editor.
+                </p>
                 <Button className="w-full h-auto py-2 px-4 whitespace-normal">
-                  <Download className="mr-2 h-4 w-4 shrink-0" /> Download Package
+                  <Download className="mr-2 h-4 w-4 shrink-0" /> Download
+                  Package
                 </Button>
               </div>
 
@@ -220,7 +266,10 @@ sudo mv forsure /usr/local/bin/`}
 
             <div className="space-y-4">
               <h3 className="text-xl font-medium mb-2">Manual Configuration</h3>
-              <p>If your editor doesn't have a dedicated package, you can manually configure syntax highlighting:</p>
+              <p>
+                If your editor doesn't have a dedicated package, you can
+                manually configure syntax highlighting:
+              </p>
 
               <div>
                 <h4 className="font-medium">Vim</h4>
@@ -247,7 +296,8 @@ au BufRead,BufNewFile *.fs set filetype=yaml`}
               <div>
                 <h4 className="font-medium">TextMate/BBEdit</h4>
                 <p className="text-sm text-muted-foreground mb-2">
-                  Associate .forsure and .fs files with YAML syntax highlighting in your editor preferences.
+                  Associate .forsure and .fs files with YAML syntax highlighting
+                  in your editor preferences.
                 </p>
               </div>
             </div>
@@ -260,13 +310,23 @@ au BufRead,BufNewFile *.fs set filetype=yaml`}
         <h2 className="text-2xl font-semibold tracking-tight">Next Steps</h2>
         <p>Now that you've installed the ForSure tools, you can:</p>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Link href="/docs/quick-start" className="block p-4 border rounded-lg hover:bg-muted transition-colors">
+          <Link
+            href="/docs/quick-start"
+            className="block p-4 border rounded-lg hover:bg-muted transition-colors"
+          >
             <div className="font-semibold">Quick Start Guide</div>
-            <div className="text-sm text-muted-foreground">Create your first ForSure file</div>
+            <div className="text-sm text-muted-foreground">
+              Create your first ForSure file
+            </div>
           </Link>
-          <Link href="/docs/examples" className="block p-4 border rounded-lg hover:bg-muted transition-colors">
+          <Link
+            href="/docs/examples"
+            className="block p-4 border rounded-lg hover:bg-muted transition-colors"
+          >
             <div className="font-semibold">Examples</div>
-            <div className="text-sm text-muted-foreground">See ForSure in action with practical examples</div>
+            <div className="text-sm text-muted-foreground">
+              See ForSure in action with practical examples
+            </div>
           </Link>
         </div>
       </section>

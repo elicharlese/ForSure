@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -12,10 +12,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Folder, Trash2, Clock, ArrowRight } from "lucide-react"
-import type { SavedProject } from "../hooks/use-saved-projects"
+} from '@/components/ui/dialog'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Folder, Trash2, Clock, ArrowRight } from 'lucide-react'
+import type { SavedProject } from '../hooks/use-saved-projects'
 
 interface SavedProjectsDialogProps {
   projects: SavedProject[]
@@ -24,7 +24,12 @@ interface SavedProjectsDialogProps {
   trigger?: React.ReactNode
 }
 
-export function SavedProjectsDialog({ projects, onSelect, onDelete, trigger }: SavedProjectsDialogProps) {
+export function SavedProjectsDialog({
+  projects,
+  onSelect,
+  onDelete,
+  trigger,
+}: SavedProjectsDialogProps) {
   const [open, setOpen] = useState(false)
 
   const handleSelect = (projectId: string) => {
@@ -34,22 +39,26 @@ export function SavedProjectsDialog({ projects, onSelect, onDelete, trigger }: S
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
-    return new Intl.DateTimeFormat("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "numeric",
-      minute: "numeric",
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
     }).format(date)
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{trigger || <Button variant="outline">Load Project</Button>}</DialogTrigger>
+      <DialogTrigger asChild>
+        {trigger || <Button variant="outline">Load Project</Button>}
+      </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Saved Projects</DialogTitle>
-          <DialogDescription>Select a project to load or manage your saved projects.</DialogDescription>
+          <DialogDescription>
+            Select a project to load or manage your saved projects.
+          </DialogDescription>
         </DialogHeader>
 
         {projects.length === 0 ? (
@@ -62,8 +71,12 @@ export function SavedProjectsDialog({ projects, onSelect, onDelete, trigger }: S
           <ScrollArea className="max-h-[60vh]">
             <div className="space-y-2 pr-4">
               {projects
-                .sort((a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime())
-                .map((project) => (
+                .sort(
+                  (a, b) =>
+                    new Date(b.lastUpdated).getTime() -
+                    new Date(a.lastUpdated).getTime()
+                )
+                .map(project => (
                   <div
                     key={project.id}
                     className="flex items-center justify-between p-3 border rounded-md hover:bg-muted/50 transition-colors"
@@ -72,17 +85,20 @@ export function SavedProjectsDialog({ projects, onSelect, onDelete, trigger }: S
                       <h4 className="font-medium truncate">{project.name}</h4>
                       <div className="flex items-center text-xs text-muted-foreground mt-1">
                         <Clock className="h-3 w-3 mr-1" />
-                        <span>Last updated: {formatDate(project.lastUpdated)}</span>
+                        <span>
+                          Last updated: {formatDate(project.lastUpdated)}
+                        </span>
                       </div>
                       <div className="text-xs text-muted-foreground mt-1 truncate">
-                        {project.details.type} • {project.details.framework} • {project.details.languages.join(", ")}
+                        {project.details.type} • {project.details.framework} •{' '}
+                        {project.details.languages.join(', ')}
                       </div>
                     </div>
                     <div className="flex items-center gap-2 ml-4">
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={(e) => {
+                        onClick={e => {
                           e.stopPropagation()
                           onDelete(project.id)
                         }}
@@ -90,8 +106,13 @@ export function SavedProjectsDialog({ projects, onSelect, onDelete, trigger }: S
                         <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
                         <span className="sr-only">Delete</span>
                       </Button>
-                      <Button size="sm" onClick={() => handleSelect(project.id)}>
-                        <span className="sr-only sm:not-sr-only sm:mr-2">Load</span>
+                      <Button
+                        size="sm"
+                        onClick={() => handleSelect(project.id)}
+                      >
+                        <span className="sr-only sm:not-sr-only sm:mr-2">
+                          Load
+                        </span>
                         <ArrowRight className="h-4 w-4" />
                       </Button>
                     </div>

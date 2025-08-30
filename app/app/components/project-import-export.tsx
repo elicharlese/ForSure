@@ -1,10 +1,10 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { useState, useRef } from "react"
-import { Button } from "@/components/ui/button"
-import { Download, Upload, Check, AlertCircle, FileJson } from "lucide-react"
+import { useState, useRef } from 'react'
+import { Button } from '@/components/ui/button'
+import { Download, Upload, Check, AlertCircle, FileJson } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -12,11 +12,11 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Badge } from "@/components/ui/badge"
-import type { SavedProject } from "../hooks/use-saved-projects"
-import type { ProjectDetails } from "./project-details-form"
+} from '@/components/ui/dialog'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
+import type { SavedProject } from '../hooks/use-saved-projects'
+import type { ProjectDetails } from './project-details-form'
 
 interface ProjectImportExportProps {
   currentProject: ProjectDetails | null
@@ -56,9 +56,9 @@ export function ProjectImportExport({
 
     const exportFileDefaultName = `forsure-projects-${new Date().toISOString().slice(0, 10)}.json`
 
-    const linkElement = document.createElement("a")
-    linkElement.setAttribute("href", dataUri)
-    linkElement.setAttribute("download", exportFileDefaultName)
+    const linkElement = document.createElement('a')
+    linkElement.setAttribute('href', dataUri)
+    linkElement.setAttribute('download', exportFileDefaultName)
     linkElement.click()
 
     setExportSuccess(true)
@@ -69,17 +69,17 @@ export function ProjectImportExport({
     if (!currentProject) return
 
     // Find the full saved project data for the current project
-    const projectToExport = savedProjects.find((p) => p.id === currentProject.id)
+    const projectToExport = savedProjects.find(p => p.id === currentProject.id)
 
     if (projectToExport) {
       const dataStr = JSON.stringify(projectToExport, null, 2)
       const dataUri = `data:application/json;charset=utf-8,${encodeURIComponent(dataStr)}`
 
-      const exportFileDefaultName = `forsure-project-${projectToExport.name.toLowerCase().replace(/\s+/g, "-")}-${new Date().toISOString().slice(0, 10)}.json`
+      const exportFileDefaultName = `forsure-project-${projectToExport.name.toLowerCase().replace(/\s+/g, '-')}-${new Date().toISOString().slice(0, 10)}.json`
 
-      const linkElement = document.createElement("a")
-      linkElement.setAttribute("href", dataUri)
-      linkElement.setAttribute("download", exportFileDefaultName)
+      const linkElement = document.createElement('a')
+      linkElement.setAttribute('href', dataUri)
+      linkElement.setAttribute('download', exportFileDefaultName)
       linkElement.click()
     } else if (currentProject) {
       // If the current project isn't saved yet, export just the details
@@ -98,16 +98,16 @@ export function ProjectImportExport({
           currentVersionId: crypto.randomUUID(),
         },
         null,
-        2,
+        2
       )
 
       const dataUri = `data:application/json;charset=utf-8,${encodeURIComponent(dataStr)}`
 
-      const exportFileDefaultName = `forsure-project-${currentProject.name.toLowerCase().replace(/\s+/g, "-")}-${new Date().toISOString().slice(0, 10)}.json`
+      const exportFileDefaultName = `forsure-project-${currentProject.name.toLowerCase().replace(/\s+/g, '-')}-${new Date().toISOString().slice(0, 10)}.json`
 
-      const linkElement = document.createElement("a")
-      linkElement.setAttribute("href", dataUri)
-      linkElement.setAttribute("download", exportFileDefaultName)
+      const linkElement = document.createElement('a')
+      linkElement.setAttribute('href', dataUri)
+      linkElement.setAttribute('download', exportFileDefaultName)
       linkElement.click()
     }
 
@@ -124,7 +124,12 @@ export function ProjectImportExport({
       if (Array.isArray(parsed)) {
         // Validate each project has the required fields
         const validProjects = parsed.filter(
-          (p) => p.name && p.details && p.lastUpdated && p.versions && p.currentVersionId,
+          p =>
+            p.name &&
+            p.details &&
+            p.lastUpdated &&
+            p.versions &&
+            p.currentVersionId
         )
 
         if (validProjects.length === 0) {
@@ -155,11 +160,13 @@ export function ProjectImportExport({
         }
       }
     } catch (error) {
-      console.error("Import error:", error)
+      console.error('Import error:', error)
       return {
         success: false,
         projects: [],
-        errors: [`Failed to parse file "${file.name}". Please ensure it's a valid JSON file.`],
+        errors: [
+          `Failed to parse file "${file.name}". Please ensure it's a valid JSON file.`,
+        ],
       }
     }
   }
@@ -178,7 +185,7 @@ export function ProjectImportExport({
       const file = files[i]
 
       // Skip non-JSON files
-      if (file.type !== "application/json" && !file.name.endsWith(".json")) {
+      if (file.type !== 'application/json' && !file.name.endsWith('.json')) {
         allErrors.push(`Skipped "${file.name}" - Not a JSON file`)
         continue
       }
@@ -222,19 +229,19 @@ export function ProjectImportExport({
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault()
     e.stopPropagation()
-    e.currentTarget.classList.add("bg-primary/5", "border-primary/30")
+    e.currentTarget.classList.add('bg-primary/5', 'border-primary/30')
   }
 
   const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault()
     e.stopPropagation()
-    e.currentTarget.classList.remove("bg-primary/5", "border-primary/30")
+    e.currentTarget.classList.remove('bg-primary/5', 'border-primary/30')
   }
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault()
     e.stopPropagation()
-    e.currentTarget.classList.remove("bg-primary/5", "border-primary/30")
+    e.currentTarget.classList.remove('bg-primary/5', 'border-primary/30')
 
     const files = e.dataTransfer.files
     if (files.length > 0) {
@@ -246,11 +253,21 @@ export function ProjectImportExport({
     <>
       {trigger || (
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => setIsExportOpen(true)} className="flex items-center gap-1">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsExportOpen(true)}
+            className="flex items-center gap-1"
+          >
             <Download className="h-4 w-4" />
             <span>Export</span>
           </Button>
-          <Button variant="outline" size="sm" onClick={() => setIsImportOpen(true)} className="flex items-center gap-1">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsImportOpen(true)}
+            className="flex items-center gap-1"
+          >
             <Upload className="h-4 w-4" />
             <span>Import</span>
           </Button>
@@ -263,7 +280,8 @@ export function ProjectImportExport({
           <DialogHeader>
             <DialogTitle>Export Projects</DialogTitle>
             <DialogDescription>
-              Export your projects to a JSON file that you can import later or share with others.
+              Export your projects to a JSON file that you can import later or
+              share with others.
             </DialogDescription>
           </DialogHeader>
 
@@ -272,17 +290,27 @@ export function ProjectImportExport({
               <Alert className="bg-green-50 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800">
                 <Check className="h-4 w-4" />
                 <AlertTitle>Success</AlertTitle>
-                <AlertDescription>Your project has been exported successfully.</AlertDescription>
+                <AlertDescription>
+                  Your project has been exported successfully.
+                </AlertDescription>
               </Alert>
             )}
 
             <div className="flex flex-col gap-4">
-              <Button onClick={handleExportCurrent} disabled={!currentProject} className="w-full">
+              <Button
+                onClick={handleExportCurrent}
+                disabled={!currentProject}
+                className="w-full"
+              >
                 <Download className="mr-2 h-4 w-4" />
                 Export Current Project
               </Button>
 
-              <Button onClick={handleExportAll} disabled={savedProjects.length === 0} className="w-full">
+              <Button
+                onClick={handleExportAll}
+                disabled={savedProjects.length === 0}
+                className="w-full"
+              >
                 <Download className="mr-2 h-4 w-4" />
                 Export All Projects ({savedProjects.length})
               </Button>
@@ -302,7 +330,9 @@ export function ProjectImportExport({
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Import Projects</DialogTitle>
-            <DialogDescription>Import projects from JSON files that were previously exported.</DialogDescription>
+            <DialogDescription>
+              Import projects from JSON files that were previously exported.
+            </DialogDescription>
           </DialogHeader>
 
           <div className="py-6 space-y-4">
@@ -328,7 +358,7 @@ export function ProjectImportExport({
                 <AlertTitle>Success</AlertTitle>
                 <AlertDescription>
                   {importedProjects.length === 1
-                    ? "1 project imported successfully!"
+                    ? '1 project imported successfully!'
                     : `${importedProjects.length} projects imported successfully!`}
                 </AlertDescription>
               </Alert>
@@ -338,8 +368,12 @@ export function ProjectImportExport({
               <div className="bg-muted/50 p-3 rounded-md border">
                 <h4 className="text-sm font-medium mb-2">Imported Projects:</h4>
                 <div className="flex flex-wrap gap-2">
-                  {importedProjects.map((project) => (
-                    <Badge key={project.id} variant="outline" className="flex items-center gap-1">
+                  {importedProjects.map(project => (
+                    <Badge
+                      key={project.id}
+                      variant="outline"
+                      className="flex items-center gap-1"
+                    >
                       <FileJson className="h-3 w-3" />
                       {project.name}
                     </Badge>
@@ -349,7 +383,10 @@ export function ProjectImportExport({
             )}
 
             <div className="flex flex-col gap-4">
-              <label htmlFor="import-file" className="block text-sm font-medium mb-2">
+              <label
+                htmlFor="import-file"
+                className="block text-sm font-medium mb-2"
+              >
                 Select JSON files to import
               </label>
               <input
@@ -370,15 +407,19 @@ export function ProjectImportExport({
                 onClick={() => fileInputRef.current?.click()}
               >
                 <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                <p className="mt-2 text-sm text-gray-600">Drag and drop JSON files here, or click to select files</p>
-                <p className="mt-1 text-xs text-gray-500">Supports multiple ForSure project files (.json)</p>
+                <p className="mt-2 text-sm text-gray-600">
+                  Drag and drop JSON files here, or click to select files
+                </p>
+                <p className="mt-1 text-xs text-gray-500">
+                  Supports multiple ForSure project files (.json)
+                </p>
               </div>
             </div>
           </div>
 
           <DialogFooter>
             <Button variant="secondary" onClick={() => setIsImportOpen(false)}>
-              {importSuccess ? "Close" : "Cancel"}
+              {importSuccess ? 'Close' : 'Cancel'}
             </Button>
           </DialogFooter>
         </DialogContent>

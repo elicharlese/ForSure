@@ -1,7 +1,7 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { cn } from "@/lib/utils"
+import { useState } from 'react'
+import { cn } from '@/lib/utils'
 
 interface VSCodePreviewProps {
   className?: string
@@ -13,9 +13,9 @@ export default function VSCodePreview({ className }: VSCodePreviewProps) {
   return (
     <div
       className={cn(
-        "relative rounded-md overflow-hidden border border-primary/20 transition-all duration-300",
-        isHovered && "shadow-lg shadow-primary/20",
-        className,
+        'relative rounded-md overflow-hidden border border-primary/20 transition-all duration-300',
+        isHovered && 'shadow-lg shadow-primary/20',
+        className
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}

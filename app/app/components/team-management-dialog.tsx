@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
+import { useState, useEffect } from 'react'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from '@/components/ui/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,19 +20,29 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { useToast } from "@/components/ui/use-toast"
-import { Users, Copy, Check, MoreHorizontal, Shield, ShieldAlert, UserMinus, AlertCircle, UserCog } from "lucide-react"
-import type { Team, TeamRole } from "../types/team"
-import { useTeams } from "../hooks/use-teams"
-import { useAuth } from "@/contexts/auth-context"
+} from '@/components/ui/dropdown-menu'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { useToast } from '@/components/ui/use-toast'
+import {
+  Users,
+  Copy,
+  Check,
+  MoreHorizontal,
+  Shield,
+  ShieldAlert,
+  UserMinus,
+  AlertCircle,
+  UserCog,
+} from 'lucide-react'
+import type { Team, TeamRole } from '../types/team'
+import { useTeams } from '../hooks/use-teams'
+import { useAuth } from '@/contexts/auth-context'
 
 interface TeamManagementDialogProps {
   trigger?: React.ReactNode
@@ -40,14 +50,18 @@ interface TeamManagementDialogProps {
   onTeamChange?: (team: Team | null) => void
 }
 
-export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: TeamManagementDialogProps) {
+export function TeamManagementDialog({
+  trigger,
+  currentTeam,
+  onTeamChange,
+}: TeamManagementDialogProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const [activeTab, setActiveTab] = useState("members")
-  const [newTeamName, setNewTeamName] = useState("")
-  const [inviteEmail, setInviteEmail] = useState("")
+  const [activeTab, setActiveTab] = useState('members')
+  const [newTeamName, setNewTeamName] = useState('')
+  const [inviteEmail, setInviteEmail] = useState('')
   const [isCreatingTeam, setIsCreatingTeam] = useState(false)
   const [isSendingInvite, setIsSendingInvite] = useState(false)
-  const [inviteLink, setInviteLink] = useState("")
+  const [inviteLink, setInviteLink] = useState('')
   const [inviteLinkCopied, setInviteLinkCopied] = useState(false)
   const { toast } = useToast()
   const { user } = useAuth()
@@ -66,20 +80,20 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
   // Reset form when dialog opens/closes
   useEffect(() => {
     if (isOpen) {
-      setNewTeamName(currentTeam?.name || "")
-      setInviteEmail("")
-      setInviteLink("")
+      setNewTeamName(currentTeam?.name || '')
+      setInviteEmail('')
+      setInviteLink('')
       setInviteLinkCopied(false)
-      setActiveTab("members")
+      setActiveTab('members')
     }
   }, [isOpen, currentTeam])
 
   const handleCreateTeam = async () => {
     if (!newTeamName.trim()) {
       toast({
-        title: "Team name required",
-        description: "Please enter a name for your team",
-        variant: "destructive",
+        title: 'Team name required',
+        description: 'Please enter a name for your team',
+        variant: 'destructive',
       })
       return
     }
@@ -88,7 +102,7 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
     try {
       const team = await createTeam(newTeamName)
       toast({
-        title: "Team created",
+        title: 'Team created',
         description: `Your team "${team.name}" has been created successfully.`,
       })
       if (onTeamChange) {
@@ -97,9 +111,9 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
       setIsOpen(false)
     } catch (error) {
       toast({
-        title: "Failed to create team",
-        description: "There was an error creating your team. Please try again.",
-        variant: "destructive",
+        title: 'Failed to create team',
+        description: 'There was an error creating your team. Please try again.',
+        variant: 'destructive',
       })
     } finally {
       setIsCreatingTeam(false)
@@ -110,9 +124,11 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
     if (!currentTeam || !newTeamName.trim()) return
 
     try {
-      const updatedTeam = await updateTeam(currentTeam.id, { name: newTeamName })
+      const updatedTeam = await updateTeam(currentTeam.id, {
+        name: newTeamName,
+      })
       toast({
-        title: "Team updated",
+        title: 'Team updated',
         description: `Team name updated to "${updatedTeam.name}".`,
       })
       if (onTeamChange) {
@@ -120,9 +136,9 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
       }
     } catch (error) {
       toast({
-        title: "Failed to update team",
-        description: "There was an error updating your team. Please try again.",
-        variant: "destructive",
+        title: 'Failed to update team',
+        description: 'There was an error updating your team. Please try again.',
+        variant: 'destructive',
       })
     }
   }
@@ -131,12 +147,14 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
     if (!currentTeam) return
 
     if (
-      window.confirm(`Are you sure you want to delete the team "${currentTeam.name}"? This action cannot be undone.`)
+      window.confirm(
+        `Are you sure you want to delete the team "${currentTeam.name}"? This action cannot be undone.`
+      )
     ) {
       try {
         await deleteTeam(currentTeam.id)
         toast({
-          title: "Team deleted",
+          title: 'Team deleted',
           description: `The team "${currentTeam.name}" has been deleted.`,
         })
         if (onTeamChange) {
@@ -145,9 +163,10 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
         setIsOpen(false)
       } catch (error) {
         toast({
-          title: "Failed to delete team",
-          description: "There was an error deleting the team. Please try again.",
-          variant: "destructive",
+          title: 'Failed to delete team',
+          description:
+            'There was an error deleting the team. Please try again.',
+          variant: 'destructive',
         })
       }
     }
@@ -158,13 +177,13 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
 
     if (
       window.confirm(
-        `Are you sure you want to leave the team "${currentTeam.name}"? You will lose access to all team projects.`,
+        `Are you sure you want to leave the team "${currentTeam.name}"? You will lose access to all team projects.`
       )
     ) {
       try {
         await leaveTeam(currentTeam.id)
         toast({
-          title: "Left team",
+          title: 'Left team',
           description: `You have left the team "${currentTeam.name}".`,
         })
         if (onTeamChange) {
@@ -173,9 +192,9 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
         setIsOpen(false)
       } catch (error) {
         toast({
-          title: "Failed to leave team",
-          description: "There was an error leaving the team. Please try again.",
-          variant: "destructive",
+          title: 'Failed to leave team',
+          description: 'There was an error leaving the team. Please try again.',
+          variant: 'destructive',
         })
       }
     }
@@ -188,15 +207,16 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
     try {
       await inviteToTeam(currentTeam.id, inviteEmail)
       toast({
-        title: "Invitation sent",
+        title: 'Invitation sent',
         description: `An invitation has been sent to ${inviteEmail}.`,
       })
-      setInviteEmail("")
+      setInviteEmail('')
     } catch (error) {
       toast({
-        title: "Failed to send invitation",
-        description: "There was an error sending the invitation. Please try again.",
-        variant: "destructive",
+        title: 'Failed to send invitation',
+        description:
+          'There was an error sending the invitation. Please try again.',
+        variant: 'destructive',
       })
     } finally {
       setIsSendingInvite(false)
@@ -206,18 +226,23 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
   const handleRemoveMember = async (memberId: string) => {
     if (!currentTeam) return
 
-    if (window.confirm("Are you sure you want to remove this member from the team?")) {
+    if (
+      window.confirm(
+        'Are you sure you want to remove this member from the team?'
+      )
+    ) {
       try {
         await removeFromTeam(currentTeam.id, memberId)
         toast({
-          title: "Member removed",
-          description: "The member has been removed from the team.",
+          title: 'Member removed',
+          description: 'The member has been removed from the team.',
         })
       } catch (error) {
         toast({
-          title: "Failed to remove member",
-          description: "There was an error removing the member. Please try again.",
-          variant: "destructive",
+          title: 'Failed to remove member',
+          description:
+            'There was an error removing the member. Please try again.',
+          variant: 'destructive',
         })
       }
     }
@@ -229,14 +254,15 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
     try {
       await updateMemberRole(currentTeam.id, memberId, role)
       toast({
-        title: "Role updated",
+        title: 'Role updated',
         description: `The member's role has been updated to ${role}.`,
       })
     } catch (error) {
       toast({
-        title: "Failed to update role",
-        description: "There was an error updating the member's role. Please try again.",
-        variant: "destructive",
+        title: 'Failed to update role',
+        description:
+          "There was an error updating the member's role. Please try again.",
+        variant: 'destructive',
       })
     }
   }
@@ -249,9 +275,10 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
       setInviteLink(link)
     } catch (error) {
       toast({
-        title: "Failed to generate invite link",
-        description: "There was an error generating the invite link. Please try again.",
-        variant: "destructive",
+        title: 'Failed to generate invite link',
+        description:
+          'There was an error generating the invite link. Please try again.',
+        variant: 'destructive',
       })
     }
   }
@@ -263,28 +290,32 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
   }
 
   const isAdmin = currentTeam?.members.some(
-    (member) => member.userId === user?.id && (member.role === "admin" || member.role === "owner"),
+    member =>
+      member.userId === user?.id &&
+      (member.role === 'admin' || member.role === 'owner')
   )
 
-  const isOwner = currentTeam?.members.some((member) => member.userId === user?.id && member.role === "owner")
+  const isOwner = currentTeam?.members.some(
+    member => member.userId === user?.id && member.role === 'owner'
+  )
 
   const getRoleBadge = (role: TeamRole) => {
     switch (role) {
-      case "owner":
+      case 'owner':
         return (
           <Badge variant="default" className="bg-amber-500 hover:bg-amber-600">
             <ShieldAlert className="h-3 w-3 mr-1" />
             Owner
           </Badge>
         )
-      case "admin":
+      case 'admin':
         return (
           <Badge variant="default" className="bg-blue-500 hover:bg-blue-600">
             <Shield className="h-3 w-3 mr-1" />
             Admin
           </Badge>
         )
-      case "member":
+      case 'member':
         return (
           <Badge variant="outline">
             <Users className="h-3 w-3 mr-1" />
@@ -308,11 +339,13 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{currentTeam ? `Team: ${currentTeam.name}` : "Create a Team"}</DialogTitle>
+          <DialogTitle>
+            {currentTeam ? `Team: ${currentTeam.name}` : 'Create a Team'}
+          </DialogTitle>
           <DialogDescription>
             {currentTeam
-              ? "Manage your team members and settings"
-              : "Create a new team to collaborate on projects with others"}
+              ? 'Manage your team members and settings'
+              : 'Create a new team to collaborate on projects with others'}
           </DialogDescription>
         </DialogHeader>
 
@@ -333,22 +366,28 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
                       placeholder="Email address"
                       type="email"
                       value={inviteEmail}
-                      onChange={(e) => setInviteEmail(e.target.value)}
+                      onChange={e => setInviteEmail(e.target.value)}
                     />
                     <Button
                       onClick={handleInviteMember}
                       disabled={!inviteEmail.trim() || isSendingInvite}
                       className="shrink-0"
                     >
-                      {isSendingInvite ? "Sending..." : "Invite"}
+                      {isSendingInvite ? 'Sending...' : 'Invite'}
                     </Button>
                   </div>
 
                   <div className="pt-2">
-                    <Label className="text-sm text-muted-foreground">Or share an invite link</Label>
+                    <Label className="text-sm text-muted-foreground">
+                      Or share an invite link
+                    </Label>
                     {inviteLink ? (
                       <div className="flex mt-1 gap-2">
-                        <Input value={inviteLink} readOnly className="text-xs" />
+                        <Input
+                          value={inviteLink}
+                          readOnly
+                          className="text-xs"
+                        />
                         <Button
                           variant="outline"
                           size="icon"
@@ -356,11 +395,20 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
                           onClick={copyInviteLink}
                           title="Copy to clipboard"
                         >
-                          {inviteLinkCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                          {inviteLinkCopied ? (
+                            <Check className="h-4 w-4" />
+                          ) : (
+                            <Copy className="h-4 w-4" />
+                          )}
                         </Button>
                       </div>
                     ) : (
-                      <Button variant="outline" size="sm" onClick={handleGenerateInviteLink} className="mt-1 text-xs">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleGenerateInviteLink}
+                        className="mt-1 text-xs"
+                      >
                         Generate Invite Link
                       </Button>
                     )}
@@ -369,14 +417,24 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
               )}
 
               <div className="space-y-2">
-                <h3 className="text-sm font-medium">Team Members ({currentTeam.members.length})</h3>
+                <h3 className="text-sm font-medium">
+                  Team Members ({currentTeam.members.length})
+                </h3>
                 <div className="rounded-md border">
-                  {currentTeam.members.map((member) => (
-                    <div key={member.userId} className="flex items-center justify-between p-2 border-b last:border-0">
+                  {currentTeam.members.map(member => (
+                    <div
+                      key={member.userId}
+                      className="flex items-center justify-between p-2 border-b last:border-0"
+                    >
                       <div className="flex items-center gap-2">
                         <Avatar className="h-8 w-8">
-                          <AvatarImage src={member.avatar || "/placeholder.svg"} alt={member.name} />
-                          <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
+                          <AvatarImage
+                            src={member.avatar || '/placeholder.svg'}
+                            alt={member.name}
+                          />
+                          <AvatarFallback>
+                            {member.name.charAt(0)}
+                          </AvatarFallback>
                         </Avatar>
                         <div>
                           <div className="font-medium text-sm flex items-center gap-2">
@@ -387,7 +445,9 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
                               </Badge>
                             )}
                           </div>
-                          <div className="text-xs text-muted-foreground">{member.email}</div>
+                          <div className="text-xs text-muted-foreground">
+                            {member.email}
+                          </div>
                         </div>
                       </div>
 
@@ -397,7 +457,11 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
                         {isAdmin && member.userId !== user?.id && (
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-8 w-8">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                              >
                                 <MoreHorizontal className="h-4 w-4" />
                               </Button>
                             </DropdownMenuTrigger>
@@ -407,15 +471,19 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
                               {isOwner && (
                                 <>
                                   <DropdownMenuItem
-                                    onClick={() => handleRoleChange(member.userId, "admin")}
-                                    disabled={member.role === "admin"}
+                                    onClick={() =>
+                                      handleRoleChange(member.userId, 'admin')
+                                    }
+                                    disabled={member.role === 'admin'}
                                   >
                                     <Shield className="h-4 w-4 mr-2" />
                                     Make Admin
                                   </DropdownMenuItem>
                                   <DropdownMenuItem
-                                    onClick={() => handleRoleChange(member.userId, "member")}
-                                    disabled={member.role === "member"}
+                                    onClick={() =>
+                                      handleRoleChange(member.userId, 'member')
+                                    }
+                                    disabled={member.role === 'member'}
                                   >
                                     <Users className="h-4 w-4 mr-2" />
                                     Make Member
@@ -424,7 +492,9 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
                                 </>
                               )}
                               <DropdownMenuItem
-                                onClick={() => handleRemoveMember(member.userId)}
+                                onClick={() =>
+                                  handleRemoveMember(member.userId)
+                                }
                                 className="text-red-600"
                               >
                                 <UserMinus className="h-4 w-4 mr-2" />
@@ -449,12 +519,15 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
                       <Input
                         id="team-name"
                         value={newTeamName}
-                        onChange={(e) => setNewTeamName(e.target.value)}
+                        onChange={e => setNewTeamName(e.target.value)}
                         placeholder="Enter team name"
                       />
                       <Button
                         onClick={handleUpdateTeam}
-                        disabled={!newTeamName.trim() || newTeamName === currentTeam.name}
+                        disabled={
+                          !newTeamName.trim() ||
+                          newTeamName === currentTeam.name
+                        }
                         className="shrink-0"
                       >
                         Update
@@ -465,16 +538,22 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
                   <Separator className="my-4" />
 
                   <div className="space-y-2">
-                    <h3 className="text-sm font-medium text-destructive">Danger Zone</h3>
+                    <h3 className="text-sm font-medium text-destructive">
+                      Danger Zone
+                    </h3>
                     <Alert variant="destructive">
                       <AlertCircle className="h-4 w-4" />
                       <AlertTitle>Warning</AlertTitle>
                       <AlertDescription>
-                        Deleting a team will remove all team members and their access to team projects. This action
-                        cannot be undone.
+                        Deleting a team will remove all team members and their
+                        access to team projects. This action cannot be undone.
                       </AlertDescription>
                     </Alert>
-                    <Button variant="destructive" onClick={handleDeleteTeam} className="w-full">
+                    <Button
+                      variant="destructive"
+                      onClick={handleDeleteTeam}
+                      className="w-full"
+                    >
                       Delete Team
                     </Button>
                   </div>
@@ -486,7 +565,8 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
                       <UserCog className="h-4 w-4" />
                       <AlertTitle>Team Settings</AlertTitle>
                       <AlertDescription>
-                        Only team admins can modify team settings. Contact a team admin if you need to make changes.
+                        Only team admins can modify team settings. Contact a
+                        team admin if you need to make changes.
                       </AlertDescription>
                     </Alert>
                   </div>
@@ -495,7 +575,11 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
 
                   <div className="space-y-2">
                     <h3 className="text-sm font-medium">Your Membership</h3>
-                    <Button variant="outline" onClick={handleLeaveTeam} className="w-full text-red-600">
+                    <Button
+                      variant="outline"
+                      onClick={handleLeaveTeam}
+                      className="w-full text-red-600"
+                    >
                       Leave Team
                     </Button>
                   </div>
@@ -510,7 +594,7 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
               <Input
                 id="new-team-name"
                 value={newTeamName}
-                onChange={(e) => setNewTeamName(e.target.value)}
+                onChange={e => setNewTeamName(e.target.value)}
                 placeholder="Enter team name"
               />
             </div>
@@ -519,8 +603,9 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
               <Users className="h-4 w-4" />
               <AlertTitle>Team Collaboration</AlertTitle>
               <AlertDescription>
-                Creating a team allows you to collaborate on projects with other users. You'll be able to invite team
-                members and manage their access to your projects.
+                Creating a team allows you to collaborate on projects with other
+                users. You'll be able to invite team members and manage their
+                access to your projects.
               </AlertDescription>
             </Alert>
           </div>
@@ -536,8 +621,11 @@ export function TeamManagementDialog({ trigger, currentTeam, onTeamChange }: Tea
               <Button variant="outline" onClick={() => setIsOpen(false)}>
                 Cancel
               </Button>
-              <Button onClick={handleCreateTeam} disabled={!newTeamName.trim() || isCreatingTeam}>
-                {isCreatingTeam ? "Creating..." : "Create Team"}
+              <Button
+                onClick={handleCreateTeam}
+                disabled={!newTeamName.trim() || isCreatingTeam}
+              >
+                {isCreatingTeam ? 'Creating...' : 'Create Team'}
               </Button>
             </>
           )}

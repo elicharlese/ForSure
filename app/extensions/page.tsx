@@ -1,16 +1,19 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Download, Code, Github, ArrowRight } from "lucide-react"
-import AnimateOnScroll from "@/components/animate-on-scroll"
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Download, Code, Github, ArrowRight } from 'lucide-react'
+import AnimateOnScroll from '@/components/animate-on-scroll'
 
 export default function ExtensionsPage() {
   return (
     <div className="container py-12 max-w-6xl">
       <div className="space-y-12">
         <div>
-          <h1 className="text-4xl font-bold tracking-tight mb-4">ForSure IDE Extensions</h1>
+          <h1 className="text-4xl font-bold tracking-tight mb-4">
+            ForSure IDE Extensions
+          </h1>
           <p className="text-xl text-muted-foreground">
-            Enhance your development experience with ForSure extensions for your favorite code editors.
+            Enhance your development experience with ForSure extensions for your
+            favorite code editors.
           </p>
         </div>
 
@@ -22,9 +25,12 @@ export default function ExtensionsPage() {
                 <Code className="h-8 w-8" />
               </div>
               <div className="w-full">
-                <h2 className="text-2xl font-semibold tracking-tight">ForSure for VS Code</h2>
+                <h2 className="text-2xl font-semibold tracking-tight">
+                  ForSure for VS Code
+                </h2>
                 <p className="text-muted-foreground mb-4">
-                  Official Visual Studio Code extension with syntax highlighting, snippets, and validation.
+                  Official Visual Studio Code extension with syntax
+                  highlighting, snippets, and validation.
                 </p>
 
                 <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 mb-6">
@@ -44,10 +50,15 @@ export default function ExtensionsPage() {
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          <Download className="mr-2 h-4 w-4" /> Install from Marketplace
+                          <Download className="mr-2 h-4 w-4" /> Install from
+                          Marketplace
                         </a>
                       </Button>
-                      <Button asChild variant="outline" className="w-full sm:w-auto">
+                      <Button
+                        asChild
+                        variant="outline"
+                        className="w-full sm:w-auto"
+                      >
                         <a
                           href="https://github.com/elicharlese/ForSure-vscode"
                           target="_blank"
@@ -62,7 +73,9 @@ export default function ExtensionsPage() {
 
                   <div className="border rounded-md p-4">
                     <h3 className="font-medium mb-2">Installation</h3>
-                    <p className="text-sm text-muted-foreground mb-4">Install directly from VS Code:</p>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Install directly from VS Code:
+                    </p>
                     <ol className="text-sm space-y-2 list-decimal pl-5 text-muted-foreground">
                       <li>Open VS Code</li>
                       <li>Go to Extensions (Ctrl+Shift+X / Cmd+Shift+X)</li>
@@ -70,7 +83,9 @@ export default function ExtensionsPage() {
                       <li>Click "Install"</li>
                     </ol>
                     <div className="mt-4 pt-4 border-t">
-                      <p className="text-sm text-muted-foreground mb-2">Or install from VSIX file:</p>
+                      <p className="text-sm text-muted-foreground mb-2">
+                        Or install from VSIX file:
+                      </p>
                       <Button asChild variant="outline" className="w-full">
                         <a href="/downloads/forsure-vscode-0.1.0.vsix" download>
                           <Download className="mr-2 h-4 w-4" /> Download VSIX
@@ -143,9 +158,12 @@ export default function ExtensionsPage() {
                 </svg>
               </div>
               <div className="w-full">
-                <h2 className="text-2xl font-semibold tracking-tight">ForSure for JetBrains IDEs</h2>
+                <h2 className="text-2xl font-semibold tracking-tight">
+                  ForSure for JetBrains IDEs
+                </h2>
                 <p className="text-muted-foreground mb-4">
-                  Plugin for IntelliJ IDEA, WebStorm, PyCharm, and other JetBrains IDEs.
+                  Plugin for IntelliJ IDEA, WebStorm, PyCharm, and other
+                  JetBrains IDEs.
                 </p>
 
                 <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 mb-6">
@@ -165,10 +183,15 @@ export default function ExtensionsPage() {
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          <Download className="mr-2 h-4 w-4" /> Install from Marketplace
+                          <Download className="mr-2 h-4 w-4" /> Install from
+                          Marketplace
                         </a>
                       </Button>
-                      <Button asChild variant="outline" className="w-full sm:w-auto">
+                      <Button
+                        asChild
+                        variant="outline"
+                        className="w-full sm:w-auto"
+                      >
                         <a
                           href="https://github.com/elicharlese/ForSure-jetbrains"
                           target="_blank"
@@ -183,7 +206,9 @@ export default function ExtensionsPage() {
 
                   <div className="border rounded-md p-4">
                     <h3 className="font-medium mb-2">Installation</h3>
-                    <p className="text-sm text-muted-foreground mb-4">Install from JetBrains Marketplace:</p>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Install from JetBrains Marketplace:
+                    </p>
                     <ol className="text-sm space-y-2 list-decimal pl-5 text-muted-foreground">
                       <li>Open your JetBrains IDE</li>
                       <li>Go to Settings/Preferences</li>
@@ -192,9 +217,14 @@ export default function ExtensionsPage() {
                       <li>Click "Install" and restart the IDE</li>
                     </ol>
                     <div className="mt-4 pt-4 border-t">
-                      <p className="text-sm text-muted-foreground mb-2">Or install from disk:</p>
+                      <p className="text-sm text-muted-foreground mb-2">
+                        Or install from disk:
+                      </p>
                       <Button asChild variant="outline" className="w-full">
-                        <a href="/downloads/forsure-jetbrains-0.1.0.zip" download>
+                        <a
+                          href="/downloads/forsure-jetbrains-0.1.0.zip"
+                          download
+                        >
                           <Download className="mr-2 h-4 w-4" /> Download Plugin
                         </a>
                       </Button>
@@ -252,7 +282,9 @@ export default function ExtensionsPage() {
 
         {/* Other Extensions */}
         <section className="space-y-4">
-          <h2 className="text-2xl font-semibold tracking-tight">Other Editors</h2>
+          <h2 className="text-2xl font-semibold tracking-tight">
+            Other Editors
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <AnimateOnScroll type="slideUp" delay={0.2}>
               <div className="border rounded-lg p-6 bg-card">
@@ -276,7 +308,9 @@ export default function ExtensionsPage() {
                   </svg>
                 </div>
                 <h3 className="text-xl font-bold mb-2">Sublime Text</h3>
-                <p className="text-muted-foreground mb-4">Syntax highlighting and snippets for Sublime Text editor.</p>
+                <p className="text-muted-foreground mb-4">
+                  Syntax highlighting and snippets for Sublime Text editor.
+                </p>
                 <Button asChild className="w-full">
                   <a href="/downloads/forsure-sublime-0.1.0.zip" download>
                     <Download className="mr-2 h-4 w-4" /> Download Package
@@ -308,7 +342,9 @@ export default function ExtensionsPage() {
                   </svg>
                 </div>
                 <h3 className="text-xl font-bold mb-2">Vim/Neovim</h3>
-                <p className="text-muted-foreground mb-4">Syntax highlighting and integration for Vim and Neovim.</p>
+                <p className="text-muted-foreground mb-4">
+                  Syntax highlighting and integration for Vim and Neovim.
+                </p>
                 <Button asChild className="w-full">
                   <a href="/downloads/forsure-vim-0.1.0.zip" download>
                     <Download className="mr-2 h-4 w-4" /> Download Plugin
@@ -338,7 +374,9 @@ export default function ExtensionsPage() {
                   </svg>
                 </div>
                 <h3 className="text-xl font-bold mb-2">Emacs</h3>
-                <p className="text-muted-foreground mb-4">Major mode for editing ForSure files in Emacs.</p>
+                <p className="text-muted-foreground mb-4">
+                  Major mode for editing ForSure files in Emacs.
+                </p>
                 <Button asChild className="w-full">
                   <a href="/downloads/forsure-emacs-0.1.0.el" download>
                     <Download className="mr-2 h-4 w-4" /> Download Mode
@@ -352,9 +390,12 @@ export default function ExtensionsPage() {
         {/* Manual Configuration */}
         <AnimateOnScroll type="fade">
           <section className="space-y-4 border rounded-lg p-6 bg-card">
-            <h2 className="text-2xl font-semibold tracking-tight">Manual Configuration</h2>
+            <h2 className="text-2xl font-semibold tracking-tight">
+              Manual Configuration
+            </h2>
             <p className="text-muted-foreground mb-4">
-              If your editor doesn't have a dedicated package, you can manually configure syntax highlighting:
+              If your editor doesn't have a dedicated package, you can manually
+              configure syntax highlighting:
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -380,7 +421,8 @@ au BufRead,BufNewFile *.fs set filetype=yaml`}</code>
             <div className="mt-4">
               <h3 className="font-medium mb-2">TextMate/BBEdit</h3>
               <p className="text-muted-foreground">
-                Associate .forsure and .fs files with YAML syntax highlighting in your editor preferences.
+                Associate .forsure and .fs files with YAML syntax highlighting
+                in your editor preferences.
               </p>
             </div>
           </section>
@@ -391,8 +433,9 @@ au BufRead,BufNewFile *.fs set filetype=yaml`}</code>
           <div className="bg-muted dark:bg-muted/10 p-8 rounded-lg text-center space-y-4">
             <h2 className="text-2xl font-bold">Want to Contribute?</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              We welcome contributions to our editor extensions. If you'd like to improve an existing extension or
-              create one for your favorite editor, check out our GitHub repositories.
+              We welcome contributions to our editor extensions. If you'd like
+              to improve an existing extension or create one for your favorite
+              editor, check out our GitHub repositories.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
               <Button asChild>

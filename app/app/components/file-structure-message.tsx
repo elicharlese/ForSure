@@ -1,10 +1,10 @@
 // app/app/components/file-structure-message.tsx
 
-import type React from "react"
+import type React from 'react'
 
 interface FileNode {
   name: string
-  type: "file" | "directory"
+  type: 'file' | 'directory'
   children?: FileNode[]
   content?: string
 }
@@ -13,11 +13,13 @@ interface FileStructureMessageProps {
   fileStructure: FileNode
 }
 
-const FileStructureMessage: React.FC<FileStructureMessageProps> = ({ fileStructure }) => {
+const FileStructureMessage: React.FC<FileStructureMessageProps> = ({
+  fileStructure,
+}) => {
   const renderNode = (node: FileNode, indent = 0): React.ReactNode => {
     const indentStyle = { paddingLeft: `${indent * 16}px` }
 
-    if (node.type === "directory") {
+    if (node.type === 'directory') {
       return (
         <div key={node.name}>
           <div style={indentStyle} className="flex items-center space-x-2">
@@ -39,12 +41,17 @@ const FileStructureMessage: React.FC<FileStructureMessageProps> = ({ fileStructu
             </svg>
             <span className="text-sm">{node.name}</span>
           </div>
-          {node.children && node.children.map((child) => renderNode(child, indent + 1))}
+          {node.children &&
+            node.children.map(child => renderNode(child, indent + 1))}
         </div>
       )
     } else {
       return (
-        <div key={node.name} style={indentStyle} className="flex items-center space-x-2">
+        <div
+          key={node.name}
+          style={indentStyle}
+          className="flex items-center space-x-2"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
@@ -69,42 +76,42 @@ const FileStructureMessage: React.FC<FileStructureMessageProps> = ({ fileStructu
 
   // Add a function to render file content preview
   const renderFileContentPreview = (node: FileNode) => {
-    if (node.type !== "file" || !node.content) return null
+    if (node.type !== 'file' || !node.content) return null
 
-    const extension = node.name.split(".").pop()?.toLowerCase() || ""
+    const extension = node.name.split('.').pop()?.toLowerCase() || ''
 
     // Determine language for syntax highlighting
-    let language = "plaintext"
+    let language = 'plaintext'
     switch (extension) {
-      case "js":
-        language = "javascript"
+      case 'js':
+        language = 'javascript'
         break
-      case "jsx":
-        language = "javascript"
+      case 'jsx':
+        language = 'javascript'
         break
-      case "ts":
-        language = "typescript"
+      case 'ts':
+        language = 'typescript'
         break
-      case "tsx":
-        language = "typescript"
+      case 'tsx':
+        language = 'typescript'
         break
-      case "html":
-        language = "html"
+      case 'html':
+        language = 'html'
         break
-      case "css":
-        language = "css"
+      case 'css':
+        language = 'css'
         break
-      case "json":
-        language = "json"
+      case 'json':
+        language = 'json'
         break
-      case "md":
-        language = "markdown"
+      case 'md':
+        language = 'markdown'
         break
     }
 
     // Limit preview to first 10 lines
-    const contentLines = node.content.split("\n")
-    const previewContent = contentLines.slice(0, 10).join("\n")
+    const contentLines = node.content.split('\n')
+    const previewContent = contentLines.slice(0, 10).join('\n')
     const hasMoreLines = contentLines.length > 10
 
     return (
@@ -115,7 +122,9 @@ const FileStructureMessage: React.FC<FileStructureMessageProps> = ({ fileStructu
           </pre>
         </div>
         {hasMoreLines && (
-          <div className="text-xs text-muted-foreground mt-1 text-right">{contentLines.length - 10} more lines...</div>
+          <div className="text-xs text-muted-foreground mt-1 text-right">
+            {contentLines.length - 10} more lines...
+          </div>
         )}
       </div>
     )

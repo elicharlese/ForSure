@@ -23,9 +23,12 @@ export class RealtimeService {
   private channels: Map<string, RealtimeChannel> = new Map()
 
   // Subscribe to chat messages in a specific room
-  subscribeToChatRoom(roomId: string, onMessage: (message: RealtimeMessage) => void) {
+  subscribeToChatRoom(
+    roomId: string,
+    onMessage: (message: RealtimeMessage) => void
+  ) {
     const channelName = `chat:${roomId}`
-    
+
     if (this.channels.has(channelName)) {
       return this.channels.get(channelName)!
     }
@@ -38,9 +41,9 @@ export class RealtimeService {
           event: 'INSERT',
           schema: 'public',
           table: 'chat_messages',
-          filter: `chat_room=eq.${roomId}`
+          filter: `chat_room=eq.${roomId}`,
         },
-        (payload) => {
+        payload => {
           onMessage(payload.new as RealtimeMessage)
         }
       )
@@ -51,9 +54,12 @@ export class RealtimeService {
   }
 
   // Subscribe to user notifications
-  subscribeToNotifications(userId: string, onNotification: (notification: RealtimeNotification) => void) {
+  subscribeToNotifications(
+    userId: string,
+    onNotification: (notification: RealtimeNotification) => void
+  ) {
     const channelName = `notifications:${userId}`
-    
+
     if (this.channels.has(channelName)) {
       return this.channels.get(channelName)!
     }
@@ -66,9 +72,9 @@ export class RealtimeService {
           event: 'INSERT',
           schema: 'public',
           table: 'notifications',
-          filter: `user_id=eq.${userId}`
+          filter: `user_id=eq.${userId}`,
         },
-        (payload) => {
+        payload => {
           onNotification(payload.new as RealtimeNotification)
         }
       )
@@ -79,9 +85,12 @@ export class RealtimeService {
   }
 
   // Subscribe to project updates
-  subscribeToProjectUpdates(projectId: string, onUpdate: (update: any) => void) {
+  subscribeToProjectUpdates(
+    projectId: string,
+    onUpdate: (update: any) => void
+  ) {
     const channelName = `project:${projectId}`
-    
+
     if (this.channels.has(channelName)) {
       return this.channels.get(channelName)!
     }
@@ -94,9 +103,9 @@ export class RealtimeService {
           event: 'UPDATE',
           schema: 'public',
           table: 'projects',
-          filter: `id=eq.${projectId}`
+          filter: `id=eq.${projectId}`,
         },
-        (payload) => {
+        payload => {
           onUpdate(payload.new)
         }
       )
@@ -114,7 +123,7 @@ export class RealtimeService {
         chat_room: roomId,
         content,
         user_id: userId,
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       })
       .select()
       .single()
@@ -127,7 +136,12 @@ export class RealtimeService {
   }
 
   // Send a notification
-  async sendNotification(userId: string, type: string, title: string, content: string) {
+  async sendNotification(
+    userId: string,
+    type: string,
+    title: string,
+    content: string
+  ) {
     const { data, error } = await supabase
       .from('notifications')
       .insert({
@@ -136,7 +150,7 @@ export class RealtimeService {
         title,
         content,
         read: false,
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       })
       .select()
       .single()
@@ -159,7 +173,7 @@ export class RealtimeService {
 
   // Unsubscribe from all channels
   unsubscribeAll() {
-    this.channels.forEach((channel) => {
+    this.channels.forEach(channel => {
       supabase.removeChannel(channel)
     })
     this.channels.clear()

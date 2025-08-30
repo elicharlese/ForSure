@@ -1,77 +1,63 @@
-import '@testing-library/jest-dom'
-import { NextRequest } from 'next/server'
 import { GET, POST } from '@/app/api/v1/projects/route'
-import { GET as getProject, PUT as putProject, DELETE as deleteProject } from '@/app/api/v1/projects/[id]/route'
+import {
+  GET as getProject,
+  PUT as putProject,
+  DELETE as deleteProject,
+} from '@/app/api/v1/projects/[id]/route'
 
-// Mock Supabase
-jest.mock('@/lib/supabase', () => ({
-  supabaseAdmin: {
-    from: jest.fn(() => ({
-      select: jest.fn(() => ({
-        eq: jest.fn(() => ({
-          single: jest.fn(),
-          limit: jest.fn(() => ({
-            order: jest.fn(() => ({
-              data: [],
-              error: null
-            }))
-          }))
-        })),
-        limit: jest.fn(() => ({
-          order: jest.fn(() => ({
-            data: [],
-            error: null
-          }))
-        })),
-        order: jest.fn(() => ({
-          data: [],
-          error: null
-        }))
-      })),
-      insert: jest.fn(() => ({
-        select: jest.fn(() => ({
-          single: jest.fn()
-        }))
-      })),
-      update: jest.fn(() => ({
-        eq: jest.fn(() => ({
-          select: jest.fn(() => ({
-            single: jest.fn()
-          }))
-        }))
-      })),
-      delete: jest.fn(() => ({
-        eq: jest.fn(() => ({
-          single: jest.fn()
-        }))
-      }))
-    }))
-  }
-}))
+// Use default Supabase mock from jest.setup.js
 
 // Mock auth middleware
-jest.mock('@/lib/auth-middleware', () => ({
-  withAuth: (handler: any) => handler
-}))
+jest.mock('@/lib/auth-middleware', () => {
+  const defaultUser = {
+    id: 'user-123',
+    email: 'test@example.com',
+    name: 'Test User',
+  }
+  const authMiddleware = jest
+    .fn()
+    .mockResolvedValue({ user: defaultUser, error: null })
+  const withAuth = (handler: any) => async (request: any) =>
+    handler(request, { user: defaultUser })
+  return { withAuth, authMiddleware }
+})
 
 // Mock API utilities
 jest.mock('@/lib/api-utils', () => ({
-  apiResponse: (data: any) => new Response(JSON.stringify(data), { status: 200 }),
-  apiError: (message: string, status: number) => new Response(JSON.stringify({ error: message }), { status }),
-  validateRequestBody: jest.fn()
+  apiResponse: (data: any, status: number = 200) => ({
+    status,
+    json: async () => data,
+  }),
+  apiError: (message: string, status: number, details?: any) => ({
+    status,
+    json: async () => ({ error: message, details }),
+  }),
+  validateRequestBody: (body: any, schema: any) => {
+    try {
+      const validatedData = schema.parse(body)
+      return { success: true, data: validatedData }
+    } catch (error: any) {
+      return { success: false, errors: error.errors }
+    }
+  },
 }))
 
-const { supabaseAdmin } = require('@/lib/supabase')
+const { supabase } = require('@/lib/supabase')
+const { authMiddleware } = require('@/lib/auth-middleware')
 
 describe('/api/v1/projects', () => {
   const mockUser = {
     id: 'user-123',
     email: 'test@example.com',
-    name: 'Test User'
+    name: 'Test User',
   }
 
   beforeEach(() => {
     jest.clearAllMocks()
+    ;(authMiddleware as jest.Mock).mockResolvedValue({
+      user: mockUser,
+      error: null,
+    })
   })
 
   describe('GET', () => {
@@ -79,20 +65,26 @@ describe('/api/v1/projects', () => {
       const mockProjects = [
         {
           id: 'project-1',
-          name: 'Test Project',
+          title: 'Test Project',
           description: 'Test Description',
           owner_id: 'user-123',
-          status: 'active'
-        }
+          status: 'active',
+        },
       ]
 
-      supabaseAdmin.from().select().order.mockResolvedValue({
-        data: mockProjects,
-        error: null
+      ;(supabase.from as jest.Mock).mockReturnValueOnce({
+        select: jest.fn().mockReturnThis(),
+        or: jest.fn().mockReturnThis(),
+        order: jest.fn().mockReturnThis(),
+        range: jest.fn().mockResolvedValue({
+          data: mockProjects,
+          error: null,
+          count: mockProjects.length,
+        }),
       })
 
-      const request = new NextRequest('http://localhost:3000/api/v1/projects')
-      const response = await GET(request, { user: mockUser })
+      const request = { url: 'http://localhost:3000/api/v1/projects' } as any
+      const response = await GET(request)
       const data = await response.json()
 
       expect(response.status).toBe(200)
@@ -100,64 +92,70 @@ describe('/api/v1/projects', () => {
     })
 
     it('should handle database errors', async () => {
-      supabaseAdmin.from().select().order.mockResolvedValue({
-        data: null,
-        error: { message: 'Database error' }
+      ;(supabase.from as jest.Mock).mockReturnValueOnce({
+        select: jest.fn().mockReturnThis(),
+        or: jest.fn().mockReturnThis(),
+        order: jest.fn().mockReturnThis(),
+        range: jest.fn().mockResolvedValue({
+          data: null,
+          error: { message: 'Database error' },
+          count: null,
+        }),
       })
 
-      const request = new NextRequest('http://localhost:3000/api/v1/projects')
-      const response = await GET(request, { user: mockUser })
+      const request = { url: 'http://localhost:3000/api/v1/projects' } as any
+      const response = await GET(request)
       const data = await response.json()
 
       expect(response.status).toBe(500)
-      expect(data.error).toBe('Failed to get projects')
+      expect(data.error).toBe('Failed to fetch projects')
     })
   })
 
   describe('POST', () => {
     it('should create a new project', async () => {
       const newProject = {
-        name: 'New Project',
+        title: 'New Project',
         description: 'New Description',
-        status: 'active'
+        status: 'active',
       }
 
       const mockCreatedProject = {
         id: 'project-123',
         ...newProject,
-        owner_id: 'user-123'
+        owner_id: 'user-123',
       }
 
-      supabaseAdmin.from().insert().select().single.mockResolvedValue({
-        data: mockCreatedProject,
-        error: null
+      ;(supabase.from as jest.Mock).mockReturnValueOnce({
+        insert: jest.fn().mockReturnThis(),
+        select: jest.fn().mockReturnThis(),
+        single: jest.fn().mockResolvedValue({
+          data: mockCreatedProject,
+          error: null,
+        }),
       })
 
-      const request = new NextRequest('http://localhost:3000/api/v1/projects', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newProject)
-      })
+      const request = {
+        json: async () => newProject,
+      } as any
 
-      const response = await POST(request, { user: mockUser })
+      const response = await POST(request)
       const data = await response.json()
 
-      expect(response.status).toBe(200)
-      expect(data.project).toEqual(mockCreatedProject)
+      expect(response.status).toBe(201)
+      expect(data).toEqual(mockCreatedProject)
     })
 
     it('should validate required fields', async () => {
-      const request = new NextRequest('http://localhost:3000/api/v1/projects', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({})
-      })
+      const request = {
+        json: async () => ({}),
+      } as any
 
-      const response = await POST(request, { user: mockUser })
+      const response = await POST(request)
       const data = await response.json()
 
-      expect(response.status).toBe(400)
-      expect(data.error).toContain('name')
+      expect(response.status).toBe(422)
+      expect(data.error).toBe('Validation failed')
     })
   })
 })
@@ -166,11 +164,15 @@ describe('/api/v1/projects/[id]', () => {
   const mockUser = {
     id: 'user-123',
     email: 'test@example.com',
-    name: 'Test User'
+    name: 'Test User',
   }
 
   beforeEach(() => {
     jest.clearAllMocks()
+    ;(authMiddleware as jest.Mock).mockResolvedValue({
+      user: mockUser,
+      error: null,
+    })
   })
 
   describe('GET', () => {
@@ -180,30 +182,44 @@ describe('/api/v1/projects/[id]', () => {
         name: 'Test Project',
         description: 'Test Description',
         owner_id: 'user-123',
-        status: 'active'
+        status: 'active',
       }
 
-      supabaseAdmin.from().select().eq().single.mockResolvedValue({
-        data: mockProject,
-        error: null
+      ;(supabase.from as jest.Mock).mockReturnValueOnce({
+        select: jest.fn().mockReturnThis(),
+        eq: jest.fn().mockReturnThis(),
+        or: jest.fn().mockReturnThis(),
+        single: jest.fn().mockResolvedValue({
+          data: mockProject,
+          error: null,
+        }),
       })
 
-      const request = new NextRequest('http://localhost:3000/api/v1/projects/project-1')
-      const response = await getProject(request, { params: { id: 'project-1' } })
+      const request = {} as any
+      const response = await getProject(request, {
+        params: { id: 'project-1' },
+      })
       const data = await response.json()
 
       expect(response.status).toBe(200)
-      expect(data.project).toEqual(mockProject)
+      expect(data).toEqual(mockProject)
     })
 
     it('should return 404 for non-existent project', async () => {
-      supabaseAdmin.from().select().eq().single.mockResolvedValue({
-        data: null,
-        error: { message: 'Not found' }
+      ;(supabase.from as jest.Mock).mockReturnValueOnce({
+        select: jest.fn().mockReturnThis(),
+        eq: jest.fn().mockReturnThis(),
+        or: jest.fn().mockReturnThis(),
+        single: jest.fn().mockResolvedValue({
+          data: null,
+          error: { message: 'Not found' },
+        }),
       })
 
-      const request = new NextRequest('http://localhost:3000/api/v1/projects/nonexistent')
-      const response = await getProject(request, { params: { id: 'nonexistent' } })
+      const request = {} as any
+      const response = await getProject(request, {
+        params: { id: 'nonexistent' },
+      })
       const data = await response.json()
 
       expect(response.status).toBe(404)
@@ -214,47 +230,74 @@ describe('/api/v1/projects/[id]', () => {
   describe('PUT', () => {
     it('should update project', async () => {
       const updateData = {
-        name: 'Updated Project',
-        description: 'Updated Description'
+        title: 'Updated Project',
+        description: 'Updated Description',
       }
 
       const mockUpdatedProject = {
         id: 'project-1',
         ...updateData,
-        owner_id: 'user-123'
+        owner_id: 'user-123',
       }
 
-      supabaseAdmin.from().update().eq().select().single.mockResolvedValue({
-        data: mockUpdatedProject,
-        error: null
+      // Owner check
+      ;(supabase.from as jest.Mock).mockReturnValueOnce({
+        select: jest.fn().mockReturnThis(),
+        eq: jest.fn().mockReturnThis(),
+        single: jest.fn().mockResolvedValue({
+          data: { owner_id: 'user-123' },
+          error: null,
+        }),
       })
 
-      const request = new NextRequest('http://localhost:3000/api/v1/projects/project-1', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData)
+      // Update
+      ;(supabase.from as jest.Mock).mockReturnValueOnce({
+        update: jest.fn().mockReturnThis(),
+        eq: jest.fn().mockReturnThis(),
+        select: jest.fn().mockReturnThis(),
+        single: jest.fn().mockResolvedValue({
+          data: mockUpdatedProject,
+          error: null,
+        }),
       })
 
-      const response = await putProject(request, { params: { id: 'project-1' } })
+      const request = {
+        json: async () => updateData,
+      } as any
+
+      const response = await putProject(request, {
+        params: { id: 'project-1' },
+      })
       const data = await response.json()
 
       expect(response.status).toBe(200)
-      expect(data.project).toEqual(mockUpdatedProject)
+      expect(data).toEqual(mockUpdatedProject)
     })
   })
 
   describe('DELETE', () => {
     it('should delete project', async () => {
-      supabaseAdmin.from().delete().eq().single.mockResolvedValue({
-        data: { id: 'project-1' },
-        error: null
+      // Owner check
+      ;(supabase.from as jest.Mock).mockReturnValueOnce({
+        select: jest.fn().mockReturnThis(),
+        eq: jest.fn().mockReturnThis(),
+        single: jest.fn().mockResolvedValue({
+          data: { owner_id: 'user-123' },
+          error: null,
+        }),
       })
 
-      const request = new NextRequest('http://localhost:3000/api/v1/projects/project-1', {
-        method: 'DELETE'
+      // Delete
+      ;(supabase.from as jest.Mock).mockReturnValueOnce({
+        delete: jest.fn().mockReturnThis(),
+        eq: jest.fn().mockResolvedValue({ error: null }),
       })
 
-      const response = await deleteProject(request, { params: { id: 'project-1' } })
+      const request = {} as any
+
+      const response = await deleteProject(request, {
+        params: { id: 'project-1' },
+      })
       const data = await response.json()
 
       expect(response.status).toBe(200)

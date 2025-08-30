@@ -1,67 +1,42 @@
-import '@testing-library/jest-dom'
-import { NextRequest } from 'next/server'
 import { GET, POST } from '@/app/api/v1/templates/route'
 
-// Mock Supabase
-jest.mock('@/lib/supabase', () => ({
-  supabaseAdmin: {
-    from: jest.fn(() => ({
-      select: jest.fn(() => ({
-        eq: jest.fn(() => ({
-          single: jest.fn(),
-          limit: jest.fn(() => ({
-            order: jest.fn(() => ({
-              data: [],
-              error: null
-            }))
-          }))
-        })),
-        limit: jest.fn(() => ({
-          order: jest.fn(() => ({
-            data: [],
-            error: null
-          }))
-        })),
-        order: jest.fn(() => ({
-          data: [],
-          error: null
-        }))
-      })),
-      insert: jest.fn(() => ({
-        select: jest.fn(() => ({
-          single: jest.fn()
-        }))
-      })),
-      update: jest.fn(() => ({
-        eq: jest.fn(() => ({
-          select: jest.fn(() => ({
-            single: jest.fn()
-          }))
-        }))
-      }))
-    }))
-  }
+// Mock Prisma for GET endpoints
+jest.mock('@/lib/prisma', () => ({
+  prisma: {
+    template: {
+      count: jest.fn(),
+      findMany: jest.fn(),
+    },
+  },
 }))
 
 // Mock auth middleware
 jest.mock('@/lib/auth-middleware', () => ({
-  withAuth: (handler: any) => handler
+  withAuth: (handler: any) => handler,
 }))
 
 // Mock API utilities
 jest.mock('@/lib/api-utils', () => ({
-  apiResponse: (data: any) => new Response(JSON.stringify(data), { status: 200 }),
-  apiError: (message: string, status: number) => new Response(JSON.stringify({ error: message }), { status }),
-  validateRequestBody: jest.fn()
+  apiResponse: (data: any, status: number = 200) => ({
+    status,
+    json: async () => data,
+  }),
+  apiError: (message: string, status: number) => ({
+    status,
+    json: async () => ({ error: message }),
+  }),
+  validateRequestBody: jest.fn(),
 }))
 
-const { supabaseAdmin } = require('@/lib/supabase')
+const { prisma } = require('@/lib/prisma')
+const { supabase } = require('@/lib/supabase')
+const { validateRequestBody } = require('@/lib/api-utils')
 
 describe('/api/v1/templates', () => {
   const mockUser = {
     id: 'user-123',
     email: 'test@example.com',
-    name: 'Test User'
+    name: 'Test User',
   }
 
   beforeEach(() => {
@@ -70,60 +45,123 @@ describe('/api/v1/templates', () => {
 
   describe('GET', () => {
     it('should return public templates', async () => {
-      const mockTemplates = [
+      ;(validateRequestBody as jest.Mock).mockReturnValue({
+        success: true,
+        data: { page: 1, limit: 10, order: 'desc' },
+      })
+
+      const now = new Date()
+      const prismaRows = [
         {
           id: 'template-1',
           name: 'React Component',
           description: 'Basic React component template',
           category: 'React',
+          content: { type: 'component', code: '<div />' },
+          preview_image_url: null,
           is_public: true,
-          creator_id: 'user-456'
-        }
+          download_count: 5,
+          creator_id: 'user-456',
+          tags: ['react'],
+          version: '1.0.0',
+          created_at: now,
+          updated_at: now,
+          creator: { name: 'Alice', avatar_url: 'http://img' },
+        },
       ]
 
-      supabaseAdmin.from().select().order.mockResolvedValue({
-        data: mockTemplates,
-        error: null
-      })
+      prisma.template.count.mockResolvedValue(1)
+      prisma.template.findMany.mockResolvedValue(prismaRows)
 
-      const request = new NextRequest('http://localhost:3000/api/v1/templates')
+      const request = { url: 'http://localhost:3000/api/v1/templates' } as any
       const response = await GET(request)
       const data = await response.json()
 
       expect(response.status).toBe(200)
-      expect(data.templates).toEqual(mockTemplates)
-    })
-
-    it('should filter by category', async () => {
-      const mockTemplates = [
+      expect(data.templates).toEqual([
         {
           id: 'template-1',
           name: 'React Component',
+          description: 'Basic React component template',
           category: 'React',
-          is_public: true
-        }
-      ]
+          content: { type: 'component', code: '<div />' },
+          preview_image_url: null,
+          is_public: true,
+          downloads: 5,
+          author_id: 'user-456',
+          tags: ['react'],
+          version: '1.0.0',
+          created_at: now,
+          updated_at: now,
+          profiles: { name: 'Alice', avatar_url: 'http://img' },
+        },
+      ])
+    })
 
-      supabaseAdmin.from().select().eq().order.mockResolvedValue({
-        data: mockTemplates,
-        error: null
+    it('should filter by category', async () => {
+      ;(validateRequestBody as jest.Mock).mockReturnValue({
+        success: true,
+        data: { page: 1, limit: 10, order: 'desc' },
       })
 
-      const request = new NextRequest('http://localhost:3000/api/v1/templates?category=React')
+      const now = new Date()
+      prisma.template.count.mockResolvedValue(1)
+      prisma.template.findMany.mockResolvedValue([
+        {
+          id: 'template-1',
+          name: 'React Component',
+          description: null,
+          category: 'React',
+          content: {},
+          preview_image_url: null,
+          is_public: true,
+          download_count: 0,
+          creator_id: 'user-456',
+          tags: [],
+          version: '1.0.0',
+          created_at: now,
+          updated_at: now,
+          creator: null,
+        },
+      ])
+
+      const request = {
+        url: 'http://localhost:3000/api/v1/templates?category=React',
+      } as any
       const response = await GET(request)
       const data = await response.json()
 
       expect(response.status).toBe(200)
-      expect(data.templates).toEqual(mockTemplates)
+      expect(data.templates).toEqual([
+        {
+          id: 'template-1',
+          name: 'React Component',
+          description: null,
+          category: 'React',
+          content: {},
+          preview_image_url: null,
+          is_public: true,
+          downloads: 0,
+          author_id: 'user-456',
+          tags: [],
+          version: '1.0.0',
+          created_at: now,
+          updated_at: now,
+          profiles: null,
+        },
+      ])
     })
 
     it('should handle database errors', async () => {
-      supabaseAdmin.from().select().order.mockResolvedValue({
-        data: null,
-        error: { message: 'Database error' }
+      ;(validateRequestBody as jest.Mock).mockReturnValue({
+        success: true,
+        data: { page: 1, limit: 10, order: 'desc' },
       })
 
-      const request = new NextRequest('http://localhost:3000/api/v1/templates')
+      prisma.template.count.mockResolvedValue(0)
+      prisma.template.findMany.mockRejectedValue(new Error('Database error'))
+
+      const request = { url: 'http://localhost:3000/api/v1/templates' } as any
       const response = await GET(request)
       const data = await response.json()
 
@@ -138,50 +176,54 @@ describe('/api/v1/templates', () => {
         name: 'New Template',
         description: 'New Template Description',
         category: 'React',
-        content: {
-          type: 'component',
-          code: 'const Component = () => <div>Hello</div>'
-        },
-        is_public: true,
-        tags: ['react', 'component']
+        code: '<div>Hello</div>',
+        featured: false,
       }
+
+      ;(validateRequestBody as jest.Mock).mockReturnValue({
+        success: true,
+        data: newTemplate,
+      })
 
       const mockCreatedTemplate = {
         id: 'template-123',
         ...newTemplate,
-        creator_id: 'user-123'
+        author_id: 'user-123',
+        downloads: 0,
+        profiles: { name: 'Test User', avatar_url: null },
       }
 
-      supabaseAdmin.from().insert().select().single.mockResolvedValue({
-        data: mockCreatedTemplate,
-        error: null
-      })
+      const chain = {
+        insert: jest.fn().mockReturnThis(),
+        select: jest.fn().mockReturnThis(),
+        single: jest
+          .fn()
+          .mockResolvedValue({ data: mockCreatedTemplate, error: null }),
+      }
+      supabase.from.mockReturnValue(chain)
 
-      const request = new NextRequest('http://localhost:3000/api/v1/templates', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newTemplate)
-      })
+      const request = { json: async () => newTemplate } as any
 
-      const response = await POST(request, { user: mockUser })
+      const response = await (POST as any)(request, { user: mockUser })
       const data = await response.json()
 
-      expect(response.status).toBe(200)
-      expect(data.template).toEqual(mockCreatedTemplate)
+      expect(response.status).toBe(201)
+      expect(data).toEqual(mockCreatedTemplate)
     })
 
     it('should validate required fields', async () => {
-      const request = new NextRequest('http://localhost:3000/api/v1/templates', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({})
+      ;(validateRequestBody as jest.Mock).mockReturnValue({
+        success: false,
+        errors: [{ path: 'name', message: 'Required' }],
       })
 
-      const response = await POST(request, { user: mockUser })
+      const request = { json: async () => ({}) } as any
+
+      const response = await (POST as any)(request, { user: mockUser })
       const data = await response.json()
 
-      expect(response.status).toBe(400)
-      expect(data.error).toContain('name')
+      expect(response.status).toBe(422)
+      expect(data.error).toBe('Validation failed')
     })
   })
 })

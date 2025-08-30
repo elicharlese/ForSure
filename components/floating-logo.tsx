@@ -1,7 +1,7 @@
-"use client"
+'use client'
 
-import { motion } from "framer-motion"
-import Image from "next/image"
+import { motion } from 'framer-motion'
+import Image from 'next/image'
 
 interface FloatingLogoProps {
   src?: string
@@ -17,8 +17,8 @@ export default function FloatingLogo({
   alt,
   width,
   height,
-  className = "",
-  containerClassName = "",
+  className = '',
+  containerClassName = '',
 }: FloatingLogoProps) {
   return (
     <motion.div
@@ -27,12 +27,19 @@ export default function FloatingLogo({
       }}
       transition={{
         duration: 4,
-        ease: "easeInOut",
+        ease: 'easeInOut',
         repeat: Number.POSITIVE_INFINITY,
       }}
       className={`relative ${containerClassName}`}
     >
-      <Image src={src || "/fs-logo.png"} alt={alt} width={width} height={height} className={`${className}`} priority />
+      <Image
+        src={src || '/fs-logo.png'}
+        alt={alt}
+        width={width}
+        height={height}
+        className={`${className}`}
+        priority
+      />
     </motion.div>
   )
 }

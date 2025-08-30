@@ -1,10 +1,10 @@
-"use client"
+'use client'
 
-import { Badge } from "@/components/ui/badge"
+import { Badge } from '@/components/ui/badge'
 
-import { useState } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
+import { useState } from 'react'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
 import {
   Terminal,
   Code,
@@ -22,22 +22,22 @@ import {
   Brain,
   Fingerprint,
   Zap,
-} from "lucide-react"
-import CodeExample from "@/components/code-example"
-import AnimateOnScroll from "@/components/animate-on-scroll"
-import FloatingLogo from "@/components/floating-logo"
-import { useTheme } from "next-themes"
+} from 'lucide-react'
+import CodeExample from '@/components/code-example'
+import AnimateOnScroll from '@/components/animate-on-scroll'
+import FloatingLogo from '@/components/floating-logo'
+import { useTheme } from 'next-themes'
 
 export default function Home() {
   const { theme } = useTheme()
-  const isDark = theme === "dark"
+  const isDark = theme === 'dark'
   const [currentSlide, setCurrentSlide] = useState(0)
   const [copied, setCopied] = useState(false)
 
   // Example slides data
   const slides = [
     {
-      title: "Web Application Structure",
+      title: 'Web Application Structure',
       code: `# frontend.forsure
 root:
   - Type: Directory
@@ -71,7 +71,7 @@ root:
         </description>`,
     },
     {
-      title: "Backend API Structure",
+      title: 'Backend API Structure',
       code: `# backend.forsure
 root:
   - Type: Directory
@@ -105,7 +105,7 @@ root:
       </description>`,
     },
     {
-      title: "Mobile App Structure",
+      title: 'Mobile App Structure',
       code: `# mobile.forsure
 root:
   - Type: Directory
@@ -142,11 +142,11 @@ root:
 
   // Navigation functions
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1))
+    setCurrentSlide(prev => (prev === slides.length - 1 ? 0 : prev + 1))
   }
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1))
+    setCurrentSlide(prev => (prev === 0 ? slides.length - 1 : prev - 1))
   }
 
   const goToSlide = (index: number) => {
@@ -154,7 +154,7 @@ root:
   }
 
   const copyInstallCommand = () => {
-    navigator.clipboard.writeText("npm install -g forsure-cli")
+    navigator.clipboard.writeText('npm install -g forsure-cli')
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
@@ -165,7 +165,9 @@ root:
         {/* Hero Section */}
         <section className="w-full py-12 md:py-24 lg:py-32 bg-secondary dark:bg-secondary-dark relative overflow-hidden">
           {/* Only show the gradient overlay in dark mode */}
-          {isDark && <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/80"></div>}
+          {isDark && (
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/80"></div>
+          )}
 
           {/* Only show the cyber grid in dark mode */}
           {isDark ? (
@@ -174,7 +176,10 @@ root:
             </div>
           ) : (
             <div className="absolute inset-0 opacity-10">
-              <div className="w-full h-full" style={{ backgroundSize: "20px 20px" }}></div>
+              <div
+                className="w-full h-full"
+                style={{ backgroundSize: '20px 20px' }}
+              ></div>
             </div>
           )}
 
@@ -189,15 +194,18 @@ root:
 
                 <AnimateOnScroll type="slideUp" delay={0.3} duration={0.8}>
                   <p className="text-white/90 md:text-xl">
-                    ForSure is a powerful prompting programming language with both a CLI and web app for defining,
-                    documenting, and generating project structures across your entire tech stack.
+                    ForSure is a powerful prompting programming language with
+                    both a CLI and web app for defining, documenting, and
+                    generating project structures across your entire tech stack.
                   </p>
                 </AnimateOnScroll>
 
                 <AnimateOnScroll type="slideUp" delay={0.7} duration={0.8}>
                   <div className="bg-secondary-dark/50 backdrop-blur-sm rounded-lg p-4 border border-white/10">
                     <div className="flex items-center justify-between mb-2">
-                      <div className="text-sm text-white/70 font-mono">Install via npm</div>
+                      <div className="text-sm text-white/70 font-mono">
+                        Install via npm
+                      </div>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -243,8 +251,12 @@ root:
                         <Globe className="mr-2 h-5 w-5" /> Try Web App
                       </Link>
                     </Button>
-                    <Link href="/docs" className="text-white/90 hover:text-white flex items-center transition-colors">
-                      <ArrowRight className="mr-2 h-4 w-4" /> Read the Documentation
+                    <Link
+                      href="/docs"
+                      className="text-white/90 hover:text-white flex items-center transition-colors"
+                    >
+                      <ArrowRight className="mr-2 h-4 w-4" /> Read the
+                      Documentation
                     </Link>
                   </div>
                 </AnimateOnScroll>
@@ -261,7 +273,9 @@ root:
                       className="h-60 w-60"
                     />
                     <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-secondary-dark/70 backdrop-blur-sm px-4 py-2 rounded-full border border-primary/30">
-                      <span className="text-primary font-mono text-sm">v1.0.0</span>
+                      <span className="text-primary font-mono text-sm">
+                        v1.0.0
+                      </span>
                     </div>
                   </div>
                 </AnimateOnScroll>
@@ -271,15 +285,19 @@ root:
         </section>
 
         {/* Features Section */}
-        <section className="w-full py-12 md:py-24 bg-background relative" id="features">
+        <section
+          className="w-full py-12 md:py-24 bg-background relative"
+          id="features"
+        >
           <div className="container px-4 md:px-6">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-secondary dark:text-primary">
                 A Prompting Language for Project Structure
               </h2>
               <p className="mt-4 text-secondary/80 dark:text-primary-light/80 md:text-lg max-w-3xl mx-auto">
-                ForSure provides a unified prompting programming language to define and document project structures
-                across your entire tech stack.
+                ForSure provides a unified prompting programming language to
+                define and document project structures across your entire tech
+                stack.
               </p>
             </div>
 
@@ -289,10 +307,13 @@ root:
                   <div className="p-4 bg-primary/10 rounded-full w-fit mb-5 group-hover:bg-primary/20 transition-all group-hover:scale-110 transform">
                     <Terminal className="h-7 w-7 text-primary" />
                   </div>
-                  <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">CLI Tool</h3>
+                  <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
+                    CLI Tool
+                  </h3>
                   <p className="text-secondary/80 dark:text-primary-light/70 mb-5 leading-relaxed max-w-xs mx-auto">
-                    Generate project structures from ForSure prompts with a powerful command-line interface. Automate
-                    your project setup and maintain consistency.
+                    Generate project structures from ForSure prompts with a
+                    powerful command-line interface. Automate your project setup
+                    and maintain consistency.
                   </p>
                   <div className="mt-auto pt-2 border-t border-primary/10">
                     <Link
@@ -314,8 +335,9 @@ root:
                     Prompting Language
                   </h3>
                   <p className="text-secondary/80 dark:text-primary-light/70 mb-5 leading-relaxed max-w-xs mx-auto">
-                    A human-readable prompting language for defining and documenting file structures with rich metadata.
-                    Simple syntax, powerful capabilities.
+                    A human-readable prompting language for defining and
+                    documenting file structures with rich metadata. Simple
+                    syntax, powerful capabilities.
                   </p>
                   <div className="mt-auto pt-2 border-t border-primary/10">
                     <Link
@@ -333,10 +355,13 @@ root:
                   <div className="p-4 bg-primary/10 rounded-full w-fit mb-5 group-hover:bg-primary/20 transition-all group-hover:scale-110 transform">
                     <Globe className="h-7 w-7 text-primary" />
                   </div>
-                  <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">Web Application</h3>
+                  <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
+                    Web Application
+                  </h3>
                   <p className="text-secondary/80 dark:text-primary-light/70 mb-5 leading-relaxed max-w-xs mx-auto">
-                    Access ForSure's prompting capabilities through our intuitive web interface. Create, manage, and
-                    share your project structures from anywhere.
+                    Access ForSure's prompting capabilities through our
+                    intuitive web interface. Create, manage, and share your
+                    project structures from anywhere.
                   </p>
                   <div className="mt-auto pt-2 border-t border-primary/10">
                     <Link
@@ -360,8 +385,8 @@ root:
                   Adaptive Neural Network
                 </h2>
                 <p className="mt-3 text-secondary/80 dark:text-primary-light/80 md:text-lg max-w-2xl mx-auto">
-                  Our advanced neural network learns from your coding style and project patterns to deliver increasingly
-                  personalized results.
+                  Our advanced neural network learns from your coding style and
+                  project patterns to deliver increasingly personalized results.
                 </p>
               </div>
 
@@ -376,7 +401,9 @@ root:
                         <div className="p-3 bg-primary/10 rounded-full mr-4">
                           <Brain className="h-8 w-8 text-primary" />
                         </div>
-                        <h3 className="text-xl font-bold text-secondary dark:text-primary">Style Learning Engine</h3>
+                        <h3 className="text-xl font-bold text-secondary dark:text-primary">
+                          Style Learning Engine
+                        </h3>
                       </div>
 
                       <ul className="space-y-3 mb-6">
@@ -385,9 +412,12 @@ root:
                             <Fingerprint className="h-4 w-4 text-primary" />
                           </div>
                           <div>
-                            <span className="font-medium text-secondary dark:text-primary">Personalized Patterns</span>
+                            <span className="font-medium text-secondary dark:text-primary">
+                              Personalized Patterns
+                            </span>
                             <p className="text-sm text-secondary/70 dark:text-primary-light/70">
-                              Identifies your unique coding patterns and architectural preferences
+                              Identifies your unique coding patterns and
+                              architectural preferences
                             </p>
                           </div>
                         </li>
@@ -396,9 +426,12 @@ root:
                             <Zap className="h-4 w-4 text-primary" />
                           </div>
                           <div>
-                            <span className="font-medium text-secondary dark:text-primary">Adaptive Suggestions</span>
+                            <span className="font-medium text-secondary dark:text-primary">
+                              Adaptive Suggestions
+                            </span>
                             <p className="text-sm text-secondary/70 dark:text-primary-light/70">
-                              Provides increasingly relevant structure suggestions as you build more projects
+                              Provides increasingly relevant structure
+                              suggestions as you build more projects
                             </p>
                           </div>
                         </li>
@@ -407,17 +440,24 @@ root:
                             <Cpu className="h-4 w-4 text-primary" />
                           </div>
                           <div>
-                            <span className="font-medium text-secondary dark:text-primary">Continuous Learning</span>
+                            <span className="font-medium text-secondary dark:text-primary">
+                              Continuous Learning
+                            </span>
                             <p className="text-sm text-secondary/70 dark:text-primary-light/70">
-                              Evolves with your development style across projects and technologies
+                              Evolves with your development style across
+                              projects and technologies
                             </p>
                           </div>
                         </li>
                       </ul>
 
-                      <Button asChild className="mt-2 bg-primary hover:bg-primary/90">
+                      <Button
+                        asChild
+                        className="mt-2 bg-primary hover:bg-primary/90"
+                      >
                         <Link href="/ai-features" className="flex items-center">
-                          Learn more about our AI features <ChevronRight className="ml-2 h-4 w-4" />
+                          Learn more about our AI features{' '}
+                          <ChevronRight className="ml-2 h-4 w-4" />
                         </Link>
                       </Button>
                     </div>
@@ -426,7 +466,9 @@ root:
 
                 <AnimateOnScroll type="slideLeft" duration={0.8} delay={0.2}>
                   <div className="bg-gradient-to-br from-secondary/5 to-primary/10 dark:from-secondary-dark/30 dark:to-primary/20 rounded-xl p-6 border border-primary/10 shadow-md">
-                    <h4 className="text-lg font-semibold mb-4 text-secondary dark:text-primary">How It Works</h4>
+                    <h4 className="text-lg font-semibold mb-4 text-secondary dark:text-primary">
+                      How It Works
+                    </h4>
 
                     <div className="space-y-6">
                       <div className="flex items-center">
@@ -434,9 +476,12 @@ root:
                           <span className="font-bold text-primary">1</span>
                         </div>
                         <div>
-                          <h5 className="font-medium text-secondary dark:text-primary">Initial Analysis</h5>
+                          <h5 className="font-medium text-secondary dark:text-primary">
+                            Initial Analysis
+                          </h5>
                           <p className="text-sm text-secondary/70 dark:text-primary-light/70">
-                            Our neural network analyzes your existing projects and coding patterns
+                            Our neural network analyzes your existing projects
+                            and coding patterns
                           </p>
                         </div>
                       </div>
@@ -446,9 +491,12 @@ root:
                           <span className="font-bold text-primary">2</span>
                         </div>
                         <div>
-                          <h5 className="font-medium text-secondary dark:text-primary">Pattern Recognition</h5>
+                          <h5 className="font-medium text-secondary dark:text-primary">
+                            Pattern Recognition
+                          </h5>
                           <p className="text-sm text-secondary/70 dark:text-primary-light/70">
-                            Identifies your preferred naming conventions, structure patterns, and organization style
+                            Identifies your preferred naming conventions,
+                            structure patterns, and organization style
                           </p>
                         </div>
                       </div>
@@ -458,9 +506,12 @@ root:
                           <span className="font-bold text-primary">3</span>
                         </div>
                         <div>
-                          <h5 className="font-medium text-secondary dark:text-primary">Adaptive Learning</h5>
+                          <h5 className="font-medium text-secondary dark:text-primary">
+                            Adaptive Learning
+                          </h5>
                           <p className="text-sm text-secondary/70 dark:text-primary-light/70">
-                            Continuously improves suggestions based on your feedback and project evolution
+                            Continuously improves suggestions based on your
+                            feedback and project evolution
                           </p>
                         </div>
                       </div>
@@ -470,9 +521,12 @@ root:
                           <span className="font-bold text-primary">4</span>
                         </div>
                         <div>
-                          <h5 className="font-medium text-secondary dark:text-primary">Personalized Output</h5>
+                          <h5 className="font-medium text-secondary dark:text-primary">
+                            Personalized Output
+                          </h5>
                           <p className="text-sm text-secondary/70 dark:text-primary-light/70">
-                            Generates project structures that match your style and follow your established patterns
+                            Generates project structures that match your style
+                            and follow your established patterns
                           </p>
                         </div>
                       </div>
@@ -499,15 +553,18 @@ root:
         </section>
 
         {/* How It Works Section */}
-        <section className="w-full py-12 md:py-24 bg-muted dark:bg-muted/10 relative" id="how-it-works">
+        <section
+          className="w-full py-12 md:py-24 bg-muted dark:bg-muted/10 relative"
+          id="how-it-works"
+        >
           <div className="container px-4 md:px-6">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl text-secondary dark:text-primary">
                 How ForSure Prompting Works
               </h2>
               <p className="mt-4 text-secondary/80 dark:text-primary-light/80 md:text-lg max-w-3xl mx-auto">
-                A streamlined workflow to define, document, and generate project structures using our prompting
-                programming language
+                A streamlined workflow to define, document, and generate project
+                structures using our prompting programming language
               </p>
             </div>
 
@@ -517,15 +574,20 @@ root:
                 <div className="flex flex-col h-full bg-white dark:bg-secondary-dark/20 rounded-xl p-4 sm:p-6 shadow-md border border-primary/10 hover:border-primary/30 transition-all hover:shadow-lg">
                   <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
                     <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 shadow-inner border border-primary/10">
-                      <span className="text-xl sm:text-2xl font-bold text-primary">1</span>
+                      <span className="text-xl sm:text-2xl font-bold text-primary">
+                        1
+                      </span>
                     </div>
-                    <h3 className="text-xl sm:text-2xl font-bold text-secondary dark:text-primary">Write Prompts</h3>
+                    <h3 className="text-xl sm:text-2xl font-bold text-secondary dark:text-primary">
+                      Write Prompts
+                    </h3>
                   </div>
 
                   <p className="text-secondary/80 dark:text-primary-light/70 mb-4 sm:mb-6 text-base sm:text-lg">
-                    Create a .forsure file using our prompting programming language that describes your project
-                    structure with rich metadata. Define directories, files, and their relationships in a clear,
-                    hierarchical format.
+                    Create a .forsure file using our prompting programming
+                    language that describes your project structure with rich
+                    metadata. Define directories, files, and their relationships
+                    in a clear, hierarchical format.
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
@@ -538,7 +600,8 @@ root:
                           Intuitive Syntax
                         </h4>
                         <p className="text-xs sm:text-sm text-secondary/70 dark:text-primary-light/70">
-                          Describe directories and files with an intuitive, easy-to-learn prompting syntax
+                          Describe directories and files with an intuitive,
+                          easy-to-learn prompting syntax
                         </p>
                       </div>
                     </div>
@@ -552,7 +615,8 @@ root:
                           Rich Metadata
                         </h4>
                         <p className="text-xs sm:text-sm text-secondary/70 dark:text-primary-light/70">
-                          Add descriptions, purposes, and other metadata to document your structure
+                          Add descriptions, purposes, and other metadata to
+                          document your structure
                         </p>
                       </div>
                     </div>
@@ -566,7 +630,8 @@ root:
                           Hierarchical
                         </h4>
                         <p className="text-xs sm:text-sm text-secondary/70 dark:text-primary-light/70">
-                          Use indentation to represent nesting and relationships between files
+                          Use indentation to represent nesting and relationships
+                          between files
                         </p>
                       </div>
                     </div>
@@ -580,7 +645,8 @@ root:
                           Style Learning
                         </h4>
                         <p className="text-xs sm:text-sm text-secondary/70 dark:text-primary-light/70">
-                          Our neural network learns your style and adapts to your preferences over time
+                          Our neural network learns your style and adapts to
+                          your preferences over time
                         </p>
                       </div>
                     </div>
@@ -591,7 +657,7 @@ root:
                       href="/language"
                       className="inline-flex items-center text-primary text-sm sm:text-base font-medium hover:underline"
                     >
-                      Learn more about the ForSure prompting language{" "}
+                      Learn more about the ForSure prompting language{' '}
                       <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 ml-1" />
                     </Link>
                   </div>
@@ -623,7 +689,9 @@ root:
                           <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
                           <polyline points="14 2 14 8 20 8" />
                         </svg>
-                        <span className="font-mono text-sm text-secondary dark:text-primary">project.forsure</span>
+                        <span className="font-mono text-sm text-secondary dark:text-primary">
+                          project.forsure
+                        </span>
                       </div>
                     </div>
                     <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -643,7 +711,14 @@ root:
                           strokeLinecap="round"
                           strokeLinejoin="round"
                         >
-                          <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                          <rect
+                            width="14"
+                            height="14"
+                            x="8"
+                            y="8"
+                            rx="2"
+                            ry="2"
+                          />
                           <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
                         </svg>
                       </button>
@@ -762,7 +837,10 @@ root:
                         ForSure Prompting Syntax
                       </span>
                     </div>
-                    <Link href="/language" className="hover:text-primary transition-colors inline-flex items-center">
+                    <Link
+                      href="/language"
+                      className="hover:text-primary transition-colors inline-flex items-center"
+                    >
                       Learn more
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -789,15 +867,20 @@ root:
                 <div className="flex flex-col h-full bg-white dark:bg-secondary-dark/20 rounded-xl p-4 sm:p-6 shadow-md border border-primary/10 hover:border-primary/30 transition-all hover:shadow-lg">
                   <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
                     <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 shadow-inner border border-primary/10">
-                      <span className="text-xl sm:text-2xl font-bold text-primary">2</span>
+                      <span className="text-xl sm:text-2xl font-bold text-primary">
+                        2
+                      </span>
                     </div>
-                    <h3 className="text-xl sm:text-2xl font-bold text-secondary dark:text-primary">Generate</h3>
+                    <h3 className="text-xl sm:text-2xl font-bold text-secondary dark:text-primary">
+                      Generate
+                    </h3>
                   </div>
 
                   <p className="text-secondary/80 dark:text-primary-light/70 mb-4 sm:mb-6 text-base sm:text-lg">
-                    Use the ForSure CLI or web app to generate the actual file structure from your prompts. Our tools
-                    create all directories and files according to your specification, saving you time and ensuring
-                    consistency.
+                    Use the ForSure CLI or web app to generate the actual file
+                    structure from your prompts. Our tools create all
+                    directories and files according to your specification,
+                    saving you time and ensuring consistency.
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
@@ -810,7 +893,8 @@ root:
                           CLI Tool
                         </h4>
                         <p className="text-xs sm:text-sm text-secondary/70 dark:text-primary-light/70">
-                          Generate structures with a powerful command-line interface
+                          Generate structures with a powerful command-line
+                          interface
                         </p>
                       </div>
                     </div>
@@ -824,7 +908,8 @@ root:
                           Web Application
                         </h4>
                         <p className="text-xs sm:text-sm text-secondary/70 dark:text-primary-light/70">
-                          Create and manage projects through our intuitive web interface
+                          Create and manage projects through our intuitive web
+                          interface
                         </p>
                       </div>
                     </div>
@@ -838,7 +923,8 @@ root:
                           Neural Network
                         </h4>
                         <p className="text-xs sm:text-sm text-secondary/70 dark:text-primary-light/70">
-                          Adapts to your style and generates personalized project structures
+                          Adapts to your style and generates personalized
+                          project structures
                         </p>
                       </div>
                     </div>
@@ -866,7 +952,8 @@ root:
                           Time-Saving
                         </h4>
                         <p className="text-xs sm:text-sm text-secondary/70 dark:text-primary-light/70">
-                          Automate repetitive setup tasks and focus on actual development
+                          Automate repetitive setup tasks and focus on actual
+                          development
                         </p>
                       </div>
                     </div>
@@ -877,7 +964,8 @@ root:
                       href="/cli"
                       className="inline-flex items-center text-primary text-sm sm:text-base font-medium hover:underline"
                     >
-                      Learn more about the ForSure tools <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 ml-1" />
+                      Learn more about the ForSure tools{' '}
+                      <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 ml-1" />
                     </Link>
                   </div>
                 </div>
@@ -909,7 +997,9 @@ root:
                           <path d="M8 10l4 4 4-4" />
                           <path d="M12 14v-7" />
                         </svg>
-                        <span className="font-mono text-sm text-secondary dark:text-primary">Terminal</span>
+                        <span className="font-mono text-sm text-secondary dark:text-primary">
+                          Terminal
+                        </span>
                       </div>
                     </div>
                     <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -929,7 +1019,14 @@ root:
                           strokeLinecap="round"
                           strokeLinejoin="round"
                         >
-                          <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                          <rect
+                            width="14"
+                            height="14"
+                            x="8"
+                            y="8"
+                            rx="2"
+                            ry="2"
+                          />
                           <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
                         </svg>
                       </button>
@@ -983,7 +1080,9 @@ root:
                     <div className="bg-black text-white font-mono text-sm p-4 h-full overflow-auto">
                       <div className="flex items-center text-green-400 mb-2">
                         <span className="mr-2">$</span>
-                        <span className="text-white">forsure generate project.forsure --output ./my-project</span>
+                        <span className="text-white">
+                          forsure generate project.forsure --output ./my-project
+                        </span>
                       </div>
 
                       <div className="mt-3 text-gray-300">
@@ -1128,7 +1227,8 @@ root:
                             <span>staff</span>
                             <span>128</span>
                             <span className="col-span-5">
-                              May 21 13:30 <span className="text-blue-300">.</span>
+                              May 21 13:30{' '}
+                              <span className="text-blue-300">.</span>
                             </span>
 
                             <span className="text-blue-300">drwxr-xr-x</span>
@@ -1137,7 +1237,8 @@ root:
                             <span>staff</span>
                             <span>96</span>
                             <span className="col-span-5">
-                              May 21 13:30 <span className="text-blue-300">..</span>
+                              May 21 13:30{' '}
+                              <span className="text-blue-300">..</span>
                             </span>
 
                             <span className="text-blue-300">drwxr-xr-x</span>
@@ -1146,7 +1247,8 @@ root:
                             <span>staff</span>
                             <span>96</span>
                             <span className="col-span-5">
-                              May 21 13:30 <span className="text-blue-300">src</span>
+                              May 21 13:30{' '}
+                              <span className="text-blue-300">src</span>
                             </span>
 
                             <span className="text-blue-300">drwxr-xr-x</span>
@@ -1155,7 +1257,8 @@ root:
                             <span>staff</span>
                             <span>64</span>
                             <span className="col-span-5">
-                              May 21 13:30 <span className="text-blue-300">public</span>
+                              May 21 13:30{' '}
+                              <span className="text-blue-300">public</span>
                             </span>
                           </div>
                         </div>
@@ -1191,7 +1294,10 @@ root:
                         ForSure CLI
                       </span>
                     </div>
-                    <Link href="/cli" className="hover:text-primary transition-colors inline-flex items-center">
+                    <Link
+                      href="/cli"
+                      className="hover:text-primary transition-colors inline-flex items-center"
+                    >
                       Learn more
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -1222,7 +1328,13 @@ root:
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <AnimateOnScroll type="scale" duration={1}>
                 <div className="mb-6">
-                  <FloatingLogo src="/fs-logo.png" alt="ForSure Logo" width={96} height={96} className="h-24 w-24" />
+                  <FloatingLogo
+                    src="/fs-logo.png"
+                    alt="ForSure Logo"
+                    width={96}
+                    height={96}
+                    className="h-24 w-24"
+                  />
                 </div>
               </AnimateOnScroll>
 
@@ -1232,8 +1344,9 @@ root:
                     Ready to Try Our Prompting Programming Language?
                   </h2>
                   <p className="mx-auto max-w-[700px] md:text-xl text-white/90">
-                    Join the growing community of developers using ForSure to define, document, and generate project
-                    structures with our powerful prompting language and neural network technology.
+                    Join the growing community of developers using ForSure to
+                    define, document, and generate project structures with our
+                    powerful prompting language and neural network technology.
                   </p>
                 </div>
               </AnimateOnScroll>
@@ -1250,13 +1363,23 @@ root:
                     </Link>
                   </Button>
 
-                  <Button asChild size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10">
+                  <Button
+                    asChild
+                    size="lg"
+                    variant="outline"
+                    className="border-white/20 text-white hover:bg-white/10"
+                  >
                     <Link href="/app" className="flex items-center">
                       <Globe className="mr-2 h-5 w-5" /> Try Web App
                     </Link>
                   </Button>
 
-                  <Button asChild variant="outline" size="lg" className="border-white/20 text-white">
+                  <Button
+                    asChild
+                    variant="outline"
+                    size="lg"
+                    className="border-white/20 text-white"
+                  >
                     <Link href="/docs" className="flex items-center">
                       Read the Docs <ArrowRight className="ml-2 h-5 w-5" />
                     </Link>

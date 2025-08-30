@@ -1,20 +1,23 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent } from "@/components/ui/card"
-import { SendHorizontal, Sparkles } from "lucide-react"
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card, CardContent } from '@/components/ui/card'
+import { SendHorizontal, Sparkles } from 'lucide-react'
 
 interface DashboardChatProps {
   onProjectCreate: (projectData: any) => void
   onStartChat: (initialMessages: any[]) => void
 }
 
-export default function DashboardChat({ onProjectCreate, onStartChat }: DashboardChatProps) {
-  const [message, setMessage] = useState("")
+export default function DashboardChat({
+  onProjectCreate,
+  onStartChat,
+}: DashboardChatProps) {
+  const [message, setMessage] = useState('')
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -23,20 +26,20 @@ export default function DashboardChat({ onProjectCreate, onStartChat }: Dashboar
     // Create initial message
     const initialMessages = [
       {
-        role: "user",
+        role: 'user',
         content: message,
       },
     ]
 
     // Start chat in the main interface
     onStartChat(initialMessages)
-    setMessage("")
+    setMessage('')
   }
 
   const handleSuggestionClick = (suggestion: string) => {
     const initialMessages = [
       {
-        role: "user",
+        role: 'user',
         content: suggestion,
       },
     ]
@@ -51,7 +54,7 @@ export default function DashboardChat({ onProjectCreate, onStartChat }: Dashboar
             <Input
               placeholder="Describe your project or ask a question..."
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={e => setMessage(e.target.value)}
               className="flex-1"
             />
             <Button type="submit" size="icon" disabled={!message.trim()}>
@@ -65,7 +68,9 @@ export default function DashboardChat({ onProjectCreate, onStartChat }: Dashboar
               variant="outline"
               size="sm"
               className="text-xs"
-              onClick={() => handleSuggestionClick("Create a React app with TypeScript")}
+              onClick={() =>
+                handleSuggestionClick('Create a React app with TypeScript')
+              }
             >
               <Sparkles className="mr-1 h-3 w-3" />
               React + TypeScript
@@ -75,7 +80,11 @@ export default function DashboardChat({ onProjectCreate, onStartChat }: Dashboar
               variant="outline"
               size="sm"
               className="text-xs"
-              onClick={() => handleSuggestionClick("Create a Next.js project with API routes")}
+              onClick={() =>
+                handleSuggestionClick(
+                  'Create a Next.js project with API routes'
+                )
+              }
             >
               <Sparkles className="mr-1 h-3 w-3" />
               Next.js + API
@@ -85,7 +94,9 @@ export default function DashboardChat({ onProjectCreate, onStartChat }: Dashboar
               variant="outline"
               size="sm"
               className="text-xs"
-              onClick={() => handleSuggestionClick("Create a Node.js backend with Express")}
+              onClick={() =>
+                handleSuggestionClick('Create a Node.js backend with Express')
+              }
             >
               <Sparkles className="mr-1 h-3 w-3" />
               Node.js + Express

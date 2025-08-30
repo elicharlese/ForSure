@@ -1,12 +1,12 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { usePathname } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
+import { useState } from 'react'
+import Link from 'next/link'
+import Image from 'next/image'
+import { usePathname } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,9 +14,18 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Share2, Github, BellIcon as Vercel, GitFork, Tag, ChevronRight, Menu, X } from "lucide-react"
-import { useAuth } from "@/contexts/auth-context"
+} from '@/components/ui/dropdown-menu'
+import {
+  Share2,
+  Github,
+  BellIcon as Vercel,
+  GitFork,
+  Tag,
+  ChevronRight,
+  Menu,
+  X,
+} from 'lucide-react'
+import { useAuth } from '@/contexts/auth-context'
 
 export function SecondaryNavbar() {
   const { user, isDemoMode, exitDemoMode } = useAuth()
@@ -25,16 +34,18 @@ export function SecondaryNavbar() {
 
   // Generate breadcrumbs from pathname
   const generateBreadcrumbs = () => {
-    if (!pathname || pathname === "/app") return [{ label: "Dashboard", href: "/app" }]
+    if (!pathname || pathname === '/app')
+      return [{ label: 'Dashboard', href: '/app' }]
 
-    const paths = pathname.split("/").filter(Boolean)
-    let currentPath = ""
+    const paths = pathname.split('/').filter(Boolean)
+    let currentPath = ''
 
     return paths.map((path, i) => {
       currentPath += `/${path}`
-      const label = path.charAt(0).toUpperCase() + path.slice(1).replace(/-/g, " ")
+      const label =
+        path.charAt(0).toUpperCase() + path.slice(1).replace(/-/g, ' ')
       return {
-        label: i === 0 ? "Dashboard" : label,
+        label: i === 0 ? 'Dashboard' : label,
         href: currentPath,
       }
     })
@@ -50,9 +61,17 @@ export function SecondaryNavbar() {
           <div className="flex items-center gap-2">
             <Link href="/" className="flex items-center gap-2">
               <div className="relative w-8 h-8">
-                <Image src="/fs-logo.png" alt="ForSure Logo" width={32} height={32} className="h-8 w-8" />
+                <Image
+                  src="/fs-logo.png"
+                  alt="ForSure Logo"
+                  width={32}
+                  height={32}
+                  className="h-8 w-8"
+                />
               </div>
-              <span className="font-semibold text-lg hidden sm:inline-block">ForSure</span>
+              <span className="font-semibold text-lg hidden sm:inline-block">
+                ForSure
+              </span>
             </Link>
             {isDemoMode && (
               <Badge
@@ -68,7 +87,9 @@ export function SecondaryNavbar() {
             <nav className="flex items-center text-sm">
               {breadcrumbs.map((crumb, i) => (
                 <div key={i} className="flex items-center">
-                  {i > 0 && <ChevronRight className="h-4 w-4 mx-1 text-muted-foreground" />}
+                  {i > 0 && (
+                    <ChevronRight className="h-4 w-4 mx-1 text-muted-foreground" />
+                  )}
                 </div>
               ))}
             </nav>
@@ -76,8 +97,15 @@ export function SecondaryNavbar() {
         </div>
 
         {/* Mobile menu button */}
-        <button className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-          {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        <button
+          className="md:hidden"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        >
+          {mobileMenuOpen ? (
+            <X className="h-5 w-5" />
+          ) : (
+            <Menu className="h-5 w-5" />
+          )}
         </button>
 
         {/* Right side - Action buttons */}
@@ -111,17 +139,23 @@ export function SecondaryNavbar() {
           <div className="pl-1 border-l ml-1">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                <Button
+                  variant="ghost"
+                  className="relative h-8 w-8 rounded-full"
+                >
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={user?.avatar || "/placeholder.svg"} alt={user?.name || "User"} />
+                    <AvatarImage
+                      src={user?.avatar || '/placeholder.svg'}
+                      alt={user?.name || 'User'}
+                    />
                     <AvatarFallback>
                       {user?.name
                         ? user.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")
+                            .split(' ')
+                            .map(n => n[0])
+                            .join('')
                             .toUpperCase()
-                        : "U"}
+                        : 'U'}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
@@ -129,8 +163,12 @@ export function SecondaryNavbar() {
               <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">{user?.name || "User"}</p>
-                    <p className="text-xs leading-none text-muted-foreground">{user?.email || "user@example.com"}</p>
+                    <p className="text-sm font-medium leading-none">
+                      {user?.name || 'User'}
+                    </p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {user?.email || 'user@example.com'}
+                    </p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
@@ -172,23 +210,43 @@ export function SecondaryNavbar() {
                   Exit Demo Mode
                 </Button>
               )}
-              <Button variant="outline" size="sm" className="flex items-center gap-1">
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-1"
+              >
                 <Share2 className="h-3.5 w-3.5" />
                 <span>Share</span>
               </Button>
-              <Button variant="outline" size="sm" className="flex items-center gap-1">
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-1"
+              >
                 <Github className="h-3.5 w-3.5" />
                 <span>GitHub</span>
               </Button>
-              <Button variant="outline" size="sm" className="flex items-center gap-1">
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-1"
+              >
                 <Vercel className="h-3.5 w-3.5" />
                 <span>Deploy</span>
               </Button>
-              <Button variant="outline" size="sm" className="flex items-center gap-1">
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-1"
+              >
                 <GitFork className="h-3.5 w-3.5" />
                 <span>Fork</span>
               </Button>
-              <Button variant="outline" size="sm" className="flex items-center gap-1">
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-1"
+              >
                 <Tag className="h-3.5 w-3.5" />
                 <span>Version</span>
               </Button>
@@ -197,20 +255,25 @@ export function SecondaryNavbar() {
             <div className="pt-2 border-t">
               <div className="flex items-center gap-3">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={user?.avatar || "/placeholder.svg"} alt={user?.name || "User"} />
+                  <AvatarImage
+                    src={user?.avatar || '/placeholder.svg'}
+                    alt={user?.name || 'User'}
+                  />
                   <AvatarFallback>
                     {user?.name
                       ? user.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")
+                          .split(' ')
+                          .map(n => n[0])
+                          .join('')
                           .toUpperCase()
-                      : "U"}
+                      : 'U'}
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="text-sm font-medium">{user?.name || "User"}</p>
-                  <p className="text-xs text-muted-foreground">{user?.email || "user@example.com"}</p>
+                  <p className="text-sm font-medium">{user?.name || 'User'}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {user?.email || 'user@example.com'}
+                  </p>
                 </div>
               </div>
             </div>

@@ -1,14 +1,20 @@
-"use client"
+'use client'
 
-import { type ReactNode, useRef, useEffect } from "react"
-import { gsap } from "gsap"
-import { ScrollTrigger } from "gsap/dist/ScrollTrigger"
-import { cn } from "@/lib/utils"
+import { type ReactNode, useRef, useEffect } from 'react'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
+import { cn } from '@/lib/utils'
 
 interface GSAPScrollTriggerProps {
   children: ReactNode
   className?: string
-  animation?: "fadeIn" | "slideUp" | "slideDown" | "slideLeft" | "slideRight" | "scale"
+  animation?:
+    | 'fadeIn'
+    | 'slideUp'
+    | 'slideDown'
+    | 'slideLeft'
+    | 'slideRight'
+    | 'scale'
   duration?: number
   delay?: number
   id?: string
@@ -17,7 +23,7 @@ interface GSAPScrollTriggerProps {
 export default function GSAPScrollTrigger({
   children,
   className,
-  animation = "fadeIn",
+  animation = 'fadeIn',
   duration = 1,
   delay = 0,
   id,
@@ -25,7 +31,7 @@ export default function GSAPScrollTrigger({
   const elementRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (typeof window === "undefined") return
+    if (typeof window === 'undefined') return
 
     const element = elementRef.current
     if (!element) return
@@ -38,27 +44,27 @@ export default function GSAPScrollTrigger({
 
     // Set animation properties based on animation type
     switch (animation) {
-      case "fadeIn":
+      case 'fadeIn':
         initialProps = { opacity: 0 }
         animationProps = { opacity: 1 }
         break
-      case "slideUp":
+      case 'slideUp':
         initialProps = { opacity: 0, y: 50 }
         animationProps = { opacity: 1, y: 0 }
         break
-      case "slideDown":
+      case 'slideDown':
         initialProps = { opacity: 0, y: -50 }
         animationProps = { opacity: 1, y: 0 }
         break
-      case "slideLeft":
+      case 'slideLeft':
         initialProps = { opacity: 0, x: 50 }
         animationProps = { opacity: 1, x: 0 }
         break
-      case "slideRight":
+      case 'slideRight':
         initialProps = { opacity: 0, x: -50 }
         animationProps = { opacity: 1, x: 0 }
         break
-      case "scale":
+      case 'scale':
         initialProps = { opacity: 0, scale: 0.8 }
         animationProps = { opacity: 1, scale: 1 }
         break
@@ -74,8 +80,8 @@ export default function GSAPScrollTrigger({
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: element,
-        start: "top bottom-=10%",
-        toggleActions: "play none none none",
+        start: 'top bottom-=10%',
+        toggleActions: 'play none none none',
         id,
       },
     })
@@ -84,12 +90,12 @@ export default function GSAPScrollTrigger({
       ...animationProps,
       duration,
       delay,
-      ease: "power2.out",
+      ease: 'power2.out',
     })
 
     return () => {
       if (tl) tl.kill()
-      ScrollTrigger.getAll().forEach((trigger) => {
+      ScrollTrigger.getAll().forEach(trigger => {
         if (trigger.vars.trigger === element) {
           trigger.kill()
         }

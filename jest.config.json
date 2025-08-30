@@ -1,18 +1,15 @@
 {
-  "preset": "next/babel",
+  "preset": "ts-jest",
   "testEnvironment": "jsdom",
   "setupFilesAfterEnv": ["<rootDir>/jest.setup.js"],
-  "moduleNameMapping": {
+  "moduleNameMapper": {
     "^@/(.*)$": "<rootDir>/$1"
   },
   "testMatch": [
     "**/__tests__/**/*.(js|jsx|ts|tsx)",
     "**/*.(test|spec).(js|jsx|ts|tsx)"
   ],
-  "testPathIgnorePatterns": [
-    "<rootDir>/.next/",
-    "<rootDir>/node_modules/"
-  ],
+  "testPathIgnorePatterns": ["<rootDir>/.next/", "<rootDir>/node_modules/"],
   "collectCoverageFrom": [
     "app/**/*.{js,jsx,ts,tsx}",
     "components/**/*.{js,jsx,ts,tsx}",
@@ -20,7 +17,7 @@
     "!**/*.d.ts",
     "!**/node_modules/**"
   ],
-  "coverageReporters": ["text", "lcov", "html"],
+  "coverageReporters": ["text", "lcov", "html", "json-summary"],
   "coverageThreshold": {
     "global": {
       "branches": 80,

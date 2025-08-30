@@ -8,7 +8,7 @@ export const GET = withAuth(async (request: NextRequest, { user }) => {
   try {
     const { searchParams } = new URL(request.url)
     const query = Object.fromEntries(searchParams.entries())
-    
+
     const validation = validateRequestBody(query, paginationSchema)
     if (!validation.success) {
       return apiError('Invalid query parameters', 422, validation.errors)
@@ -18,11 +18,15 @@ export const GET = withAuth(async (request: NextRequest, { user }) => {
 
     let supabaseQuery = supabase
       .from('projects')
-      .select('*, profiles!projects_owner_id_fkey(name, avatar_url)', { count: 'exact' })
+      .select('*, profiles!projects_owner_id_fkey(name, avatar_url)', {
+        count: 'exact',
+      })
       .or(`owner_id.eq.${user.id},collaborators.cs.{${user.id}}`)
 
     if (search) {
-      supabaseQuery = supabaseQuery.or(`title.ilike.%${search}%,description.ilike.%${search}%`)
+      supabaseQuery = supabaseQuery.or(
+        `title.ilike.%${search}%,description.ilike.%${search}%`
+      )
     }
 
     if (sort) {
@@ -34,8 +38,7 @@ export const GET = withAuth(async (request: NextRequest, { user }) => {
     const from = (page - 1) * limit
     const to = from + limit - 1
 
-    const { data: projects, error, count } = await supabaseQuery
-      .range(from, to)
+    const { data: projects, error, count } = await supabaseQuery.range(from, to)
 
     if (error) {
       return apiError('Failed to fetch projects', 500)
@@ -59,7 +62,7 @@ export const GET = withAuth(async (request: NextRequest, { user }) => {
 export const POST = withAuth(async (request: NextRequest, { user }) => {
   try {
     const body = await request.json()
-    
+
     const validation = validateRequestBody(body, createProjectSchema)
     if (!validation.success) {
       return apiError('Validation failed', 422, validation.errors)

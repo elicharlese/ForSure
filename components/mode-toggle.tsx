@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import { useEffect, useState } from "react"
-import { Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
-import { Button } from "@/components/ui/button"
+import { useEffect, useState } from 'react'
+import { Moon, Sun } from 'lucide-react'
+import { useTheme } from 'next-themes'
+import { Button } from '@/components/ui/button'
 
 export function ModeToggle() {
   const { resolvedTheme, setTheme } = useTheme()
@@ -22,11 +22,11 @@ export function ModeToggle() {
     <Button
       variant="ghost"
       size="icon"
-      onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+      onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
       className="w-9 h-9"
-      aria-label={`Switch to ${resolvedTheme === "dark" ? "light" : "dark"} theme`}
+      aria-label={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} theme`}
     >
-      {resolvedTheme === "dark" ? (
+      {resolvedTheme === 'dark' ? (
         <Sun className="h-[1.2rem] w-[1.2rem] text-yellow-500 transition-all" />
       ) : (
         <Moon className="h-[1.2rem] w-[1.2rem] text-slate-700 transition-all" />

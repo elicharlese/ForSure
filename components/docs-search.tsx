@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
-import { useState, useEffect, useRef } from "react"
-import { Search } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { useState, useEffect, useRef } from 'react'
+import { Search } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   CommandDialog,
   CommandEmpty,
@@ -10,8 +10,8 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command"
-import { useRouter } from "next/navigation"
+} from '@/components/ui/command'
+import { useRouter } from 'next/navigation'
 
 type SearchResult = {
   title: string
@@ -23,58 +23,58 @@ type SearchResult = {
 // Mock search results - in a real app, this would come from an API or search index
 const mockSearchResults: SearchResult[] = [
   {
-    title: "Basic Syntax",
-    description: "Learn the fundamental syntax of ForSure",
-    url: "/docs/syntax",
-    category: "Syntax",
+    title: 'Basic Syntax',
+    description: 'Learn the fundamental syntax of ForSure',
+    url: '/docs/syntax',
+    category: 'Syntax',
   },
   {
-    title: "CLI Commands",
-    description: "Reference for all ForSure CLI commands",
-    url: "/docs/cli",
-    category: "CLI",
+    title: 'CLI Commands',
+    description: 'Reference for all ForSure CLI commands',
+    url: '/docs/cli',
+    category: 'CLI',
   },
   {
-    title: "Installation Guide",
-    description: "How to install ForSure on your system",
-    url: "/docs/installation",
-    category: "Getting Started",
+    title: 'Installation Guide',
+    description: 'How to install ForSure on your system',
+    url: '/docs/installation',
+    category: 'Getting Started',
   },
   {
-    title: "File Structure",
-    description: "How to define file structures in ForSure",
-    url: "/docs/syntax/file-structure",
-    category: "Syntax",
+    title: 'File Structure',
+    description: 'How to define file structures in ForSure',
+    url: '/docs/syntax/file-structure',
+    category: 'Syntax',
   },
   {
-    title: "Import Directives",
-    description: "How to use @import directives in ForSure",
-    url: "/docs/syntax/import-directives",
-    category: "Syntax",
+    title: 'Import Directives',
+    description: 'How to use @import directives in ForSure',
+    url: '/docs/syntax/import-directives',
+    category: 'Syntax',
   },
   {
-    title: "API Reference",
-    description: "Programmatic API for ForSure",
-    url: "/docs/api",
-    category: "API",
+    title: 'API Reference',
+    description: 'Programmatic API for ForSure',
+    url: '/docs/api',
+    category: 'API',
   },
   {
-    title: "Examples",
-    description: "See ForSure in action with practical examples",
-    url: "/docs/examples",
-    category: "Examples",
+    title: 'Examples',
+    description: 'See ForSure in action with practical examples',
+    url: '/docs/examples',
+    category: 'Examples',
   },
   {
-    title: "Attributes",
-    description: "How to use attributes in ForSure",
-    url: "/docs/syntax/attributes",
-    category: "Syntax",
+    title: 'Attributes',
+    description: 'How to use attributes in ForSure',
+    url: '/docs/syntax/attributes',
+    category: 'Syntax',
   },
 ]
 
 export default function DocsSearch() {
   const [open, setOpen] = useState(false)
-  const [query, setQuery] = useState("")
+  const [query, setQuery] = useState('')
   const [results, setResults] = useState<SearchResult[]>([])
   const router = useRouter()
   const inputRef = useRef<HTMLInputElement>(null)
@@ -87,9 +87,9 @@ export default function DocsSearch() {
     }
 
     const filtered = mockSearchResults.filter(
-      (result) =>
+      result =>
         result.title.toLowerCase().includes(query.toLowerCase()) ||
-        result.description.toLowerCase().includes(query.toLowerCase()),
+        result.description.toLowerCase().includes(query.toLowerCase())
     )
     setResults(filtered)
   }, [query])
@@ -97,14 +97,14 @@ export default function DocsSearch() {
   // Handle keyboard shortcut to open search
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault()
-        setOpen((open) => !open)
+        setOpen(open => !open)
       }
     }
 
-    document.addEventListener("keydown", down)
-    return () => document.removeEventListener("keydown", down)
+    document.addEventListener('keydown', down)
+    return () => document.removeEventListener('keydown', down)
   }, [])
 
   const handleSelect = (url: string) => {
@@ -129,7 +129,12 @@ export default function DocsSearch() {
       </Button>
 
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Search documentation..." value={query} onValueChange={setQuery} ref={inputRef} />
+        <CommandInput
+          placeholder="Search documentation..."
+          value={query}
+          onValueChange={setQuery}
+          ref={inputRef}
+        />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
           {results.length > 0 && (
@@ -142,9 +147,13 @@ export default function DocsSearch() {
                 >
                   <div className="flex items-center w-full">
                     <span className="font-medium">{result.title}</span>
-                    <span className="ml-auto text-xs bg-muted px-2 py-0.5 rounded">{result.category}</span>
+                    <span className="ml-auto text-xs bg-muted px-2 py-0.5 rounded">
+                      {result.category}
+                    </span>
                   </div>
-                  <span className="text-sm text-muted-foreground">{result.description}</span>
+                  <span className="text-sm text-muted-foreground">
+                    {result.description}
+                  </span>
                 </CommandItem>
               ))}
             </CommandGroup>

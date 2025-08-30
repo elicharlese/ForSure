@@ -1,26 +1,26 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { ModeToggle } from "@/components/mode-toggle"
-import { Menu, X, Terminal, Code, FileText, Package } from "lucide-react"
-import ScrollProgress from "@/components/scroll-progress"
-import { useTheme } from "next-themes"
-import { UserNav } from "@/components/user-nav"
-import { useAuth } from "@/contexts/auth-context"
-import { usePathname } from "next/navigation"
+import { useState } from 'react'
+import Link from 'next/link'
+import Image from 'next/image'
+import { Button } from '@/components/ui/button'
+import { ModeToggle } from '@/components/mode-toggle'
+import { Menu, X, Terminal, Code, FileText, Package } from 'lucide-react'
+import ScrollProgress from '@/components/scroll-progress'
+import { useTheme } from 'next-themes'
+import { UserNav } from '@/components/user-nav'
+import { useAuth } from '@/contexts/auth-context'
+import { usePathname } from 'next/navigation'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { theme } = useTheme()
-  const isDark = theme === "dark"
+  const isDark = theme === 'dark'
   const { isAuthenticated, enterDemoMode } = useAuth()
   const pathname = usePathname()
 
   // If we're in the /app route, don't render the header content
-  if (pathname?.startsWith("/app")) {
+  if (pathname?.startsWith('/app')) {
     return null
   }
 
@@ -33,7 +33,7 @@ export default function Header() {
             <div className="relative w-10 h-10">
               <div
                 className={`absolute inset-0 rounded-full blur-lg ${
-                  isDark ? "bg-primary/15" : "bg-primary/10"
+                  isDark ? 'bg-primary/15' : 'bg-primary/10'
                 } scale-125`}
               />
               <Image
@@ -44,37 +44,59 @@ export default function Header() {
                 className="h-10 w-10"
                 style={{
                   filter: isDark
-                    ? "drop-shadow(0 0 8px rgba(140, 255, 230, 0.25))"
-                    : "drop-shadow(0 0 6px rgba(140, 255, 230, 0.15))",
+                    ? 'drop-shadow(0 0 8px rgba(140, 255, 230, 0.25))'
+                    : 'drop-shadow(0 0 6px rgba(140, 255, 230, 0.15))',
                 }}
               />
             </div>
-            <span className={`font-bold text-2xl ${isDark ? "text-primary" : "text-secondary"}`}>ForSure</span>
+            <span
+              className={`font-bold text-2xl ${isDark ? 'text-primary' : 'text-secondary'}`}
+            >
+              ForSure
+            </span>
           </Link>
         </div>
 
         {/* Mobile menu button */}
-        <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-          {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        <button
+          className="md:hidden"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          {isMenuOpen ? (
+            <X className="h-6 w-6" />
+          ) : (
+            <Menu className="h-6 w-6" />
+          )}
         </button>
 
         {/* Desktop navigation */}
         <nav className="hidden md:flex items-center gap-6">
           <Link href="/cli" className="flex items-center gap-1 group mr-4">
             <Terminal className="h-4 w-4 group-hover:text-primary transition-colors" />
-            <span className="text-sm font-medium group-hover:text-primary transition-colors">CLI</span>
+            <span className="text-sm font-medium group-hover:text-primary transition-colors">
+              CLI
+            </span>
           </Link>
           <Link href="/language" className="flex items-center gap-1 group mr-4">
             <Code className="h-4 w-4 group-hover:text-primary transition-colors" />
-            <span className="text-sm font-medium group-hover:text-primary transition-colors">Language</span>
+            <span className="text-sm font-medium group-hover:text-primary transition-colors">
+              Language
+            </span>
           </Link>
           <Link href="/docs" className="flex items-center gap-1 group mr-4">
             <FileText className="h-4 w-4 group-hover:text-primary transition-colors" />
-            <span className="text-sm font-medium group-hover:text-primary transition-colors">Documentation</span>
+            <span className="text-sm font-medium group-hover:text-primary transition-colors">
+              Documentation
+            </span>
           </Link>
-          <Link href="/components" className="flex items-center gap-1 group mr-8">
+          <Link
+            href="/components"
+            className="flex items-center gap-1 group mr-8"
+          >
             <Package className="h-4 w-4 group-hover:text-primary transition-colors" />
-            <span className="text-sm font-medium group-hover:text-primary transition-colors">Components</span>
+            <span className="text-sm font-medium group-hover:text-primary transition-colors">
+              Components
+            </span>
           </Link>
           <div className="h-6 w-px bg-border mr-4 hidden md:block"></div>
 
@@ -101,17 +123,35 @@ export default function Header() {
         {isMenuOpen && (
           <div className="absolute top-16 left-0 right-0 bg-background border-b md:hidden">
             <nav className="container flex flex-col py-4 gap-4">
-              <Link href="/cli" className="px-4 py-2 flex items-center group" onClick={() => setIsMenuOpen(false)}>
+              <Link
+                href="/cli"
+                className="px-4 py-2 flex items-center group"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 <Terminal className="h-4 w-4 mr-2 group-hover:text-primary transition-colors" />
-                <span className="text-sm font-medium group-hover:text-primary transition-colors">CLI</span>
+                <span className="text-sm font-medium group-hover:text-primary transition-colors">
+                  CLI
+                </span>
               </Link>
-              <Link href="/language" className="px-4 py-2 flex items-center group" onClick={() => setIsMenuOpen(false)}>
+              <Link
+                href="/language"
+                className="px-4 py-2 flex items-center group"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 <Code className="h-4 w-4 mr-2 group-hover:text-primary transition-colors" />
-                <span className="text-sm font-medium group-hover:text-primary transition-colors">Language</span>
+                <span className="text-sm font-medium group-hover:text-primary transition-colors">
+                  Language
+                </span>
               </Link>
-              <Link href="/docs" className="px-4 py-2 flex items-center group" onClick={() => setIsMenuOpen(false)}>
+              <Link
+                href="/docs"
+                className="px-4 py-2 flex items-center group"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 <FileText className="h-4 w-4 mr-2 group-hover:text-primary transition-colors" />
-                <span className="text-sm font-medium group-hover:text-primary transition-colors">Documentation</span>
+                <span className="text-sm font-medium group-hover:text-primary transition-colors">
+                  Documentation
+                </span>
               </Link>
               <Link
                 href="/components"
@@ -119,7 +159,9 @@ export default function Header() {
                 onClick={() => setIsMenuOpen(false)}
               >
                 <Package className="h-4 w-4 mr-2 group-hover:text-primary transition-colors" />
-                <span className="text-sm font-medium group-hover:text-primary transition-colors">Components</span>
+                <span className="text-sm font-medium group-hover:text-primary transition-colors">
+                  Components
+                </span>
               </Link>
 
               <div className="flex items-center gap-4 px-4">

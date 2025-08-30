@@ -23,7 +23,7 @@ export class ForSureValidator {
   static readonly MAX_FILE_SIZE = 5 * 1024 * 1024
 
   // Valid file extensions
-  static readonly VALID_EXTENSIONS = [".fs", ".forsure", ".txt"]
+  static readonly VALID_EXTENSIONS = ['.fs', '.forsure', '.txt']
 
   // ForSure syntax patterns to validate
   static readonly REQUIRED_PATTERNS = [
@@ -40,7 +40,10 @@ export class ForSureValidator {
   /**
    * Validates a file based on its name, size, and content
    */
-  static validateFile(file: File, existingFiles: { name: string }[]): ValidationResult {
+  static validateFile(
+    file: File,
+    existingFiles: { name: string }[]
+  ): ValidationResult {
     const result: ValidationResult = {
       isValid: true,
       errors: [],
@@ -51,19 +54,21 @@ export class ForSureValidator {
     const extension = this.getFileExtension(file.name).toLowerCase()
     if (!this.VALID_EXTENSIONS.includes(extension)) {
       result.errors.push(
-        `Invalid file extension: ${extension}. Allowed extensions: ${this.VALID_EXTENSIONS.join(", ")}`,
+        `Invalid file extension: ${extension}. Allowed extensions: ${this.VALID_EXTENSIONS.join(', ')}`
       )
       result.isValid = false
     }
 
     // Check file size
     if (file.size > this.MAX_FILE_SIZE) {
-      result.errors.push(`File size exceeds the maximum allowed size of ${this.formatFileSize(this.MAX_FILE_SIZE)}`)
+      result.errors.push(
+        `File size exceeds the maximum allowed size of ${this.formatFileSize(this.MAX_FILE_SIZE)}`
+      )
       result.isValid = false
     }
 
     // Check for duplicate file names
-    if (existingFiles.some((existingFile) => existingFile.name === file.name)) {
+    if (existingFiles.some(existingFile => existingFile.name === file.name)) {
       result.errors.push(`A file with the name "${file.name}" already exists`)
       result.isValid = false
     }
@@ -77,7 +82,7 @@ export class ForSureValidator {
   static async validateFilesBatch(
     files: FileList,
     existingFiles: { name: string }[],
-    onProgress?: (progress: BatchValidationProgress) => void,
+    onProgress?: (progress: BatchValidationProgress) => void
   ): Promise<BatchValidationResult[]> {
     const results: BatchValidationResult[] = []
     const total = files.length
@@ -128,7 +133,7 @@ export class ForSureValidator {
       results.push(batchResult)
 
       // Add a small delay to allow UI updates
-      await new Promise((resolve) => setTimeout(resolve, 50))
+      await new Promise(resolve => setTimeout(resolve, 50))
     }
 
     // Final progress update
@@ -136,7 +141,7 @@ export class ForSureValidator {
       onProgress({
         total,
         completed: total,
-        current: "",
+        current: '',
         results,
       })
     }
@@ -150,14 +155,14 @@ export class ForSureValidator {
   private static readFileAsText(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader()
-      reader.onload = (e) => {
+      reader.onload = e => {
         if (e.target?.result) {
           resolve(e.target.result as string)
         } else {
-          reject(new Error("Failed to read file"))
+          reject(new Error('Failed to read file'))
         }
       }
-      reader.onerror = () => reject(reader.error || new Error("Unknown error"))
+      reader.onerror = () => reject(reader.error || new Error('Unknown error'))
       reader.readAsText(file)
     })
   }
@@ -174,7 +179,7 @@ export class ForSureValidator {
 
     // Check if content is empty
     if (!content.trim()) {
-      result.errors.push("File content is empty")
+      result.errors.push('File content is empty')
       result.isValid = false
       return result
     }
@@ -189,14 +194,14 @@ export class ForSureValidator {
     }
 
     if (!hasRequiredPattern) {
-      result.errors.push("File does not contain valid ForSure syntax")
+      result.errors.push('File does not contain valid ForSure syntax')
       result.isValid = false
     }
 
     // Check for warning patterns
     for (const pattern of this.WARNING_PATTERNS) {
       if (pattern.test(content)) {
-        result.warnings.push("Some components are missing descriptions")
+        result.warnings.push('Some components are missing descriptions')
       }
     }
 
@@ -213,9 +218,12 @@ export class ForSureValidator {
   /**
    * Checks if braces are balanced in the content
    */
-  private static checkBalancedBraces(content: string): { isBalanced: boolean; message: string } {
+  private static checkBalancedBraces(content: string): {
+    isBalanced: boolean
+    message: string
+  } {
     const stack: { char: string; line: number }[] = []
-    const lines = content.split("\n")
+    const lines = content.split('\n')
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i]
@@ -223,9 +231,9 @@ export class ForSureValidator {
       for (let j = 0; j < line.length; j++) {
         const char = line[j]
 
-        if (char === "{" || char === "[" || char === "(") {
+        if (char === '{' || char === '[' || char === '(') {
           stack.push({ char, line: i + 1 })
-        } else if (char === "}" || char === "]" || char === ")") {
+        } else if (char === '}' || char === ']' || char === ')') {
           if (stack.length === 0) {
             return {
               isBalanced: false,
@@ -234,7 +242,8 @@ export class ForSureValidator {
           }
 
           const last = stack.pop()!
-          const expected = last.char === "{" ? "}" : last.char === "[" ? "]" : ")"
+          const expected =
+            last.char === '{' ? '}' : last.char === '[' ? ']' : ')'
 
           if (char !== expected) {
             return {
@@ -254,26 +263,28 @@ export class ForSureValidator {
       }
     }
 
-    return { isBalanced: true, message: "" }
+    return { isBalanced: true, message: '' }
   }
 
   /**
    * Gets the file extension from a filename
    */
   private static getFileExtension(filename: string): string {
-    const lastDotIndex = filename.lastIndexOf(".")
-    return lastDotIndex !== -1 ? filename.slice(lastDotIndex) : ""
+    const lastDotIndex = filename.lastIndexOf('.')
+    return lastDotIndex !== -1 ? filename.slice(lastDotIndex) : ''
   }
 
   /**
    * Formats file size in bytes to a human-readable format
    */
   private static formatFileSize(bytes: number): string {
-    if (bytes === 0) return "0 Bytes"
+    if (bytes === 0) return '0 Bytes'
     const k = 1024
-    const sizes = ["Bytes", "KB", "MB", "GB"]
+    const sizes = ['Bytes', 'KB', 'MB', 'GB']
     const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
+    return (
+      Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+    )
   }
 
   /**
@@ -287,10 +298,13 @@ export class ForSureValidator {
   } {
     return {
       total: results.length,
-      valid: results.filter((r) => r.overallValid).length,
-      invalid: results.filter((r) => !r.overallValid).length,
-      warnings: results.filter((r) => r.fileValidation.warnings.length > 0 || r.contentValidation.warnings.length > 0)
-        .length,
+      valid: results.filter(r => r.overallValid).length,
+      invalid: results.filter(r => !r.overallValid).length,
+      warnings: results.filter(
+        r =>
+          r.fileValidation.warnings.length > 0 ||
+          r.contentValidation.warnings.length > 0
+      ).length,
     }
   }
 }

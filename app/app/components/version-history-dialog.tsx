@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -12,17 +12,30 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { History, Clock, Trash2, RotateCcw, GitMerge, List, GitBranch } from "lucide-react"
-import type { ProjectVersion, Branch, Tag } from "../hooks/use-saved-projects"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { VersionMergeDialog, type MergeOptions } from "./version-merge-dialog"
-import { VersionHistoryGraph } from "./version-history-graph"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
-import { BranchManagementDialog } from "./branch-management-dialog"
-import { TagManagementDialog } from "./tag-management-dialog"
+} from '@/components/ui/dialog'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import {
+  History,
+  Clock,
+  Trash2,
+  RotateCcw,
+  GitMerge,
+  List,
+  GitBranch,
+} from 'lucide-react'
+import type { ProjectVersion, Branch, Tag } from '../hooks/use-saved-projects'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+import { VersionMergeDialog, type MergeOptions } from './version-merge-dialog'
+import { VersionHistoryGraph } from './version-history-graph'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Badge } from '@/components/ui/badge'
+import { BranchManagementDialog } from './branch-management-dialog'
+import { TagManagementDialog } from './tag-management-dialog'
 
 interface VersionHistoryDialogProps {
   projectId: string
@@ -33,20 +46,32 @@ interface VersionHistoryDialogProps {
   currentBranchId: string
   onRestore: (versionId: string) => void
   onDelete: (versionId: string) => void
-  onMerge: (sourceVersionId: string, targetVersionId: string, options: MergeOptions) => void
-  onCreateBranch: (sourceVersionId: string, name: string, description?: string, switchToBranch?: boolean) => void
+  onMerge: (
+    sourceVersionId: string,
+    targetVersionId: string,
+    options: MergeOptions
+  ) => void
+  onCreateBranch: (
+    sourceVersionId: string,
+    name: string,
+    description?: string,
+    switchToBranch?: boolean
+  ) => void
   onSwitchBranch: (branchId: string) => void
   onDeleteBranch: (branchId: string) => void
   onRenameBranch: (branchId: string, newName: string) => void
   onCreateTag: (
     versionId: string,
     name: string,
-    type: Tag["type"],
+    type: Tag['type'],
     description?: string,
-    metadata?: Tag["metadata"],
+    metadata?: Tag['metadata']
   ) => void
   onDeleteTag: (tagId: string) => void
-  onUpdateTag: (tagId: string, updates: Partial<Pick<Tag, "name" | "description" | "metadata">>) => void
+  onUpdateTag: (
+    tagId: string,
+    updates: Partial<Pick<Tag, 'name' | 'description' | 'metadata'>>
+  ) => void
   onMoveTag: (tagId: string, newVersionId: string) => void
   trigger?: React.ReactNode
 }
@@ -73,8 +98,10 @@ export function VersionHistoryDialog({
 }: VersionHistoryDialogProps) {
   const [open, setOpen] = useState(false)
   const [mergeDialogOpen, setMergeDialogOpen] = useState(false)
-  const [selectedVersionId, setSelectedVersionId] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<string>("list")
+  const [selectedVersionId, setSelectedVersionId] = useState<string | null>(
+    null
+  )
+  const [activeTab, setActiveTab] = useState<string>('list')
 
   const handleRestore = (versionId: string) => {
     onRestore(versionId)
@@ -96,84 +123,88 @@ export function VersionHistoryDialog({
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
-    return new Intl.DateTimeFormat("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "numeric",
-      minute: "numeric",
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
     }).format(date)
   }
 
   const getVersionChanges = (version: ProjectVersion, index: number) => {
-    if (index === versions.length - 1) return "Initial version"
+    if (index === versions.length - 1) return 'Initial version'
 
     const previousVersion = versions[index + 1]
     const changes: string[] = []
 
     // Compare basic properties
     if (version.details.name !== previousVersion.details.name) {
-      changes.push("Project name changed")
+      changes.push('Project name changed')
     }
 
     if (version.details.description !== previousVersion.details.description) {
-      changes.push("Description updated")
+      changes.push('Description updated')
     }
 
     if (version.details.type !== previousVersion.details.type) {
-      changes.push("Project type changed")
+      changes.push('Project type changed')
     }
 
     if (version.details.framework !== previousVersion.details.framework) {
-      changes.push("Framework changed")
+      changes.push('Framework changed')
     }
 
     // Compare languages
-    const addedLanguages = version.details.languages.filter((lang) => !previousVersion.details.languages.includes(lang))
+    const addedLanguages = version.details.languages.filter(
+      lang => !previousVersion.details.languages.includes(lang)
+    )
 
     const removedLanguages = previousVersion.details.languages.filter(
-      (lang) => !version.details.languages.includes(lang),
+      lang => !version.details.languages.includes(lang)
     )
 
     if (addedLanguages.length > 0) {
-      changes.push(`Added languages: ${addedLanguages.join(", ")}`)
+      changes.push(`Added languages: ${addedLanguages.join(', ')}`)
     }
 
     if (removedLanguages.length > 0) {
-      changes.push(`Removed languages: ${removedLanguages.join(", ")}`)
+      changes.push(`Removed languages: ${removedLanguages.join(', ')}`)
     }
 
     if (version.details.teamSize !== previousVersion.details.teamSize) {
-      changes.push("Team size updated")
+      changes.push('Team size updated')
     }
 
     if (version.details.goals !== previousVersion.details.goals) {
-      changes.push("Project goals updated")
+      changes.push('Project goals updated')
     }
 
-    return changes.length > 0 ? changes.join(", ") : "No detected changes"
+    return changes.length > 0 ? changes.join(', ') : 'No detected changes'
   }
 
   // Get the current version and selected version for merge
-  const currentVersion = versions.find((v) => v.versionId === currentVersionId)
-  const selectedVersion = selectedVersionId ? versions.find((v) => v.versionId === selectedVersionId) : null
+  const currentVersion = versions.find(v => v.versionId === currentVersionId)
+  const selectedVersion = selectedVersionId
+    ? versions.find(v => v.versionId === selectedVersionId)
+    : null
 
   const handleVersionSelect = (versionId: string) => {
     setSelectedVersionId(versionId)
-    setActiveTab("list") // Switch to list view to show details
+    setActiveTab('list') // Switch to list view to show details
   }
 
   // Get branch name for a version
   const getBranchName = (version: ProjectVersion) => {
-    if (!version.branchId) return "No branch"
-    const branch = branches.find((b) => b.id === version.branchId)
-    return branch ? branch.name : "Unknown branch"
+    if (!version.branchId) return 'No branch'
+    const branch = branches.find(b => b.id === version.branchId)
+    return branch ? branch.name : 'Unknown branch'
   }
 
   // Get branch color for a version
   const getBranchColor = (version: ProjectVersion) => {
     if (!version.branchId) return undefined
-    const branch = branches.find((b) => b.id === version.branchId)
+    const branch = branches.find(b => b.id === version.branchId)
     return branch?.color
   }
 
@@ -191,7 +222,9 @@ export function VersionHistoryDialog({
         <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col">
           <DialogHeader>
             <DialogTitle>Version History</DialogTitle>
-            <DialogDescription>View and manage the version history of your project.</DialogDescription>
+            <DialogDescription>
+              View and manage the version history of your project.
+            </DialogDescription>
           </DialogHeader>
 
           {versions.length === 0 ? (
@@ -200,14 +233,22 @@ export function VersionHistoryDialog({
               <p>No version history available</p>
             </div>
           ) : (
-            <Tabs defaultValue="list" value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
+            <Tabs
+              defaultValue="list"
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="flex-1 flex flex-col"
+            >
               <div className="flex justify-between items-center mb-4">
                 <TabsList>
                   <TabsTrigger value="list" className="flex items-center gap-1">
                     <List className="h-4 w-4" />
                     <span>List View</span>
                   </TabsTrigger>
-                  <TabsTrigger value="graph" className="flex items-center gap-1">
+                  <TabsTrigger
+                    value="graph"
+                    className="flex items-center gap-1"
+                  >
                     <GitBranch className="h-4 w-4" />
                     <span>Graph View</span>
                   </TabsTrigger>
@@ -236,7 +277,11 @@ export function VersionHistoryDialog({
                     onDeleteBranch={onDeleteBranch}
                     onRenameBranch={onRenameBranch}
                     trigger={
-                      <Button variant="outline" size="sm" className="flex items-center gap-1">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex items-center gap-1"
+                      >
                         <GitBranch className="h-4 w-4" />
                         <span>Manage Branches</span>
                       </Button>
@@ -249,20 +294,24 @@ export function VersionHistoryDialog({
                 <ScrollArea className="max-h-[60vh]">
                   <div className="space-y-3 pr-4">
                     {versions
-                      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+                      .sort(
+                        (a, b) =>
+                          new Date(b.timestamp).getTime() -
+                          new Date(a.timestamp).getTime()
+                      )
                       .map((version, index, sortedVersions) => (
                         <div
                           key={version.versionId}
                           className={`p-3 border rounded-md transition-colors ${
                             version.versionId === currentVersionId
-                              ? "border-primary bg-primary/5"
+                              ? 'border-primary bg-primary/5'
                               : version.versionId === selectedVersionId
-                                ? "border-blue-400 bg-blue-50/50 dark:bg-blue-900/20"
-                                : "hover:bg-muted/50"
+                                ? 'border-blue-400 bg-blue-50/50 dark:bg-blue-900/20'
+                                : 'hover:bg-muted/50'
                           }`}
                           style={{
                             borderLeftColor: getBranchColor(version),
-                            borderLeftWidth: "4px",
+                            borderLeftWidth: '4px',
                           }}
                         >
                           <div className="flex items-start justify-between">
@@ -270,7 +319,7 @@ export function VersionHistoryDialog({
                               <div className="flex items-center gap-2">
                                 <h4 className="font-medium">
                                   {version.versionId === currentVersionId
-                                    ? "Current Version"
+                                    ? 'Current Version'
                                     : `Version ${versions.length - index}`}
                                 </h4>
                                 {version.versionId === currentVersionId && (
@@ -278,7 +327,7 @@ export function VersionHistoryDialog({
                                     Current
                                   </span>
                                 )}
-                                {version.notes?.includes("Merge of") && (
+                                {version.notes?.includes('Merge of') && (
                                   <span className="inline-flex items-center rounded-full bg-purple-100 dark:bg-purple-900/30 px-2 py-1 text-xs font-medium text-purple-600 dark:text-purple-400">
                                     <GitMerge className="h-3 w-3 mr-1" />
                                     Merge
@@ -294,13 +343,19 @@ export function VersionHistoryDialog({
                               </div>
 
                               <div className="mt-2 text-sm">
-                                <div className="font-medium text-xs text-muted-foreground mb-1">Changes:</div>
-                                <p className="text-xs">{getVersionChanges(version, index)}</p>
+                                <div className="font-medium text-xs text-muted-foreground mb-1">
+                                  Changes:
+                                </div>
+                                <p className="text-xs">
+                                  {getVersionChanges(version, index)}
+                                </p>
                               </div>
 
                               {version.notes && (
                                 <div className="mt-2 text-sm">
-                                  <div className="font-medium text-xs text-muted-foreground mb-1">Notes:</div>
+                                  <div className="font-medium text-xs text-muted-foreground mb-1">
+                                    Notes:
+                                  </div>
                                   <p className="text-xs">{version.notes}</p>
                                 </div>
                               )}
@@ -312,7 +367,13 @@ export function VersionHistoryDialog({
                                   <TooltipProvider>
                                     <Tooltip>
                                       <TooltipTrigger asChild>
-                                        <Button variant="ghost" size="icon" onClick={() => onDelete(version.versionId)}>
+                                        <Button
+                                          variant="ghost"
+                                          size="icon"
+                                          onClick={() =>
+                                            onDelete(version.versionId)
+                                          }
+                                        >
                                           <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
                                         </Button>
                                       </TooltipTrigger>
@@ -328,7 +389,9 @@ export function VersionHistoryDialog({
                                         <Button
                                           variant="outline"
                                           size="icon"
-                                          onClick={() => handleRestore(version.versionId)}
+                                          onClick={() =>
+                                            handleRestore(version.versionId)
+                                          }
                                         >
                                           <RotateCcw className="h-4 w-4" />
                                         </Button>
@@ -345,7 +408,9 @@ export function VersionHistoryDialog({
                                         <Button
                                           variant="outline"
                                           size="icon"
-                                          onClick={() => handleMerge(version.versionId)}
+                                          onClick={() =>
+                                            handleMerge(version.versionId)
+                                          }
                                         >
                                           <GitMerge className="h-4 w-4" />
                                         </Button>
@@ -361,12 +426,18 @@ export function VersionHistoryDialog({
                           </div>
                           {/* Show tags for this version */}
                           {(() => {
-                            const versionTags = tags.filter((tag) => tag.versionId === version.versionId)
+                            const versionTags = tags.filter(
+                              tag => tag.versionId === version.versionId
+                            )
                             if (versionTags.length > 0) {
                               return (
                                 <div className="mt-2 flex flex-wrap gap-1">
-                                  {versionTags.map((tag) => (
-                                    <Badge key={tag.id} variant="secondary" className="text-xs">
+                                  {versionTags.map(tag => (
+                                    <Badge
+                                      key={tag.id}
+                                      variant="secondary"
+                                      className="text-xs"
+                                    >
                                       {tag.name}
                                     </Badge>
                                   ))}

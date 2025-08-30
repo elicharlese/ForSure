@@ -1,16 +1,15 @@
-"use client"
+'use client'
 
-import type React from "react"
-import { createContext, useContext, useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { supabase } from "@/lib/supabase"
+import type React from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 
 export type User = {
   id: string
   email: string
   name: string
   avatar_url?: string
-  role: "user" | "admin"
+  role: 'user' | 'admin'
   created_at: string
   bio?: string
 }
@@ -20,12 +19,21 @@ type AuthContextType = {
   isLoading: boolean
   isAuthenticated: boolean
   isDemoMode: boolean
-  login: (email: string, password: string) => Promise<{ success: boolean; message?: string }>
-  register: (email: string, name: string, password: string) => Promise<{ success: boolean; message?: string }>
+  login: (
+    email: string,
+    password: string
+  ) => Promise<{ success: boolean; message?: string }>
+  register: (
+    email: string,
+    name: string,
+    password: string
+  ) => Promise<{ success: boolean; message?: string }>
   logout: () => void
   enterDemoMode: () => void
   exitDemoMode: () => void
-  updateProfile: (data: Partial<User>) => Promise<{ success: boolean; message?: string }>
+  updateProfile: (
+    data: Partial<User>
+  ) => Promise<{ success: boolean; message?: string }>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -37,61 +45,42 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter()
 
   useEffect(() => {
-    // Check for existing session on mount
-    const getSession = async () => {
+    const token =
+      typeof window !== 'undefined'
+        ? localStorage.getItem('fs_access_token')
+        : null
+    const restore = async () => {
+      if (!token) {
+        setIsLoading(false)
+        return
+      }
       try {
-        const { data: { session } } = await supabase.auth.getSession()
-        
-        if (session?.user) {
-          // Fetch user profile
-          const response = await fetch('/api/auth/me', {
-            headers: {
-              'Authorization': `Bearer ${session.access_token}`,
-            },
-          })
-          
-          if (response.ok) {
-            const { data } = await response.json()
-            setUser(data)
-          }
+        const response = await fetch('/api/v1/auth/me', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        if (response.ok) {
+          const { data } = await response.json()
+          setUser(data)
+        } else {
+          localStorage.removeItem('fs_access_token')
+          setUser(null)
         }
-      } catch (error) {
-        console.error('Failed to restore session:', error)
+      } catch (e) {
+        console.error('Failed to restore session:', e)
+        localStorage.removeItem('fs_access_token')
       } finally {
         setIsLoading(false)
       }
     }
-
-    getSession()
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event: any, session: any) => {
-        if (event === 'SIGNED_IN' && session?.user) {
-          const response = await fetch('/api/auth/me', {
-            headers: {
-              'Authorization': `Bearer ${session.access_token}`,
-            },
-          })
-          
-          if (response.ok) {
-            const { data } = await response.json()
-            setUser(data)
-          }
-        } else if (event === 'SIGNED_OUT') {
-          setUser(null)
-        }
-        setIsLoading(false)
-      }
-    )
-
-    return () => subscription.unsubscribe()
+    restore()
   }, [])
 
   const login = async (email: string, password: string) => {
     setIsLoading(true)
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch('/api/v1/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -102,6 +91,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const result = await response.json()
 
       if (response.ok) {
+        const token = result.data?.session?.access_token
+        if (token) localStorage.setItem('fs_access_token', token)
         setUser(result.data.user)
         return { success: true }
       } else {
@@ -124,7 +115,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const register = async (email: string, name: string, password: string) => {
     setIsLoading(true)
     try {
-      const response = await fetch('/api/auth/register', {
+      const response = await fetch('/api/v1/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -135,9 +126,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const result = await response.json()
 
       if (response.ok) {
-        return { 
+        return {
           success: true,
-          message: result.message 
+          message: result.message,
         }
       } else {
         return {
@@ -158,20 +149,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession()
-      
-      if (session) {
-        await fetch('/api/auth/logout', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${session.access_token}`,
-          },
-        })
-      }
-      
-      await supabase.auth.signOut()
+      localStorage.removeItem('fs_access_token')
       setUser(null)
-      router.push("/")
+      router.push('/')
     } catch (error) {
       console.error('Logout error:', error)
     }
@@ -179,12 +159,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const enterDemoMode = () => {
     setIsDemoMode(true)
-    router.push("/app")
+    router.push('/app')
   }
 
   const exitDemoMode = () => {
     setIsDemoMode(false)
-    router.push("/")
+    router.push('/')
   }
 
   const updateProfile = async (data: Partial<User>) => {
@@ -192,17 +172,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     setIsLoading(true)
     try {
-      const { data: { session } } = await supabase.auth.getSession()
-      
-      if (!session) {
-        return { success: false, message: 'Not authenticated' }
-      }
+      const token =
+        typeof window !== 'undefined'
+          ? localStorage.getItem('fs_access_token')
+          : null
+      if (!token) return { success: false, message: 'Not authenticated' }
 
-      const response = await fetch('/api/users/profile', {
+      const response = await fetch('/api/v1/users/profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(data),
       })
@@ -252,7 +232,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext)
   if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider")
+    throw new Error('useAuth must be used within an AuthProvider')
   }
   return context
 }

@@ -1,11 +1,11 @@
-"use client"
+'use client'
 
-import React from "react"
-import { useState, useEffect, useRef } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
+import React from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Badge } from '@/components/ui/badge'
 import {
   RefreshCw,
   ExternalLink,
@@ -30,18 +30,35 @@ import {
   Play,
   Pause,
   RotateCcw,
-} from "lucide-react"
-import type { ProjectDetails } from "./project-details-form"
-import { Progress } from "@/components/ui/progress"
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+} from 'lucide-react'
+import type { ProjectDetails } from './project-details-form'
+import { Progress } from '@/components/ui/progress'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 
 // Types for console logs
-type LogLevel = "info" | "warn" | "error" | "debug"
+type LogLevel = 'info' | 'warn' | 'error' | 'debug'
 
 interface ConsoleLog {
   id: string
@@ -54,8 +71,20 @@ interface ConsoleLog {
 }
 
 // Types for network requests
-type RequestMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "OPTIONS" | "HEAD"
-type StatusCategory = "informational" | "success" | "redirect" | "clientError" | "serverError"
+type RequestMethod =
+  | 'GET'
+  | 'POST'
+  | 'PUT'
+  | 'DELETE'
+  | 'PATCH'
+  | 'OPTIONS'
+  | 'HEAD'
+type StatusCategory =
+  | 'informational'
+  | 'success'
+  | 'redirect'
+  | 'clientError'
+  | 'serverError'
 
 interface NetworkRequest {
   id: string
@@ -93,7 +122,7 @@ interface PerformanceMetric {
   name: string
   value: number
   unit: string
-  category: "network" | "rendering" | "memory" | "cpu" | "custom"
+  category: 'network' | 'rendering' | 'memory' | 'cpu' | 'custom'
 }
 
 interface ResourceUsage {
@@ -108,11 +137,11 @@ interface ResourceUsage {
 }
 
 function getStatusCategory(status: number): StatusCategory {
-  if (status >= 100 && status < 200) return "informational"
-  if (status >= 200 && status < 300) return "success"
-  if (status >= 300 && status < 400) return "redirect"
-  if (status >= 400 && status < 500) return "clientError"
-  return "serverError"
+  if (status >= 100 && status < 200) return 'informational'
+  if (status >= 200 && status < 300) return 'success'
+  if (status >= 300 && status < 400) return 'redirect'
+  if (status >= 400 && status < 500) return 'clientError'
+  return 'serverError'
 }
 
 interface PortViewerProps {
@@ -120,15 +149,17 @@ interface PortViewerProps {
 }
 
 export function PortViewer({ projectDetails }: PortViewerProps) {
-  const [url, setUrl] = useState("http://localhost:3000")
+  const [url, setUrl] = useState('http://localhost:3000')
   const [isLoading, setIsLoading] = useState(false)
   const [isConnected, setIsConnected] = useState(false)
-  const [activeTab, setActiveTab] = useState("preview")
+  const [activeTab, setActiveTab] = useState('preview')
   const [consoleLogs, setConsoleLogs] = useState<ConsoleLog[]>([])
   const [networkRequests, setNetworkRequests] = useState<NetworkRequest[]>([])
-  const [consoleFilter, setConsoleFilter] = useState<LogLevel | "all">("all")
-  const [networkFilter, setNetworkFilter] = useState<StatusCategory | "all">("all")
-  const [searchTerm, setSearchTerm] = useState("")
+  const [consoleFilter, setConsoleFilter] = useState<LogLevel | 'all'>('all')
+  const [networkFilter, setNetworkFilter] = useState<StatusCategory | 'all'>(
+    'all'
+  )
+  const [searchTerm, setSearchTerm] = useState('')
   const [isConsoleFilterOpen, setIsConsoleFilterOpen] = useState(false)
   const [isNetworkFilterOpen, setIsNetworkFilterOpen] = useState(false)
   const [autoScroll, setAutoScroll] = useState(true)
@@ -136,13 +167,17 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
   const [isRecording, setIsRecording] = useState(false)
   const [recordedLogs, setRecordedLogs] = useState<ConsoleLog[]>([])
   const [recordedRequests, setRecordedRequests] = useState<NetworkRequest[]>([])
-  const [recordingStartTime, setRecordingStartTime] = useState<Date | null>(null)
-  const [performanceMetrics, setPerformanceMetrics] = useState<PerformanceMetric[]>([])
+  const [recordingStartTime, setRecordingStartTime] = useState<Date | null>(
+    null
+  )
+  const [performanceMetrics, setPerformanceMetrics] = useState<
+    PerformanceMetric[]
+  >([])
   const [resourceUsage, setResourceUsage] = useState<ResourceUsage[]>([])
   const [showPerformancePanel, setShowPerformancePanel] = useState(false)
-  const [connectionStatus, setConnectionStatus] = useState<"disconnected" | "connecting" | "connected" | "error">(
-    "disconnected",
-  )
+  const [connectionStatus, setConnectionStatus] = useState<
+    'disconnected' | 'connecting' | 'connected' | 'error'
+  >('disconnected')
   const [connectionError, setConnectionError] = useState<string | null>(null)
   const [refreshInterval, setRefreshInterval] = useState<number>(5000)
   const [isAutomaticRefresh, setIsAutomaticRefresh] = useState(true)
@@ -161,25 +196,27 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
 
   // Auto-scroll effect
   useEffect(() => {
-    if (autoScroll && activeTab === "console" && consoleContainerRef.current) {
-      consoleContainerRef.current.scrollTop = consoleContainerRef.current.scrollHeight
+    if (autoScroll && activeTab === 'console' && consoleContainerRef.current) {
+      consoleContainerRef.current.scrollTop =
+        consoleContainerRef.current.scrollHeight
     }
-    if (autoScroll && activeTab === "network" && networkContainerRef.current) {
-      networkContainerRef.current.scrollTop = networkContainerRef.current.scrollHeight
+    if (autoScroll && activeTab === 'network' && networkContainerRef.current) {
+      networkContainerRef.current.scrollTop =
+        networkContainerRef.current.scrollHeight
     }
   }, [consoleLogs, networkRequests, activeTab, autoScroll])
 
   // Fullscreen effect
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isFullscreen) {
+      if (e.key === 'Escape' && isFullscreen) {
         setIsFullscreen(false)
       }
     }
 
-    document.addEventListener("keydown", handleEscKey)
+    document.addEventListener('keydown', handleEscKey)
     return () => {
-      document.removeEventListener("keydown", handleEscKey)
+      document.removeEventListener('keydown', handleEscKey)
     }
   }, [isFullscreen])
 
@@ -197,8 +234,11 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
   // Update recorded data when recording
   useEffect(() => {
     if (isRecording) {
-      setRecordedLogs((prev) => [...prev, ...consoleLogs.slice(prev.length)])
-      setRecordedRequests((prev) => [...prev, ...networkRequests.slice(prev.length)])
+      setRecordedLogs(prev => [...prev, ...consoleLogs.slice(prev.length)])
+      setRecordedRequests(prev => [
+        ...prev,
+        ...networkRequests.slice(prev.length),
+      ])
     }
   }, [consoleLogs, networkRequests, isRecording])
 
@@ -238,7 +278,7 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
 
   const handleConnect = () => {
     setIsLoading(true)
-    setConnectionStatus("connecting")
+    setConnectionStatus('connecting')
     setConnectionError(null)
 
     // Simulate connection attempt with potential failure
@@ -248,21 +288,23 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
       if (success) {
         setIsLoading(false)
         setIsConnected(true)
-        setConnectionStatus("connected")
+        setConnectionStatus('connected')
         generateMockData(true)
         startResourceMonitoring()
       } else {
         setIsLoading(false)
         setIsConnected(false)
-        setConnectionStatus("error")
-        setConnectionError("Failed to connect to server. Please check if the server is running and the URL is correct.")
+        setConnectionStatus('error')
+        setConnectionError(
+          'Failed to connect to server. Please check if the server is running and the URL is correct.'
+        )
       }
     }, 1500)
   }
 
   const handleDisconnect = () => {
     setIsConnected(false)
-    setConnectionStatus("disconnected")
+    setConnectionStatus('disconnected')
 
     // Clear intervals
     if (refreshIntervalRef.current) {
@@ -311,44 +353,105 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
       // Generate new values with some correlation to previous values
       const newUsage: ResourceUsage = {
         timestamp: new Date(),
-        cpu: Math.max(5, Math.min(95, lastUsage.cpu + (Math.random() * 10 - 5))), // +/- 5%
-        memory: Math.max(50, Math.min(500, lastUsage.memory + (Math.random() * 20 - 10))), // +/- 10 MB
-        fps: Math.max(30, Math.min(60, lastUsage.fps + (Math.random() * 6 - 3))), // +/- 3 fps
+        cpu: Math.max(
+          5,
+          Math.min(95, lastUsage.cpu + (Math.random() * 10 - 5))
+        ), // +/- 5%
+        memory: Math.max(
+          50,
+          Math.min(500, lastUsage.memory + (Math.random() * 20 - 10))
+        ), // +/- 10 MB
+        fps: Math.max(
+          30,
+          Math.min(60, lastUsage.fps + (Math.random() * 6 - 3))
+        ), // +/- 3 fps
         networkIn: Math.max(0, lastUsage.networkIn + (Math.random() * 20 - 5)), // more likely to increase
-        networkOut: Math.max(0, lastUsage.networkOut + (Math.random() * 15 - 5)), // more likely to increase
+        networkOut: Math.max(
+          0,
+          lastUsage.networkOut + (Math.random() * 15 - 5)
+        ), // more likely to increase
         domNodes: lastUsage.domNodes + (Math.random() > 0.7 ? 1 : 0), // occasionally increase
-        jsHeapSize: Math.max(30, Math.min(300, lastUsage.jsHeapSize + (Math.random() * 10 - 4))), // +/- 4 MB
+        jsHeapSize: Math.max(
+          30,
+          Math.min(300, lastUsage.jsHeapSize + (Math.random() * 10 - 4))
+        ), // +/- 4 MB
       }
 
-      setResourceUsage((prev) => {
+      setResourceUsage(prev => {
         const updated = [...prev, newUsage]
         // Keep only the last N data points
-        return updated.length > resourceMetricsHistory ? updated.slice(-resourceMetricsHistory) : updated
+        return updated.length > resourceMetricsHistory
+          ? updated.slice(-resourceMetricsHistory)
+          : updated
       })
 
       // Add some performance metrics occasionally
       if (Math.random() > 0.8) {
         const metricTypes = [
-          { name: "First Contentful Paint", category: "rendering", min: 100, max: 500, unit: "ms" },
-          { name: "DOM Complete", category: "rendering", min: 300, max: 1200, unit: "ms" },
-          { name: "JS Heap Size", category: "memory", min: 30, max: 200, unit: "MB" },
-          { name: "DOM Nodes", category: "rendering", min: 1000, max: 2000, unit: "count" },
-          { name: "Script Evaluation", category: "cpu", min: 50, max: 300, unit: "ms" },
-          { name: "Layout Time", category: "rendering", min: 10, max: 100, unit: "ms" },
-          { name: "Resource Load Time", category: "network", min: 200, max: 800, unit: "ms" },
+          {
+            name: 'First Contentful Paint',
+            category: 'rendering',
+            min: 100,
+            max: 500,
+            unit: 'ms',
+          },
+          {
+            name: 'DOM Complete',
+            category: 'rendering',
+            min: 300,
+            max: 1200,
+            unit: 'ms',
+          },
+          {
+            name: 'JS Heap Size',
+            category: 'memory',
+            min: 30,
+            max: 200,
+            unit: 'MB',
+          },
+          {
+            name: 'DOM Nodes',
+            category: 'rendering',
+            min: 1000,
+            max: 2000,
+            unit: 'count',
+          },
+          {
+            name: 'Script Evaluation',
+            category: 'cpu',
+            min: 50,
+            max: 300,
+            unit: 'ms',
+          },
+          {
+            name: 'Layout Time',
+            category: 'rendering',
+            min: 10,
+            max: 100,
+            unit: 'ms',
+          },
+          {
+            name: 'Resource Load Time',
+            category: 'network',
+            min: 200,
+            max: 800,
+            unit: 'ms',
+          },
         ]
 
-        const metricType = metricTypes[Math.floor(Math.random() * metricTypes.length)]
+        const metricType =
+          metricTypes[Math.floor(Math.random() * metricTypes.length)]
         const newMetric: PerformanceMetric = {
           id: `metric-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           timestamp: new Date(),
           name: metricType.name,
-          value: metricType.min + Math.random() * (metricType.max - metricType.min),
+          value:
+            metricType.min + Math.random() * (metricType.max - metricType.min),
           unit: metricType.unit,
           category: metricType.category as any,
         }
 
-        setPerformanceMetrics((prev) => [...prev, newMetric])
+        setPerformanceMetrics(prev => [...prev, newMetric])
       }
     }, 1000)
   }
@@ -358,88 +461,89 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
     if (isInitial) {
       const mockLogs: ConsoleLog[] = [
         {
-          id: "log1",
+          id: 'log1',
           timestamp: new Date(Date.now() - 5000),
-          level: "info",
-          message: "Application started",
-          source: "main.js:12",
+          level: 'info',
+          message: 'Application started',
+          source: 'main.js:12',
         },
         {
-          id: "log2",
+          id: 'log2',
           timestamp: new Date(Date.now() - 4500),
-          level: "debug",
-          message: "Debug: Loading configuration",
-          source: "config.js:45",
+          level: 'debug',
+          message: 'Debug: Loading configuration',
+          source: 'config.js:45',
         },
         {
-          id: "log3",
+          id: 'log3',
           timestamp: new Date(Date.now() - 4000),
-          level: "info",
-          message: "User authentication successful",
-          source: "auth.js:78",
+          level: 'info',
+          message: 'User authentication successful',
+          source: 'auth.js:78',
         },
         {
-          id: "log4",
+          id: 'log4',
           timestamp: new Date(Date.now() - 3500),
-          level: "warn",
-          message: "Deprecated function used: createUser()",
-          source: "users.js:23",
+          level: 'warn',
+          message: 'Deprecated function used: createUser()',
+          source: 'users.js:23',
         },
         {
-          id: "log5",
+          id: 'log5',
           timestamp: new Date(Date.now() - 3000),
-          level: "error",
-          message: "Failed to load resource: the server responded with a status of 404 (Not Found)",
-          source: "api.js:56",
+          level: 'error',
+          message:
+            'Failed to load resource: the server responded with a status of 404 (Not Found)',
+          source: 'api.js:56',
           stack:
-            "Error: Failed to load resource\n    at fetchData (api.js:56)\n    at loadUserData (users.js:34)\n    at Component (App.js:12)",
+            'Error: Failed to load resource\n    at fetchData (api.js:56)\n    at loadUserData (users.js:34)\n    at Component (App.js:12)',
         },
         {
-          id: "log6",
+          id: 'log6',
           timestamp: new Date(Date.now() - 2500),
-          level: "info",
-          message: "Component mounted",
-          source: "App.js:89",
+          level: 'info',
+          message: 'Component mounted',
+          source: 'App.js:89',
         },
         {
-          id: "log7",
+          id: 'log7',
           timestamp: new Date(Date.now() - 2000),
-          level: "debug",
+          level: 'debug',
           message: 'Props updated: {"user":{"id":1,"name":"John"}}',
-          source: "UserProfile.js:45",
+          source: 'UserProfile.js:45',
         },
         {
-          id: "log8",
+          id: 'log8',
           timestamp: new Date(Date.now() - 1500),
-          level: "warn",
-          message: "Memory usage high: 85%",
-          source: "performance.js:12",
+          level: 'warn',
+          message: 'Memory usage high: 85%',
+          source: 'performance.js:12',
         },
       ]
 
       // Generate mock network requests
       const mockRequests: NetworkRequest[] = [
         {
-          id: "req1",
-          url: "http://localhost:3000/api/users",
-          method: "GET",
+          id: 'req1',
+          url: 'http://localhost:3000/api/users',
+          method: 'GET',
           status: 200,
-          statusText: "OK",
+          statusText: 'OK',
           time: 120,
           size: 1240,
-          type: "fetch",
-          initiator: "app.js:45",
+          type: 'fetch',
+          initiator: 'app.js:45',
           timestamp: new Date(Date.now() - 4800),
           request: {
             headers: {
-              "Content-Type": "application/json",
-              Authorization: "Bearer token123",
+              'Content-Type': 'application/json',
+              Authorization: 'Bearer token123',
             },
           },
           response: {
             headers: {
-              "Content-Type": "application/json",
-              "Cache-Control": "max-age=3600",
+              'Content-Type': 'application/json',
+              'Cache-Control': 'max-age=3600',
             },
             body: '{"users":[{"id":1,"name":"John"},{"id":2,"name":"Jane"}]}',
           },
@@ -453,25 +557,25 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
           },
         },
         {
-          id: "req2",
-          url: "http://localhost:3000/api/auth/login",
-          method: "POST",
+          id: 'req2',
+          url: 'http://localhost:3000/api/auth/login',
+          method: 'POST',
           status: 200,
-          statusText: "OK",
+          statusText: 'OK',
           time: 350,
           size: 520,
-          type: "xhr",
-          initiator: "auth.js:23",
+          type: 'xhr',
+          initiator: 'auth.js:23',
           timestamp: new Date(Date.now() - 4200),
           request: {
             headers: {
-              "Content-Type": "application/json",
+              'Content-Type': 'application/json',
             },
             body: '{"username":"user","password":"****"}',
           },
           response: {
             headers: {
-              "Content-Type": "application/json",
+              'Content-Type': 'application/json',
             },
             body: '{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."}',
           },
@@ -485,26 +589,26 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
           },
         },
         {
-          id: "req3",
-          url: "http://localhost:3000/api/products",
-          method: "GET",
+          id: 'req3',
+          url: 'http://localhost:3000/api/products',
+          method: 'GET',
           status: 200,
-          statusText: "OK",
+          statusText: 'OK',
           time: 180,
           size: 2450,
-          type: "fetch",
-          initiator: "products.js:12",
+          type: 'fetch',
+          initiator: 'products.js:12',
           timestamp: new Date(Date.now() - 3600),
           request: {
             headers: {
-              "Content-Type": "application/json",
-              Authorization: "Bearer token123",
+              'Content-Type': 'application/json',
+              Authorization: 'Bearer token123',
             },
           },
           response: {
             headers: {
-              "Content-Type": "application/json",
-              "Cache-Control": "max-age=3600",
+              'Content-Type': 'application/json',
+              'Cache-Control': 'max-age=3600',
             },
             body: '{"products":[{"id":1,"name":"Product 1"},{"id":2,"name":"Product 2"}]}',
           },
@@ -518,24 +622,24 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
           },
         },
         {
-          id: "req4",
-          url: "http://localhost:3000/api/images/logo.png",
-          method: "GET",
+          id: 'req4',
+          url: 'http://localhost:3000/api/images/logo.png',
+          method: 'GET',
           status: 404,
-          statusText: "Not Found",
+          statusText: 'Not Found',
           time: 90,
           size: 0,
-          type: "img",
-          initiator: "index.html:34",
+          type: 'img',
+          initiator: 'index.html:34',
           timestamp: new Date(Date.now() - 3000),
           request: {
             headers: {},
           },
           response: {
             headers: {
-              "Content-Type": "text/plain",
+              'Content-Type': 'text/plain',
             },
-            body: "Not Found",
+            body: 'Not Found',
           },
           timing: {
             dns: 5,
@@ -547,26 +651,26 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
           },
         },
         {
-          id: "req5",
-          url: "http://localhost:3000/api/orders",
-          method: "POST",
+          id: 'req5',
+          url: 'http://localhost:3000/api/orders',
+          method: 'POST',
           status: 201,
-          statusText: "Created",
+          statusText: 'Created',
           time: 420,
           size: 680,
-          type: "fetch",
-          initiator: "checkout.js:78",
+          type: 'fetch',
+          initiator: 'checkout.js:78',
           timestamp: new Date(Date.now() - 2400),
           request: {
             headers: {
-              "Content-Type": "application/json",
-              Authorization: "Bearer token123",
+              'Content-Type': 'application/json',
+              Authorization: 'Bearer token123',
             },
             body: '{"items":[{"id":1,"quantity":2},{"id":3,"quantity":1}]}',
           },
           response: {
             headers: {
-              "Content-Type": "application/json",
+              'Content-Type': 'application/json',
             },
             body: '{"orderId":"ORD-12345","status":"pending"}',
           },
@@ -580,25 +684,25 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
           },
         },
         {
-          id: "req6",
-          url: "http://localhost:3000/api/invalid-endpoint",
-          method: "GET",
+          id: 'req6',
+          url: 'http://localhost:3000/api/invalid-endpoint',
+          method: 'GET',
           status: 500,
-          statusText: "Internal Server Error",
+          statusText: 'Internal Server Error',
           time: 150,
           size: 320,
-          type: "fetch",
-          initiator: "app.js:102",
+          type: 'fetch',
+          initiator: 'app.js:102',
           timestamp: new Date(Date.now() - 1800),
           request: {
             headers: {
-              "Content-Type": "application/json",
-              Authorization: "Bearer token123",
+              'Content-Type': 'application/json',
+              Authorization: 'Bearer token123',
             },
           },
           response: {
             headers: {
-              "Content-Type": "application/json",
+              'Content-Type': 'application/json',
             },
             body: '{"error":"Internal server error","message":"An unexpected error occurred"}',
           },
@@ -616,44 +720,44 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
       // Initialize performance metrics
       const initialMetrics: PerformanceMetric[] = [
         {
-          id: "metric1",
+          id: 'metric1',
           timestamp: new Date(Date.now() - 5000),
-          name: "First Contentful Paint",
+          name: 'First Contentful Paint',
           value: 245,
-          unit: "ms",
-          category: "rendering",
+          unit: 'ms',
+          category: 'rendering',
         },
         {
-          id: "metric2",
+          id: 'metric2',
           timestamp: new Date(Date.now() - 4800),
-          name: "DOM Complete",
+          name: 'DOM Complete',
           value: 780,
-          unit: "ms",
-          category: "rendering",
+          unit: 'ms',
+          category: 'rendering',
         },
         {
-          id: "metric3",
+          id: 'metric3',
           timestamp: new Date(Date.now() - 4600),
-          name: "Total Blocking Time",
+          name: 'Total Blocking Time',
           value: 120,
-          unit: "ms",
-          category: "cpu",
+          unit: 'ms',
+          category: 'cpu',
         },
         {
-          id: "metric4",
+          id: 'metric4',
           timestamp: new Date(Date.now() - 4400),
-          name: "Largest Contentful Paint",
+          name: 'Largest Contentful Paint',
           value: 1250,
-          unit: "ms",
-          category: "rendering",
+          unit: 'ms',
+          category: 'rendering',
         },
         {
-          id: "metric5",
+          id: 'metric5',
           timestamp: new Date(Date.now() - 4200),
-          name: "Cumulative Layout Shift",
+          name: 'Cumulative Layout Shift',
           value: 0.05,
-          unit: "score",
-          category: "rendering",
+          unit: 'score',
+          category: 'rendering',
         },
       ]
 
@@ -665,15 +769,21 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
       const newLog: ConsoleLog = {
         id: `log${Date.now()}`,
         timestamp: new Date(),
-        level: ["info", "warn", "error", "debug"][Math.floor(Math.random() * 4)] as LogLevel,
+        level: ['info', 'warn', 'error', 'debug'][
+          Math.floor(Math.random() * 4)
+        ] as LogLevel,
         message: `New log message at ${new Date().toLocaleTimeString()}`,
-        source: "live-update.js:34",
+        source: 'live-update.js:34',
       }
 
       // Check if we should group similar logs
       if (groupSimilarLogs) {
         const lastLog = consoleLogs[0]
-        if (lastLog && lastLog.message === newLog.message && lastLog.level === newLog.level) {
+        if (
+          lastLog &&
+          lastLog.message === newLog.message &&
+          lastLog.level === newLog.level
+        ) {
           // Update the repeated count instead of adding a new log
           const updatedLogs = [...consoleLogs]
           updatedLogs[0] = {
@@ -682,15 +792,16 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
           }
           setConsoleLogs(updatedLogs)
         } else {
-          setConsoleLogs((prev) => [newLog, ...prev])
+          setConsoleLogs(prev => [newLog, ...prev])
         }
       } else {
-        setConsoleLogs((prev) => [newLog, ...prev])
+        setConsoleLogs(prev => [newLog, ...prev])
       }
 
-      const methods: RequestMethod[] = ["GET", "POST", "PUT", "DELETE"]
+      const methods: RequestMethod[] = ['GET', 'POST', 'PUT', 'DELETE']
       const statuses = [200, 201, 204, 400, 401, 404, 500]
-      const selectedStatus = statuses[Math.floor(Math.random() * statuses.length)]
+      const selectedStatus =
+        statuses[Math.floor(Math.random() * statuses.length)]
       const responseTime = Math.floor(Math.random() * 500)
       const responseSize = Math.floor(Math.random() * 5000)
 
@@ -701,31 +812,31 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
         status: selectedStatus,
         statusText:
           selectedStatus === 200
-            ? "OK"
+            ? 'OK'
             : selectedStatus === 201
-              ? "Created"
+              ? 'Created'
               : selectedStatus === 204
-                ? "No Content"
+                ? 'No Content'
                 : selectedStatus === 400
-                  ? "Bad Request"
+                  ? 'Bad Request'
                   : selectedStatus === 401
-                    ? "Unauthorized"
+                    ? 'Unauthorized'
                     : selectedStatus === 404
-                      ? "Not Found"
-                      : "Internal Server Error",
+                      ? 'Not Found'
+                      : 'Internal Server Error',
         time: responseTime,
         size: responseSize,
-        type: "fetch",
-        initiator: "app.js:45",
+        type: 'fetch',
+        initiator: 'app.js:45',
         timestamp: new Date(),
         request: {
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
         },
         response: {
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
         },
         timing: {
@@ -738,19 +849,28 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
         },
       }
 
-      setNetworkRequests((prev) => [newRequest, ...prev])
+      setNetworkRequests(prev => [newRequest, ...prev])
     }
   }
 
-  const filteredLogs = consoleLogs.filter((log) => {
-    if (consoleFilter !== "all" && log.level !== consoleFilter) return false
-    if (searchTerm && !log.message.toLowerCase().includes(searchTerm.toLowerCase())) return false
+  const filteredLogs = consoleLogs.filter(log => {
+    if (consoleFilter !== 'all' && log.level !== consoleFilter) return false
+    if (
+      searchTerm &&
+      !log.message.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+      return false
     return true
   })
 
-  const filteredRequests = networkRequests.filter((req) => {
-    if (networkFilter !== "all" && getStatusCategory(req.status) !== networkFilter) return false
-    if (searchTerm && !req.url.toLowerCase().includes(searchTerm.toLowerCase())) return false
+  const filteredRequests = networkRequests.filter(req => {
+    if (
+      networkFilter !== 'all' &&
+      getStatusCategory(req.status) !== networkFilter
+    )
+      return false
+    if (searchTerm && !req.url.toLowerCase().includes(searchTerm.toLowerCase()))
+      return false
     return true
   })
 
@@ -764,34 +884,34 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
 
   const getLogBadgeColor = (level: LogLevel) => {
     switch (level) {
-      case "error":
-        return "bg-red-500 hover:bg-red-600"
-      case "warn":
-        return "bg-yellow-500 hover:bg-yellow-600"
-      case "info":
-        return "bg-blue-500 hover:bg-blue-600"
-      case "debug":
-        return "bg-gray-500 hover:bg-gray-600"
+      case 'error':
+        return 'bg-red-500 hover:bg-red-600'
+      case 'warn':
+        return 'bg-yellow-500 hover:bg-yellow-600'
+      case 'info':
+        return 'bg-blue-500 hover:bg-blue-600'
+      case 'debug':
+        return 'bg-gray-500 hover:bg-gray-600'
       default:
-        return "bg-gray-500 hover:bg-gray-600"
+        return 'bg-gray-500 hover:bg-gray-600'
     }
   }
 
   const getStatusBadgeColor = (status: number) => {
     const category = getStatusCategory(status)
     switch (category) {
-      case "informational":
-        return "bg-blue-500 hover:bg-blue-600"
-      case "success":
-        return "bg-green-500 hover:bg-green-600"
-      case "redirect":
-        return "bg-yellow-500 hover:bg-yellow-600"
-      case "clientError":
-        return "bg-orange-500 hover:bg-orange-600"
-      case "serverError":
-        return "bg-red-500 hover:bg-red-600"
+      case 'informational':
+        return 'bg-blue-500 hover:bg-blue-600'
+      case 'success':
+        return 'bg-green-500 hover:bg-green-600'
+      case 'redirect':
+        return 'bg-yellow-500 hover:bg-yellow-600'
+      case 'clientError':
+        return 'bg-orange-500 hover:bg-orange-600'
+      case 'serverError':
+        return 'bg-red-500 hover:bg-red-600'
       default:
-        return "bg-gray-500 hover:bg-gray-600"
+        return 'bg-gray-500 hover:bg-gray-600'
     }
   }
 
@@ -822,11 +942,13 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
     }
 
     // Create a blob and download it
-    const blob = new Blob([JSON.stringify(recordingData, null, 2)], { type: "application/json" })
+    const blob = new Blob([JSON.stringify(recordingData, null, 2)], {
+      type: 'application/json',
+    })
     const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
+    const a = document.createElement('a')
     a.href = url
-    a.download = `port-viewer-recording-${new Date().toISOString().replace(/:/g, "-")}.json`
+    a.download = `port-viewer-recording-${new Date().toISOString().replace(/:/g, '-')}.json`
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
@@ -839,15 +961,15 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
     // Create HAR format
     const harData = {
       log: {
-        version: "1.2",
+        version: '1.2',
         creator: {
-          name: "ForSure Port Viewer",
-          version: "1.0",
+          name: 'ForSure Port Viewer',
+          version: '1.0',
         },
         pages: [
           {
             startedDateTime: new Date().toISOString(),
-            id: "page_1",
+            id: 'page_1',
             title: url,
             pageTimings: {
               onContentLoad: -1,
@@ -855,19 +977,22 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
             },
           },
         ],
-        entries: networkRequests.map((req) => ({
+        entries: networkRequests.map(req => ({
           startedDateTime: req.timestamp.toISOString(),
           time: req.time,
           request: {
             method: req.method,
             url: req.url,
-            httpVersion: "HTTP/1.1",
+            httpVersion: 'HTTP/1.1',
             cookies: [],
-            headers: Object.entries(req.request.headers).map(([name, value]) => ({ name, value })),
+            headers: Object.entries(req.request.headers).map(
+              ([name, value]) => ({ name, value })
+            ),
             queryString: [],
             postData: req.request.body
               ? {
-                  mimeType: req.request.headers["Content-Type"] || "application/json",
+                  mimeType:
+                    req.request.headers['Content-Type'] || 'application/json',
                   text: req.request.body,
                 }
               : undefined,
@@ -877,15 +1002,18 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
           response: {
             status: req.status,
             statusText: req.statusText,
-            httpVersion: "HTTP/1.1",
+            httpVersion: 'HTTP/1.1',
             cookies: [],
-            headers: Object.entries(req.response.headers).map(([name, value]) => ({ name, value })),
+            headers: Object.entries(req.response.headers).map(
+              ([name, value]) => ({ name, value })
+            ),
             content: {
               size: req.size,
-              mimeType: req.response.headers["Content-Type"] || "application/json",
-              text: req.response.body || "",
+              mimeType:
+                req.response.headers['Content-Type'] || 'application/json',
+              text: req.response.body || '',
             },
-            redirectURL: "",
+            redirectURL: '',
             headersSize: -1,
             bodySize: req.size,
           },
@@ -899,18 +1027,20 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
             wait: -1,
             receive: -1,
           },
-          serverIPAddress: "127.0.0.1",
-          connection: "123456",
+          serverIPAddress: '127.0.0.1',
+          connection: '123456',
         })),
       },
     }
 
     // Create a blob and download it
-    const blob = new Blob([JSON.stringify(harData, null, 2)], { type: "application/json" })
+    const blob = new Blob([JSON.stringify(harData, null, 2)], {
+      type: 'application/json',
+    })
     const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
+    const a = document.createElement('a')
     a.href = url
-    a.download = `network-requests-${new Date().toISOString().replace(/:/g, "-")}.har`
+    a.download = `network-requests-${new Date().toISOString().replace(/:/g, '-')}.har`
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
@@ -921,13 +1051,18 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
     if (!showPerformancePanel) return null
 
     // Get the latest resource usage
-    const latestUsage = resourceUsage.length > 0 ? resourceUsage[resourceUsage.length - 1] : null
+    const latestUsage =
+      resourceUsage.length > 0 ? resourceUsage[resourceUsage.length - 1] : null
 
     return (
       <div className="border-t border-gray-200 dark:border-gray-800 p-4">
         <div className="flex justify-between items-center mb-4">
           <h3 className="font-medium">Performance Metrics</h3>
-          <Button variant="outline" size="sm" onClick={() => setShowPerformancePanel(false)}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowPerformancePanel(false)}
+          >
             <Minimize2 className="h-3.5 w-3.5 mr-1" />
             Hide
           </Button>
@@ -940,7 +1075,9 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="text-sm text-muted-foreground">CPU Usage</p>
-                    <h4 className="text-2xl font-bold">{latestUsage.cpu.toFixed(1)}%</h4>
+                    <h4 className="text-2xl font-bold">
+                      {latestUsage.cpu.toFixed(1)}%
+                    </h4>
                   </div>
                   <Cpu className="h-5 w-5 text-blue-500" />
                 </div>
@@ -953,11 +1090,16 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="text-sm text-muted-foreground">Memory</p>
-                    <h4 className="text-2xl font-bold">{latestUsage.memory.toFixed(1)} MB</h4>
+                    <h4 className="text-2xl font-bold">
+                      {latestUsage.memory.toFixed(1)} MB
+                    </h4>
                   </div>
                   <HardDrive className="h-5 w-5 text-green-500" />
                 </div>
-                <Progress value={(latestUsage.memory / 500) * 100} className="mt-2" />
+                <Progress
+                  value={(latestUsage.memory / 500) * 100}
+                  className="mt-2"
+                />
               </CardContent>
             </Card>
 
@@ -966,11 +1108,16 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="text-sm text-muted-foreground">FPS</p>
-                    <h4 className="text-2xl font-bold">{latestUsage.fps.toFixed(1)}</h4>
+                    <h4 className="text-2xl font-bold">
+                      {latestUsage.fps.toFixed(1)}
+                    </h4>
                   </div>
                   <Activity className="h-5 w-5 text-purple-500" />
                 </div>
-                <Progress value={(latestUsage.fps / 60) * 100} className="mt-2" />
+                <Progress
+                  value={(latestUsage.fps / 60) * 100}
+                  className="mt-2"
+                />
               </CardContent>
             </Card>
 
@@ -980,14 +1127,21 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                   <div>
                     <p className="text-sm text-muted-foreground">Network</p>
                     <h4 className="text-2xl font-bold">
-                      {(latestUsage.networkIn + latestUsage.networkOut).toFixed(1)} KB/s
+                      {(latestUsage.networkIn + latestUsage.networkOut).toFixed(
+                        1
+                      )}{' '}
+                      KB/s
                     </h4>
                   </div>
                   <Zap className="h-5 w-5 text-yellow-500" />
                 </div>
                 <div className="flex gap-1 mt-2 text-xs">
-                  <span className="text-green-500">↓ {latestUsage.networkIn.toFixed(1)}</span>
-                  <span className="text-red-500">↑ {latestUsage.networkOut.toFixed(1)}</span>
+                  <span className="text-green-500">
+                    ↓ {latestUsage.networkIn.toFixed(1)}
+                  </span>
+                  <span className="text-red-500">
+                    ↑ {latestUsage.networkOut.toFixed(1)}
+                  </span>
                 </div>
               </CardContent>
             </Card>
@@ -997,7 +1151,9 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Card>
             <CardHeader className="p-4 pb-2">
-              <CardTitle className="text-sm font-medium">Resource Usage Over Time</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Resource Usage Over Time
+              </CardTitle>
             </CardHeader>
             <CardContent className="p-4 pt-0">
               <div className="h-[200px] flex items-end">
@@ -1005,7 +1161,9 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                   <div
                     key={index}
                     className="flex-1 flex flex-col justify-end items-center h-full"
-                    style={{ minWidth: `${100 / Math.min(resourceUsage.length, 30)}%` }}
+                    style={{
+                      minWidth: `${100 / Math.min(resourceUsage.length, 30)}%`,
+                    }}
                   >
                     <div
                       className="w-full bg-blue-500 mx-px rounded-t"
@@ -1024,15 +1182,20 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
 
           <Card>
             <CardHeader className="p-4 pb-2">
-              <CardTitle className="text-sm font-medium">Recent Performance Metrics</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Recent Performance Metrics
+              </CardTitle>
             </CardHeader>
             <CardContent className="p-4 pt-0">
               <div className="space-y-2 max-h-[200px] overflow-auto">
                 {performanceMetrics
                   .slice(-5)
                   .reverse()
-                  .map((metric) => (
-                    <div key={metric.id} className="flex justify-between items-center p-2 bg-muted/50 rounded">
+                  .map(metric => (
+                    <div
+                      key={metric.id}
+                      className="flex justify-between items-center p-2 bg-muted/50 rounded"
+                    >
                       <div>
                         <p className="text-sm font-medium">{metric.name}</p>
                         <p className="text-xs text-muted-foreground">
@@ -1041,13 +1204,13 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                       </div>
                       <Badge
                         variant={
-                          metric.category === "rendering"
-                            ? "default"
-                            : metric.category === "network"
-                              ? "secondary"
-                              : metric.category === "cpu"
-                                ? "destructive"
-                                : "outline"
+                          metric.category === 'rendering'
+                            ? 'default'
+                            : metric.category === 'network'
+                              ? 'secondary'
+                              : metric.category === 'cpu'
+                                ? 'destructive'
+                                : 'outline'
                         }
                       >
                         {metric.value.toFixed(2)} {metric.unit}
@@ -1064,7 +1227,7 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
 
   const renderConnectionStatus = () => {
     switch (connectionStatus) {
-      case "connected":
+      case 'connected':
         return (
           <Badge
             variant="outline"
@@ -1074,7 +1237,7 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
             Connected
           </Badge>
         )
-      case "connecting":
+      case 'connecting':
         return (
           <Badge
             variant="outline"
@@ -1084,7 +1247,7 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
             Connecting
           </Badge>
         )
-      case "error":
+      case 'error':
         return (
           <Badge
             variant="outline"
@@ -1116,21 +1279,35 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
   }
 
   return (
-    <div className={`${isFullscreen ? "fixed inset-0 z-50 bg-background" : "h-full"} flex flex-col p-4`}>
+    <div
+      className={`${isFullscreen ? 'fixed inset-0 z-50 bg-background' : 'h-full'} flex flex-col p-4`}
+    >
       <div className="mb-4 flex gap-2">
         <Input
           value={url}
-          onChange={(e) => setUrl(e.target.value)}
+          onChange={e => setUrl(e.target.value)}
           placeholder="Enter localhost URL (e.g., http://localhost:3000)"
           className="flex-grow"
           disabled={isConnected}
         />
         {!isConnected ? (
-          <Button onClick={handleConnect} disabled={isLoading} className="gap-2">
-            {isLoading ? <RefreshCw className="h-4 w-4 animate-spin" /> : "Connect"}
+          <Button
+            onClick={handleConnect}
+            disabled={isLoading}
+            className="gap-2"
+          >
+            {isLoading ? (
+              <RefreshCw className="h-4 w-4 animate-spin" />
+            ) : (
+              'Connect'
+            )}
           </Button>
         ) : (
-          <Button onClick={handleDisconnect} variant="outline" className="gap-2">
+          <Button
+            onClick={handleDisconnect}
+            variant="outline"
+            className="gap-2"
+          >
             Disconnect
           </Button>
         )}
@@ -1138,11 +1315,15 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
           <Tooltip>
             <TooltipTrigger asChild>
               <Button variant="outline" size="icon" onClick={toggleFullscreen}>
-                {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+                {isFullscreen ? (
+                  <Minimize2 className="h-4 w-4" />
+                ) : (
+                  <Maximize2 className="h-4 w-4" />
+                )}
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>{isFullscreen ? "Exit Fullscreen" : "Fullscreen"}</p>
+              <p>{isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -1157,7 +1338,11 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
       )}
 
       {isConnected ? (
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="flex-1 flex flex-col"
+        >
           <div className="flex justify-between items-center mb-2">
             <TabsList className="grid grid-cols-4">
               <TabsTrigger value="preview">Preview</TabsTrigger>
@@ -1190,14 +1375,24 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                       <Button
                         variant="outline"
                         size="icon"
-                        className={isRecording ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300" : ""}
+                        className={
+                          isRecording
+                            ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
+                            : ''
+                        }
                         onClick={toggleRecording}
                       >
-                        {isRecording ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                        {isRecording ? (
+                          <Pause className="h-4 w-4" />
+                        ) : (
+                          <Play className="h-4 w-4" />
+                        )}
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>{isRecording ? "Stop Recording" : "Start Recording"}</p>
+                      <p>
+                        {isRecording ? 'Stop Recording' : 'Start Recording'}
+                      </p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -1215,7 +1410,12 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button variant="outline" size="icon" className="ml-1" onClick={saveRecording}>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="ml-1"
+                          onClick={saveRecording}
+                        >
                           <Save className="h-4 w-4" />
                         </Button>
                       </TooltipTrigger>
@@ -1246,7 +1446,9 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
               </div>
               <div className="p-4 h-[calc(100%-40px)] flex items-center justify-center">
                 <div className="text-center">
-                  <p className="text-muted-foreground mb-2">Preview for {projectDetails.name}</p>
+                  <p className="text-muted-foreground mb-2">
+                    Preview for {projectDetails.name}
+                  </p>
                   <p className="text-sm text-muted-foreground">
                     {projectDetails.framework} project running on {url}
                   </p>
@@ -1255,14 +1457,28 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
             </div>
           </TabsContent>
 
-          <TabsContent value="console" className="flex-1 mt-0 border rounded-md overflow-hidden">
+          <TabsContent
+            value="console"
+            className="flex-1 mt-0 border rounded-md overflow-hidden"
+          >
             <div className="bg-gray-100 border-b px-4 py-2 flex justify-between items-center">
               <div className="flex gap-2">
                 <div className="relative">
-                  <Button variant="outline" size="sm" className="gap-1" onClick={toggleConsoleFilter}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-1"
+                    onClick={toggleConsoleFilter}
+                  >
                     <Filter className="h-3.5 w-3.5" />
-                    {consoleFilter !== "all" && <span className="text-xs capitalize">{consoleFilter}</span>}
-                    {consoleFilter === "all" && <span className="text-xs">All</span>}
+                    {consoleFilter !== 'all' && (
+                      <span className="text-xs capitalize">
+                        {consoleFilter}
+                      </span>
+                    )}
+                    {consoleFilter === 'all' && (
+                      <span className="text-xs">All</span>
+                    )}
                   </Button>
                   {isConsoleFilterOpen && (
                     <div className="absolute top-full left-0 mt-1 bg-white border rounded-md shadow-md z-10">
@@ -1270,7 +1486,7 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                         <button
                           className="block w-full text-left px-3 py-1 text-sm hover:bg-gray-100 rounded"
                           onClick={() => {
-                            setConsoleFilter("all")
+                            setConsoleFilter('all')
                             setIsConsoleFilterOpen(false)
                           }}
                         >
@@ -1279,7 +1495,7 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                         <button
                           className="block w-full text-left px-3 py-1 text-sm hover:bg-gray-100 rounded"
                           onClick={() => {
-                            setConsoleFilter("info")
+                            setConsoleFilter('info')
                             setIsConsoleFilterOpen(false)
                           }}
                         >
@@ -1288,7 +1504,7 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                         <button
                           className="block w-full text-left px-3 py-1 text-sm hover:bg-gray-100 rounded"
                           onClick={() => {
-                            setConsoleFilter("warn")
+                            setConsoleFilter('warn')
                             setIsConsoleFilterOpen(false)
                           }}
                         >
@@ -1297,7 +1513,7 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                         <button
                           className="block w-full text-left px-3 py-1 text-sm hover:bg-gray-100 rounded"
                           onClick={() => {
-                            setConsoleFilter("error")
+                            setConsoleFilter('error')
                             setIsConsoleFilterOpen(false)
                           }}
                         >
@@ -1306,7 +1522,7 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                         <button
                           className="block w-full text-left px-3 py-1 text-sm hover:bg-gray-100 rounded"
                           onClick={() => {
-                            setConsoleFilter("debug")
+                            setConsoleFilter('debug')
                             setIsConsoleFilterOpen(false)
                           }}
                         >
@@ -1323,12 +1539,12 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                     placeholder="Filter logs..."
                     className="pl-8 h-8 text-sm w-[200px]"
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={e => setSearchTerm(e.target.value)}
                   />
                   {searchTerm && (
                     <button
                       className="absolute right-2 text-muted-foreground hover:text-foreground"
-                      onClick={() => setSearchTerm("")}
+                      onClick={() => setSearchTerm('')}
                     >
                       <X className="h-3.5 w-3.5" />
                     </button>
@@ -1337,13 +1553,23 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
               </div>
               <div className="flex gap-2">
                 <div className="flex items-center gap-2 mr-2">
-                  <Switch id="auto-scroll" checked={autoScroll} onCheckedChange={setAutoScroll} size="sm" />
+                  <Switch
+                    id="auto-scroll"
+                    checked={autoScroll}
+                    onCheckedChange={setAutoScroll}
+                    size="sm"
+                  />
                   <Label htmlFor="auto-scroll" className="text-xs">
                     Auto-scroll
                   </Label>
                 </div>
                 <div className="flex items-center gap-2 mr-2">
-                  <Switch id="group-logs" checked={groupSimilarLogs} onCheckedChange={setGroupSimilarLogs} size="sm" />
+                  <Switch
+                    id="group-logs"
+                    checked={groupSimilarLogs}
+                    onCheckedChange={setGroupSimilarLogs}
+                    size="sm"
+                  />
                   <Label htmlFor="group-logs" className="text-xs">
                     Group
                   </Label>
@@ -1358,26 +1584,42 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
               className="bg-gray-900 text-gray-100 p-0 h-[calc(100%-40px)] overflow-auto font-mono text-sm"
             >
               {filteredLogs.length === 0 ? (
-                <div className="flex items-center justify-center h-full text-gray-400">No console logs to display</div>
+                <div className="flex items-center justify-center h-full text-gray-400">
+                  No console logs to display
+                </div>
               ) : (
                 <div className="divide-y divide-gray-800">
-                  {filteredLogs.map((log) => (
+                  {filteredLogs.map(log => (
                     <div key={log.id} className="p-2 hover:bg-gray-800">
                       <div className="flex items-start">
-                        <Badge className={`mr-2 ${getLogBadgeColor(log.level)}`}>
+                        <Badge
+                          className={`mr-2 ${getLogBadgeColor(log.level)}`}
+                        >
                           {log.level}
-                          {log.repeated && log.repeated > 1 && <span className="ml-1 text-xs">({log.repeated})</span>}
+                          {log.repeated && log.repeated > 1 && (
+                            <span className="ml-1 text-xs">
+                              ({log.repeated})
+                            </span>
+                          )}
                         </Badge>
                         <div className="flex-1">
                           <div className="flex justify-between">
-                            <span className="text-gray-400 text-xs">{log.source}</span>
+                            <span className="text-gray-400 text-xs">
+                              {log.source}
+                            </span>
                             {showTimestamps && (
-                              <span className="text-gray-400 text-xs">{log.timestamp.toLocaleTimeString()}</span>
+                              <span className="text-gray-400 text-xs">
+                                {log.timestamp.toLocaleTimeString()}
+                              </span>
                             )}
                           </div>
-                          <div className="mt-1 whitespace-pre-wrap">{log.message}</div>
+                          <div className="mt-1 whitespace-pre-wrap">
+                            {log.message}
+                          </div>
                           {log.stack && (
-                            <div className="mt-1 text-red-400 text-xs whitespace-pre-wrap">{log.stack}</div>
+                            <div className="mt-1 text-red-400 text-xs whitespace-pre-wrap">
+                              {log.stack}
+                            </div>
                           )}
                         </div>
                       </div>
@@ -1388,22 +1630,33 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
             </div>
           </TabsContent>
 
-          <TabsContent value="network" className="flex-1 mt-0 border rounded-md overflow-hidden">
+          <TabsContent
+            value="network"
+            className="flex-1 mt-0 border rounded-md overflow-hidden"
+          >
             <div className="bg-gray-100 border-b px-4 py-2 flex justify-between items-center">
               <div className="flex gap-2">
                 <div className="relative">
-                  <Button variant="outline" size="sm" className="gap-1" onClick={toggleNetworkFilter}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-1"
+                    onClick={toggleNetworkFilter}
+                  >
                     <Filter className="h-3.5 w-3.5" />
-                    {networkFilter !== "all" && (
+                    {networkFilter !== 'all' && (
                       <span className="text-xs capitalize">
-                        {networkFilter === "clientError"
-                          ? "Client Errors"
-                          : networkFilter === "serverError"
-                            ? "Server Errors"
-                            : networkFilter.charAt(0).toUpperCase() + networkFilter.slice(1)}
+                        {networkFilter === 'clientError'
+                          ? 'Client Errors'
+                          : networkFilter === 'serverError'
+                            ? 'Server Errors'
+                            : networkFilter.charAt(0).toUpperCase() +
+                              networkFilter.slice(1)}
                       </span>
                     )}
-                    {networkFilter === "all" && <span className="text-xs">All</span>}
+                    {networkFilter === 'all' && (
+                      <span className="text-xs">All</span>
+                    )}
                   </Button>
                   {isNetworkFilterOpen && (
                     <div className="absolute top-full left-0 mt-1 bg-white border rounded-md shadow-md z-10">
@@ -1411,7 +1664,7 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                         <button
                           className="block w-full text-left px-3 py-1 text-sm hover:bg-gray-100 rounded"
                           onClick={() => {
-                            setNetworkFilter("all")
+                            setNetworkFilter('all')
                             setIsNetworkFilterOpen(false)
                           }}
                         >
@@ -1420,7 +1673,7 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                         <button
                           className="block w-full text-left px-3 py-1 text-sm hover:bg-gray-100 rounded"
                           onClick={() => {
-                            setNetworkFilter("success")
+                            setNetworkFilter('success')
                             setIsNetworkFilterOpen(false)
                           }}
                         >
@@ -1429,7 +1682,7 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                         <button
                           className="block w-full text-left px-3 py-1 text-sm hover:bg-gray-100 rounded"
                           onClick={() => {
-                            setNetworkFilter("redirect")
+                            setNetworkFilter('redirect')
                             setIsNetworkFilterOpen(false)
                           }}
                         >
@@ -1438,7 +1691,7 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                         <button
                           className="block w-full text-left px-3 py-1 text-sm hover:bg-gray-100 rounded"
                           onClick={() => {
-                            setNetworkFilter("clientError")
+                            setNetworkFilter('clientError')
                             setIsNetworkFilterOpen(false)
                           }}
                         >
@@ -1447,7 +1700,7 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                         <button
                           className="block w-full text-left px-3 py-1 text-sm hover:bg-gray-100 rounded"
                           onClick={() => {
-                            setNetworkFilter("serverError")
+                            setNetworkFilter('serverError')
                             setIsNetworkFilterOpen(false)
                           }}
                         >
@@ -1464,12 +1717,12 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                     placeholder="Filter requests..."
                     className="pl-8 h-8 text-sm w-[200px]"
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={e => setSearchTerm(e.target.value)}
                   />
                   {searchTerm && (
                     <button
                       className="absolute right-2 text-muted-foreground hover:text-foreground"
-                      onClick={() => setSearchTerm("")}
+                      onClick={() => setSearchTerm('')}
                     >
                       <X className="h-3.5 w-3.5" />
                     </button>
@@ -1478,12 +1731,21 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
               </div>
               <div className="flex gap-2">
                 <div className="flex items-center gap-2 mr-2">
-                  <Switch id="auto-scroll-network" checked={autoScroll} onCheckedChange={setAutoScroll} size="sm" />
+                  <Switch
+                    id="auto-scroll-network"
+                    checked={autoScroll}
+                    onCheckedChange={setAutoScroll}
+                    size="sm"
+                  />
                   <Label htmlFor="auto-scroll-network" className="text-xs">
                     Auto-scroll
                   </Label>
                 </div>
-                <Button variant="outline" size="sm" onClick={clearNetworkRequests}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={clearNetworkRequests}
+                >
                   Clear
                 </Button>
                 <Button variant="outline" size="sm" onClick={exportNetworkHAR}>
@@ -1492,7 +1754,10 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                 </Button>
               </div>
             </div>
-            <div ref={networkContainerRef} className="bg-white h-[calc(100%-40px)] overflow-auto text-sm">
+            <div
+              ref={networkContainerRef}
+              className="bg-white h-[calc(100%-40px)] overflow-auto text-sm"
+            >
               {filteredRequests.length === 0 ? (
                 <div className="flex items-center justify-center h-full text-muted-foreground">
                   No network requests to display
@@ -1508,26 +1773,46 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                     <div className="col-span-2">Time</div>
                   </div>
                   <div className="divide-y">
-                    {filteredRequests.map((request) => (
+                    {filteredRequests.map(request => (
                       <details key={request.id} className="group">
                         <summary
-                          className={`cursor-pointer hover:bg-gray-50 grid grid-cols-12 gap-2 px-4 py-2 items-center ${request.time > slowRequestThreshold ? "bg-yellow-50" : ""}`}
+                          className={`cursor-pointer hover:bg-gray-50 grid grid-cols-12 gap-2 px-4 py-2 items-center ${request.time > slowRequestThreshold ? 'bg-yellow-50' : ''}`}
                         >
-                          <div className="col-span-5 truncate text-blue-600">{request.url}</div>
-                          <div className="col-span-1 font-medium">{request.method}</div>
-                          <div className="col-span-1">
-                            <Badge className={getStatusBadgeColor(request.status)}>{request.status}</Badge>
+                          <div className="col-span-5 truncate text-blue-600">
+                            {request.url}
                           </div>
-                          <div className="col-span-1 text-gray-500">{request.type}</div>
+                          <div className="col-span-1 font-medium">
+                            {request.method}
+                          </div>
+                          <div className="col-span-1">
+                            <Badge
+                              className={getStatusBadgeColor(request.status)}
+                            >
+                              {request.status}
+                            </Badge>
+                          </div>
+                          <div className="col-span-1 text-gray-500">
+                            {request.type}
+                          </div>
                           <div className="col-span-2 text-gray-500">
-                            {request.size < 1024 ? `${request.size} B` : `${(request.size / 1024).toFixed(1)} KB`}
+                            {request.size < 1024
+                              ? `${request.size} B`
+                              : `${(request.size / 1024).toFixed(1)} KB`}
                             {request.size / 1024 > largeResponseThreshold && (
                               <span className="ml-1 text-yellow-500">⚠️</span>
                             )}
                           </div>
                           <div className="col-span-2 text-gray-500">
-                            <span className={request.time > slowRequestThreshold ? "text-yellow-600 font-medium" : ""}>
-                              {request.time < 1000 ? `${request.time} ms` : `${(request.time / 1000).toFixed(1)} s`}
+                            <span
+                              className={
+                                request.time > slowRequestThreshold
+                                  ? 'text-yellow-600 font-medium'
+                                  : ''
+                              }
+                            >
+                              {request.time < 1000
+                                ? `${request.time} ms`
+                                : `${(request.time / 1000).toFixed(1)} s`}
                             </span>
                           </div>
                         </summary>
@@ -1536,7 +1821,9 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                             <TabsList className="mb-2">
                               <TabsTrigger value="headers">Headers</TabsTrigger>
                               <TabsTrigger value="request">Request</TabsTrigger>
-                              <TabsTrigger value="response">Response</TabsTrigger>
+                              <TabsTrigger value="response">
+                                Response
+                              </TabsTrigger>
                               <TabsTrigger value="timing">Timing</TabsTrigger>
                             </TabsList>
                             <TabsContent value="headers">
@@ -1545,11 +1832,21 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                                   <h4 className="font-medium mb-2">General</h4>
                                   <div className="bg-white p-3 rounded border text-sm font-mono">
                                     <div className="grid grid-cols-3 gap-2">
-                                      <div className="text-gray-500">Request URL:</div>
-                                      <div className="col-span-2">{request.url}</div>
-                                      <div className="text-gray-500">Request Method:</div>
-                                      <div className="col-span-2">{request.method}</div>
-                                      <div className="text-gray-500">Status Code:</div>
+                                      <div className="text-gray-500">
+                                        Request URL:
+                                      </div>
+                                      <div className="col-span-2">
+                                        {request.url}
+                                      </div>
+                                      <div className="text-gray-500">
+                                        Request Method:
+                                      </div>
+                                      <div className="col-span-2">
+                                        {request.method}
+                                      </div>
+                                      <div className="text-gray-500">
+                                        Status Code:
+                                      </div>
                                       <div className="col-span-2">
                                         {request.status} {request.statusText}
                                       </div>
@@ -1557,26 +1854,42 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                                   </div>
                                 </div>
                                 <div>
-                                  <h4 className="font-medium mb-2">Request Headers</h4>
+                                  <h4 className="font-medium mb-2">
+                                    Request Headers
+                                  </h4>
                                   <div className="bg-white p-3 rounded border text-sm font-mono">
                                     <div className="grid grid-cols-3 gap-2">
-                                      {Object.entries(request.request.headers).map(([key, value]) => (
+                                      {Object.entries(
+                                        request.request.headers
+                                      ).map(([key, value]) => (
                                         <React.Fragment key={key}>
-                                          <div className="text-gray-500">{key}:</div>
-                                          <div className="col-span-2">{value}</div>
+                                          <div className="text-gray-500">
+                                            {key}:
+                                          </div>
+                                          <div className="col-span-2">
+                                            {value}
+                                          </div>
                                         </React.Fragment>
                                       ))}
                                     </div>
                                   </div>
                                 </div>
                                 <div>
-                                  <h4 className="font-medium mb-2">Response Headers</h4>
+                                  <h4 className="font-medium mb-2">
+                                    Response Headers
+                                  </h4>
                                   <div className="bg-white p-3 rounded border text-sm font-mono">
                                     <div className="grid grid-cols-3 gap-2">
-                                      {Object.entries(request.response.headers).map(([key, value]) => (
+                                      {Object.entries(
+                                        request.response.headers
+                                      ).map(([key, value]) => (
                                         <React.Fragment key={key}>
-                                          <div className="text-gray-500">{key}:</div>
-                                          <div className="col-span-2">{value}</div>
+                                          <div className="text-gray-500">
+                                            {key}:
+                                          </div>
+                                          <div className="col-span-2">
+                                            {value}
+                                          </div>
                                         </React.Fragment>
                                       ))}
                                     </div>
@@ -1590,7 +1903,9 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                                   {request.request.body}
                                 </div>
                               ) : (
-                                <div className="text-gray-500 italic">No request body</div>
+                                <div className="text-gray-500 italic">
+                                  No request body
+                                </div>
                               )}
                             </TabsContent>
                             <TabsContent value="response">
@@ -1599,7 +1914,9 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                                   {request.response.body}
                                 </div>
                               ) : (
-                                <div className="text-gray-500 italic">No response body</div>
+                                <div className="text-gray-500 italic">
+                                  No response body
+                                </div>
                               )}
                             </TabsContent>
                             <TabsContent value="timing">
@@ -1615,32 +1932,44 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                                         <div className="h-full flex">
                                           <div
                                             className="bg-purple-200"
-                                            style={{ width: `${(request.timing.dns / request.time) * 100}%` }}
+                                            style={{
+                                              width: `${(request.timing.dns / request.time) * 100}%`,
+                                            }}
                                             title={`DNS: ${request.timing.dns}ms`}
                                           ></div>
                                           <div
                                             className="bg-blue-200"
-                                            style={{ width: `${(request.timing.connect / request.time) * 100}%` }}
+                                            style={{
+                                              width: `${(request.timing.connect / request.time) * 100}%`,
+                                            }}
                                             title={`Connect: ${request.timing.connect}ms`}
                                           ></div>
                                           <div
                                             className="bg-green-200"
-                                            style={{ width: `${(request.timing.ssl / request.time) * 100}%` }}
+                                            style={{
+                                              width: `${(request.timing.ssl / request.time) * 100}%`,
+                                            }}
                                             title={`SSL: ${request.timing.ssl}ms`}
                                           ></div>
                                           <div
                                             className="bg-yellow-200"
-                                            style={{ width: `${(request.timing.send / request.time) * 100}%` }}
+                                            style={{
+                                              width: `${(request.timing.send / request.time) * 100}%`,
+                                            }}
                                             title={`Send: ${request.timing.send}ms`}
                                           ></div>
                                           <div
                                             className="bg-orange-200"
-                                            style={{ width: `${(request.timing.wait / request.time) * 100}%` }}
+                                            style={{
+                                              width: `${(request.timing.wait / request.time) * 100}%`,
+                                            }}
                                             title={`Wait: ${request.timing.wait}ms`}
                                           ></div>
                                           <div
                                             className="bg-red-200"
-                                            style={{ width: `${(request.timing.receive / request.time) * 100}%` }}
+                                            style={{
+                                              width: `${(request.timing.receive / request.time) * 100}%`,
+                                            }}
                                             title={`Receive: ${request.timing.receive}ms`}
                                           ></div>
                                         </div>
@@ -1649,39 +1978,65 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                                     <div className="grid grid-cols-3 gap-2 text-sm">
                                       <div className="flex items-center">
                                         <div className="w-3 h-3 bg-purple-200 mr-2 rounded"></div>
-                                        <span className="text-gray-700">DNS Lookup:</span>
-                                        <span className="ml-auto font-mono">{request.timing.dns}ms</span>
+                                        <span className="text-gray-700">
+                                          DNS Lookup:
+                                        </span>
+                                        <span className="ml-auto font-mono">
+                                          {request.timing.dns}ms
+                                        </span>
                                       </div>
                                       <div className="flex items-center">
                                         <div className="w-3 h-3 bg-blue-200 mr-2 rounded"></div>
-                                        <span className="text-gray-700">Initial Connection:</span>
-                                        <span className="ml-auto font-mono">{request.timing.connect}ms</span>
+                                        <span className="text-gray-700">
+                                          Initial Connection:
+                                        </span>
+                                        <span className="ml-auto font-mono">
+                                          {request.timing.connect}ms
+                                        </span>
                                       </div>
                                       <div className="flex items-center">
                                         <div className="w-3 h-3 bg-green-200 mr-2 rounded"></div>
-                                        <span className="text-gray-700">SSL Handshake:</span>
-                                        <span className="ml-auto font-mono">{request.timing.ssl}ms</span>
+                                        <span className="text-gray-700">
+                                          SSL Handshake:
+                                        </span>
+                                        <span className="ml-auto font-mono">
+                                          {request.timing.ssl}ms
+                                        </span>
                                       </div>
                                       <div className="flex items-center">
                                         <div className="w-3 h-3 bg-yellow-200 mr-2 rounded"></div>
-                                        <span className="text-gray-700">Request Sent:</span>
-                                        <span className="ml-auto font-mono">{request.timing.send}ms</span>
+                                        <span className="text-gray-700">
+                                          Request Sent:
+                                        </span>
+                                        <span className="ml-auto font-mono">
+                                          {request.timing.send}ms
+                                        </span>
                                       </div>
                                       <div className="flex items-center">
                                         <div className="w-3 h-3 bg-orange-200 mr-2 rounded"></div>
-                                        <span className="text-gray-700">Waiting (TTFB):</span>
-                                        <span className="ml-auto font-mono">{request.timing.wait}ms</span>
+                                        <span className="text-gray-700">
+                                          Waiting (TTFB):
+                                        </span>
+                                        <span className="ml-auto font-mono">
+                                          {request.timing.wait}ms
+                                        </span>
                                       </div>
                                       <div className="flex items-center">
                                         <div className="w-3 h-3 bg-red-200 mr-2 rounded"></div>
-                                        <span className="text-gray-700">Content Download:</span>
-                                        <span className="ml-auto font-mono">{request.timing.receive}ms</span>
+                                        <span className="text-gray-700">
+                                          Content Download:
+                                        </span>
+                                        <span className="ml-auto font-mono">
+                                          {request.timing.receive}ms
+                                        </span>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
                               ) : (
-                                <div className="text-gray-500 italic">No timing information available</div>
+                                <div className="text-gray-500 italic">
+                                  No timing information available
+                                </div>
                               )}
                             </TabsContent>
                           </Tabs>
@@ -1694,12 +2049,17 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
             </div>
           </TabsContent>
 
-          <TabsContent value="performance" className="flex-1 mt-0 border rounded-md overflow-hidden">
+          <TabsContent
+            value="performance"
+            className="flex-1 mt-0 border rounded-md overflow-hidden"
+          >
             <div className="bg-gray-100 border-b px-4 py-2 flex justify-between items-center">
               <div className="flex gap-2">
                 <Select
                   value={refreshInterval.toString()}
-                  onValueChange={(value) => setRefreshInterval(Number.parseInt(value))}
+                  onValueChange={value =>
+                    setRefreshInterval(Number.parseInt(value))
+                  }
                 >
                   <SelectTrigger className="w-[180px] h-8">
                     <SelectValue placeholder="Refresh interval" />
@@ -1725,7 +2085,11 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                 </div>
               </div>
               <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={() => generateMockData(false)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => generateMockData(false)}
+                >
                   <RotateCcw className="h-3.5 w-3.5 mr-1" />
                   Refresh
                 </Button>
@@ -1738,59 +2102,24 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                     <CardContent className="p-4">
                       <div className="flex justify-between items-start">
                         <div>
-                          <p className="text-sm text-muted-foreground">CPU Usage</p>
+                          <p className="text-sm text-muted-foreground">
+                            CPU Usage
+                          </p>
                           <h4 className="text-2xl font-bold">
-                            {resourceUsage.length > 0 ? resourceUsage[resourceUsage.length - 1].cpu.toFixed(1) : 0}%
+                            {resourceUsage.length > 0
+                              ? resourceUsage[
+                                  resourceUsage.length - 1
+                                ].cpu.toFixed(1)
+                              : 0}
+                            %
                           </h4>
                         </div>
                         <Cpu className="h-5 w-5 text-blue-500" />
                       </div>
                       <Progress
-                        value={resourceUsage.length > 0 ? resourceUsage[resourceUsage.length - 1].cpu : 0}
-                        className="mt-2"
-                      />
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardContent className="p-4">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <p className="text-sm text-muted-foreground">Memory</p>
-                          <h4 className="text-2xl font-bold">
-                            {resourceUsage.length > 0 ? resourceUsage[resourceUsage.length - 1].memory.toFixed(1) : 0}{" "}
-                            MB
-                          </h4>
-                        </div>
-                        <HardDrive className="h-5 w-5 text-green-500" />
-                      </div>
-                      <Progress
-                        value={
-                          resourceUsage.length > 0 ? (resourceUsage[resourceUsage.length - 1].memory / 500) * 100 : 0
-                        }
-                        className="mt-2"
-                      />
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardContent className="p-4">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <p className="text-sm text-muted-foreground">JS Heap</p>
-                          <h4 className="text-2xl font-bold">
-                            {resourceUsage.length > 0
-                              ? resourceUsage[resourceUsage.length - 1].jsHeapSize.toFixed(1)
-                              : 0}{" "}
-                            MB
-                          </h4>
-                        </div>
-                        <Database className="h-5 w-5 text-purple-500" />
-                      </div>
-                      <Progress
                         value={
                           resourceUsage.length > 0
-                            ? (resourceUsage[resourceUsage.length - 1].jsHeapSize / 300) * 100
+                            ? resourceUsage[resourceUsage.length - 1].cpu
                             : 0
                         }
                         className="mt-2"
@@ -1802,16 +2131,88 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                     <CardContent className="p-4">
                       <div className="flex justify-between items-start">
                         <div>
-                          <p className="text-sm text-muted-foreground">DOM Nodes</p>
+                          <p className="text-sm text-muted-foreground">
+                            Memory
+                          </p>
                           <h4 className="text-2xl font-bold">
-                            {resourceUsage.length > 0 ? resourceUsage[resourceUsage.length - 1].domNodes : 0}
+                            {resourceUsage.length > 0
+                              ? resourceUsage[
+                                  resourceUsage.length - 1
+                                ].memory.toFixed(1)
+                              : 0}{' '}
+                            MB
+                          </h4>
+                        </div>
+                        <HardDrive className="h-5 w-5 text-green-500" />
+                      </div>
+                      <Progress
+                        value={
+                          resourceUsage.length > 0
+                            ? (resourceUsage[resourceUsage.length - 1].memory /
+                                500) *
+                              100
+                            : 0
+                        }
+                        className="mt-2"
+                      />
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="text-sm text-muted-foreground">
+                            JS Heap
+                          </p>
+                          <h4 className="text-2xl font-bold">
+                            {resourceUsage.length > 0
+                              ? resourceUsage[
+                                  resourceUsage.length - 1
+                                ].jsHeapSize.toFixed(1)
+                              : 0}{' '}
+                            MB
+                          </h4>
+                        </div>
+                        <Database className="h-5 w-5 text-purple-500" />
+                      </div>
+                      <Progress
+                        value={
+                          resourceUsage.length > 0
+                            ? (resourceUsage[resourceUsage.length - 1]
+                                .jsHeapSize /
+                                300) *
+                              100
+                            : 0
+                        }
+                        className="mt-2"
+                      />
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="text-sm text-muted-foreground">
+                            DOM Nodes
+                          </p>
+                          <h4 className="text-2xl font-bold">
+                            {resourceUsage.length > 0
+                              ? resourceUsage[resourceUsage.length - 1].domNodes
+                              : 0}
                           </h4>
                         </div>
                         <Layers className="h-5 w-5 text-orange-500" />
                       </div>
                       <Progress
                         value={
-                          resourceUsage.length > 0 ? (resourceUsage[resourceUsage.length - 1].domNodes / 2000) * 100 : 0
+                          resourceUsage.length > 0
+                            ? (resourceUsage[resourceUsage.length - 1]
+                                .domNodes /
+                                2000) *
+                              100
+                            : 0
                         }
                         className="mt-2"
                       />
@@ -1822,8 +2223,12 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <Card>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-lg">CPU Usage Over Time</CardTitle>
-                      <CardDescription>Percentage of CPU utilization</CardDescription>
+                      <CardTitle className="text-lg">
+                        CPU Usage Over Time
+                      </CardTitle>
+                      <CardDescription>
+                        Percentage of CPU utilization
+                      </CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="h-[200px] flex items-end">
@@ -1831,7 +2236,9 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                           <div
                             key={index}
                             className="flex-1 flex flex-col justify-end items-center h-full"
-                            style={{ minWidth: `${100 / Math.min(resourceUsage.length, 30)}%` }}
+                            style={{
+                              minWidth: `${100 / Math.min(resourceUsage.length, 30)}%`,
+                            }}
                           >
                             <div
                               className="w-full bg-blue-500 mx-px rounded-t"
@@ -1850,8 +2257,12 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
 
                   <Card>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-lg">Memory Usage Over Time</CardTitle>
-                      <CardDescription>Memory consumption in MB</CardDescription>
+                      <CardTitle className="text-lg">
+                        Memory Usage Over Time
+                      </CardTitle>
+                      <CardDescription>
+                        Memory consumption in MB
+                      </CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="h-[200px] flex items-end">
@@ -1859,11 +2270,15 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                           <div
                             key={index}
                             className="flex-1 flex flex-col justify-end items-center h-full"
-                            style={{ minWidth: `${100 / Math.min(resourceUsage.length, 30)}%` }}
+                            style={{
+                              minWidth: `${100 / Math.min(resourceUsage.length, 30)}%`,
+                            }}
                           >
                             <div
                               className="w-full bg-green-500 mx-px rounded-t"
-                              style={{ height: `${(usage.memory / 500) * 100}%` }}
+                              style={{
+                                height: `${(usage.memory / 500) * 100}%`,
+                              }}
                               title={`Memory: ${usage.memory.toFixed(1)} MB`}
                             ></div>
                           </div>
@@ -1880,7 +2295,9 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Card>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-lg">Network Activity</CardTitle>
+                      <CardTitle className="text-lg">
+                        Network Activity
+                      </CardTitle>
                       <CardDescription>Data transfer in KB/s</CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -1889,14 +2306,16 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                           <div
                             key={index}
                             className="flex-1 flex flex-col justify-end items-center h-full"
-                            style={{ minWidth: `${100 / Math.min(resourceUsage.length, 30)}%` }}
+                            style={{
+                              minWidth: `${100 / Math.min(resourceUsage.length, 30)}%`,
+                            }}
                           >
                             <div className="w-full flex flex-col">
                               <div
                                 className="w-full bg-red-400 mx-px"
                                 style={{
                                   height: `${(usage.networkOut / 100) * 100}%`,
-                                  maxHeight: "50%",
+                                  maxHeight: '50%',
                                 }}
                                 title={`Upload: ${usage.networkOut.toFixed(1)} KB/s`}
                               ></div>
@@ -1904,7 +2323,7 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                                 className="w-full bg-green-400 mx-px"
                                 style={{
                                   height: `${(usage.networkIn / 100) * 100}%`,
-                                  maxHeight: "50%",
+                                  maxHeight: '50%',
                                 }}
                                 title={`Download: ${usage.networkIn.toFixed(1)} KB/s`}
                               ></div>
@@ -1927,31 +2346,42 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
 
                   <Card>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-lg">Performance Metrics</CardTitle>
-                      <CardDescription>Key performance indicators</CardDescription>
+                      <CardTitle className="text-lg">
+                        Performance Metrics
+                      </CardTitle>
+                      <CardDescription>
+                        Key performance indicators
+                      </CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4 max-h-[200px] overflow-auto">
                         {performanceMetrics
                           .slice(-10)
                           .reverse()
-                          .map((metric) => (
-                            <div key={metric.id} className="flex justify-between items-center p-2 bg-muted/50 rounded">
+                          .map(metric => (
+                            <div
+                              key={metric.id}
+                              className="flex justify-between items-center p-2 bg-muted/50 rounded"
+                            >
                               <div>
-                                <p className="text-sm font-medium">{metric.name}</p>
+                                <p className="text-sm font-medium">
+                                  {metric.name}
+                                </p>
                                 <p className="text-xs text-muted-foreground">
-                                  {new Date(metric.timestamp).toLocaleTimeString()}
+                                  {new Date(
+                                    metric.timestamp
+                                  ).toLocaleTimeString()}
                                 </p>
                               </div>
                               <Badge
                                 variant={
-                                  metric.category === "rendering"
-                                    ? "default"
-                                    : metric.category === "network"
-                                      ? "secondary"
-                                      : metric.category === "cpu"
-                                        ? "destructive"
-                                        : "outline"
+                                  metric.category === 'rendering'
+                                    ? 'default'
+                                    : metric.category === 'network'
+                                      ? 'secondary'
+                                      : metric.category === 'cpu'
+                                        ? 'destructive'
+                                        : 'outline'
                                 }
                               >
                                 {metric.value.toFixed(2)} {metric.unit}
@@ -1975,9 +2405,12 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
       ) : (
         <div className="flex-1 border rounded-md flex items-center justify-center">
           <div className="text-center p-6">
-            <p className="font-medium mb-2">Connect to your local development server</p>
+            <p className="font-medium mb-2">
+              Connect to your local development server
+            </p>
             <p className="text-sm text-muted-foreground mb-4">
-              Enter the URL of your running {projectDetails.framework} application and click Connect
+              Enter the URL of your running {projectDetails.framework}{' '}
+              application and click Connect
             </p>
             <Button onClick={handleConnect} disabled={isLoading}>
               {isLoading ? (
@@ -1986,7 +2419,7 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
                   Connecting...
                 </>
               ) : (
-                "Connect to Server"
+                'Connect to Server'
               )}
             </Button>
           </div>
@@ -1998,7 +2431,12 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
       <div className="mt-4 flex justify-between items-center">
         <div className="flex items-center gap-2">
           {!showPerformancePanel && isConnected && (
-            <Button variant="outline" size="sm" onClick={() => setShowPerformancePanel(true)} className="gap-1">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowPerformancePanel(true)}
+              className="gap-1"
+            >
               <BarChart2 className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">Show Performance Panel</span>
             </Button>
@@ -2011,8 +2449,13 @@ export function PortViewer({ projectDetails }: PortViewerProps) {
               <div className="flex items-center gap-1">
                 <Clock className="h-3.5 w-3.5" />
                 <span>
-                  Connected for:{" "}
-                  {Math.floor((Date.now() - (resourceUsage[0]?.timestamp.getTime() || Date.now())) / 1000)}s
+                  Connected for:{' '}
+                  {Math.floor(
+                    (Date.now() -
+                      (resourceUsage[0]?.timestamp.getTime() || Date.now())) /
+                      1000
+                  )}
+                  s
                 </span>
               </div>
               <div className="flex items-center gap-1">

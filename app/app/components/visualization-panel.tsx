@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import {
   ChevronDown,
   ChevronRight,
@@ -28,15 +28,20 @@ import {
   Lightbulb,
   Target,
   Activity,
-} from "lucide-react"
-import { Separator } from "@/components/ui/separator"
-import type { ProjectDetails } from "./project-details-form"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { PortViewer } from "./port-viewer"
+} from 'lucide-react'
+import { Separator } from '@/components/ui/separator'
+import type { ProjectDetails } from './project-details-form'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { PortViewer } from './port-viewer'
 
 interface FileStructureNode {
   name: string
-  type: "file" | "directory"
+  type: 'file' | 'directory'
   children?: FileStructureNode[]
   content?: string
   language?: string
@@ -45,7 +50,10 @@ interface FileStructureNode {
 interface VisualizationPanelProps {
   projectDetails: ProjectDetails
   activeFileStructure: FileStructureNode
-  onFileStructureChange: (structure: FileStructureNode, addToHistory?: boolean) => void
+  onFileStructureChange: (
+    structure: FileStructureNode,
+    addToHistory?: boolean
+  ) => void
   canUndo: boolean
   canRedo: boolean
   onUndo: () => void
@@ -83,129 +91,152 @@ export function VisualizationPanel({
   onUpdateTag,
   onMoveTag,
 }: VisualizationPanelProps) {
-  const [activeView, setActiveView] = useState<"structure" | "code" | "preview" | "port">("structure")
+  const [activeView, setActiveView] = useState<
+    'structure' | 'code' | 'preview' | 'port'
+  >('structure')
   const [expandedFolders, setExpandedFolders] = useState<string[]>([])
   const [selectedNode, setSelectedNode] = useState<string | null>(null)
   const [editingNode, setEditingNode] = useState<string | null>(null)
-  const [editingContent, setEditingContent] = useState<string>("")
+  const [editingContent, setEditingContent] = useState<string>('')
   const [inspectMode, setInspectMode] = useState(false)
   const [inspectedElement, setInspectedElement] = useState<any>(null)
   const [inspectPrompts, setInspectPrompts] = useState<string[]>([])
   const [showInspectPanel, setShowInspectPanel] = useState(false)
 
   const toggleFolder = (path: string) => {
-    setExpandedFolders((prev) => (prev.includes(path) ? prev.filter((p) => p !== path) : [...prev, path]))
+    setExpandedFolders(prev =>
+      prev.includes(path) ? prev.filter(p => p !== path) : [...prev, path]
+    )
   }
 
   const selectNode = (path: string) => {
     setSelectedNode(path)
-    const node = getNodeByPath(activeFileStructure, path.split("/").filter(Boolean))
-    if (node && node.type === "file" && node.content) {
+    const node = getNodeByPath(
+      activeFileStructure,
+      path.split('/').filter(Boolean)
+    )
+    if (node && node.type === 'file' && node.content) {
       setEditingContent(node.content)
     }
   }
 
-  const getNodeByPath = (node: FileStructureNode, pathParts: string[]): FileStructureNode | null => {
+  const getNodeByPath = (
+    node: FileStructureNode,
+    pathParts: string[]
+  ): FileStructureNode | null => {
     if (pathParts.length === 0) return node
     if (!node.children) return null
 
     const [current, ...rest] = pathParts
-    const childNode = node.children.find((child) => child.name === current)
+    const childNode = node.children.find(child => child.name === current)
     if (!childNode) return null
 
     return rest.length === 0 ? childNode : getNodeByPath(childNode, rest)
   }
 
   const handleAddFile = (parentPath: string) => {
-    const newFileName = prompt("Enter file name:")
+    const newFileName = prompt('Enter file name:')
     if (!newFileName) return
 
     const updatedStructure = { ...activeFileStructure }
     const parentNode = parentPath
-      ? getNodeByPath(updatedStructure, parentPath.split("/").filter(Boolean))
+      ? getNodeByPath(updatedStructure, parentPath.split('/').filter(Boolean))
       : updatedStructure
 
     if (parentNode) {
       if (!parentNode.children) parentNode.children = []
       parentNode.children.push({
         name: newFileName,
-        type: "file",
-        content: "",
+        type: 'file',
+        content: '',
       })
       onFileStructureChange(updatedStructure, true)
     }
   }
 
   const handleAddFolder = (parentPath: string) => {
-    const newFolderName = prompt("Enter folder name:")
+    const newFolderName = prompt('Enter folder name:')
     if (!newFolderName) return
 
     const updatedStructure = { ...activeFileStructure }
     const parentNode = parentPath
-      ? getNodeByPath(updatedStructure, parentPath.split("/").filter(Boolean))
+      ? getNodeByPath(updatedStructure, parentPath.split('/').filter(Boolean))
       : updatedStructure
 
     if (parentNode) {
       if (!parentNode.children) parentNode.children = []
       parentNode.children.push({
         name: newFolderName,
-        type: "directory",
+        type: 'directory',
         children: [],
       })
       onFileStructureChange(updatedStructure, true)
-      toggleFolder(parentPath ? `${parentPath}/${newFolderName}` : newFolderName)
+      toggleFolder(
+        parentPath ? `${parentPath}/${newFolderName}` : newFolderName
+      )
     }
   }
 
   const handleDeleteNode = (path: string) => {
-    if (!confirm("Are you sure you want to delete this item?")) return
+    if (!confirm('Are you sure you want to delete this item?')) return
 
-    const pathParts = path.split("/").filter(Boolean)
+    const pathParts = path.split('/').filter(Boolean)
     const nodeName = pathParts.pop()
-    const parentPath = pathParts.join("/")
+    const parentPath = pathParts.join('/')
 
     const updatedStructure = { ...activeFileStructure }
     const parentNode = parentPath
-      ? getNodeByPath(updatedStructure, parentPath.split("/").filter(Boolean))
+      ? getNodeByPath(updatedStructure, parentPath.split('/').filter(Boolean))
       : updatedStructure
 
     if (parentNode && parentNode.children && nodeName) {
-      parentNode.children = parentNode.children.filter((child) => child.name !== nodeName)
+      parentNode.children = parentNode.children.filter(
+        child => child.name !== nodeName
+      )
       onFileStructureChange(updatedStructure, true)
       if (selectedNode === path) setSelectedNode(null)
     }
   }
 
   const handleRenameNode = (path: string) => {
-    const pathParts = path.split("/").filter(Boolean)
+    const pathParts = path.split('/').filter(Boolean)
     const nodeName = pathParts.pop()
-    const parentPath = pathParts.join("/")
+    const parentPath = pathParts.join('/')
 
-    const node = getNodeByPath(activeFileStructure, path.split("/").filter(Boolean))
+    const node = getNodeByPath(
+      activeFileStructure,
+      path.split('/').filter(Boolean)
+    )
     if (!node) return
 
-    const newName = prompt("Enter new name:", nodeName)
+    const newName = prompt('Enter new name:', nodeName)
     if (!newName || newName === nodeName) return
 
     const updatedStructure = { ...activeFileStructure }
     const parentNode = parentPath
-      ? getNodeByPath(updatedStructure, parentPath.split("/").filter(Boolean))
+      ? getNodeByPath(updatedStructure, parentPath.split('/').filter(Boolean))
       : updatedStructure
 
     if (parentNode && parentNode.children && nodeName) {
-      const nodeIndex = parentNode.children.findIndex((child) => child.name === nodeName)
+      const nodeIndex = parentNode.children.findIndex(
+        child => child.name === nodeName
+      )
       if (nodeIndex !== -1) {
         parentNode.children[nodeIndex].name = newName
         onFileStructureChange(updatedStructure, true)
 
         // Update expanded folders and selected node paths
-        if (node.type === "directory") {
+        if (node.type === 'directory') {
           const oldPath = path
           const newPath = parentPath ? `${parentPath}/${newName}` : newName
-          setExpandedFolders((prev) =>
-            prev.map((p) =>
-              p === oldPath ? newPath : p.startsWith(`${oldPath}/`) ? `${newPath}/${p.slice(oldPath.length + 1)}` : p,
-            ),
+          setExpandedFolders(prev =>
+            prev.map(p =>
+              p === oldPath
+                ? newPath
+                : p.startsWith(`${oldPath}/`)
+                  ? `${newPath}/${p.slice(oldPath.length + 1)}`
+                  : p
+            )
           )
         }
 
@@ -221,20 +252,27 @@ export function VisualizationPanel({
     if (!selectedNode) return
 
     const updatedStructure = { ...activeFileStructure }
-    const node = getNodeByPath(updatedStructure, selectedNode.split("/").filter(Boolean))
-    if (node && node.type === "file") {
+    const node = getNodeByPath(
+      updatedStructure,
+      selectedNode.split('/').filter(Boolean)
+    )
+    if (node && node.type === 'file') {
       node.content = editingContent
       onFileStructureChange(updatedStructure, true)
       setEditingNode(null)
     }
   }
 
-  const handleInspectElement = (element: any, elementType: string, elementPath: string) => {
+  const handleInspectElement = (
+    element: any,
+    elementType: string,
+    elementPath: string
+  ) => {
     setInspectedElement({
       type: elementType,
       path: elementPath,
       name: element.name || elementPath,
-      content: element.content || "",
+      content: element.content || '',
       properties: getElementProperties(element, elementType),
     })
 
@@ -247,11 +285,11 @@ export function VisualizationPanel({
   const getElementProperties = (element: any, elementType: string) => {
     const properties: Record<string, any> = {}
 
-    if (elementType === "file") {
+    if (elementType === 'file') {
       properties.extension = getFileExtension(element.name)
       properties.size = element.content?.length || 0
-      properties.lines = element.content?.split("\n").length || 0
-    } else if (elementType === "directory") {
+      properties.lines = element.content?.split('\n').length || 0
+    } else if (elementType === 'directory') {
       properties.itemCount = element.children?.length || 0
       properties.fileCount = getFileCount(element)
       properties.folderCount = getFolderCount(element) - 1 // Subtract self
@@ -260,31 +298,35 @@ export function VisualizationPanel({
     return properties
   }
 
-  const generateInspectPrompts = (element: any, elementType: string, elementPath: string): string[] => {
+  const generateInspectPrompts = (
+    element: any,
+    elementType: string,
+    elementPath: string
+  ): string[] => {
     const prompts: string[] = []
 
-    if (elementType === "file") {
+    if (elementType === 'file') {
       const ext = getFileExtension(element.name).toLowerCase()
 
-      if (["js", "jsx", "ts", "tsx"].includes(ext)) {
+      if (['js', 'jsx', 'ts', 'tsx'].includes(ext)) {
         prompts.push(`Add TypeScript types to ${element.name}`)
         prompts.push(`Optimize the code structure in ${element.name}`)
         prompts.push(`Add error handling to ${element.name}`)
         prompts.push(`Create unit tests for ${element.name}`)
-      } else if (ext === "json") {
+      } else if (ext === 'json') {
         prompts.push(`Validate the JSON structure in ${element.name}`)
         prompts.push(`Add schema validation for ${element.name}`)
-      } else if (ext === "md") {
+      } else if (ext === 'md') {
         prompts.push(`Improve the documentation in ${element.name}`)
         prompts.push(`Add code examples to ${element.name}`)
-      } else if (["css", "scss", "less"].includes(ext)) {
+      } else if (['css', 'scss', 'less'].includes(ext)) {
         prompts.push(`Optimize CSS performance in ${element.name}`)
         prompts.push(`Add responsive design to ${element.name}`)
       }
 
       prompts.push(`Refactor ${element.name} for better maintainability`)
       prompts.push(`Add comments and documentation to ${element.name}`)
-    } else if (elementType === "directory") {
+    } else if (elementType === 'directory') {
       prompts.push(`Organize files better in the ${element.name} directory`)
       prompts.push(`Add an index file to ${element.name}`)
       prompts.push(`Create a README for the ${element.name} directory`)
@@ -294,29 +336,35 @@ export function VisualizationPanel({
     return prompts
   }
 
-  const renderFileStructure = (node: FileStructureNode, path = "", level = 0) => {
+  const renderFileStructure = (
+    node: FileStructureNode,
+    path = '',
+    level = 0
+  ) => {
     const isExpanded = expandedFolders.includes(path)
     const isSelected = selectedNode === path
-    const isFolder = node.type === "directory"
+    const isFolder = node.type === 'directory'
     const hasChildren = isFolder && node.children && node.children.length > 0
 
     const getFileIcon = (name: string) => {
-      const ext = name.split(".").pop()?.toLowerCase()
-      if (ext === "js" || ext === "jsx" || ext === "ts" || ext === "tsx")
+      const ext = name.split('.').pop()?.toLowerCase()
+      if (ext === 'js' || ext === 'jsx' || ext === 'ts' || ext === 'tsx')
         return <FileCode className="h-4 w-4 text-yellow-500" />
-      if (ext === "json") return <FileCode className="h-4 w-4 text-green-500" />
-      if (ext === "md" || ext === "txt") return <FileText className="h-4 w-4 text-blue-500" />
-      if (ext === "html" || ext === "css") return <Code className="h-4 w-4 text-purple-500" />
+      if (ext === 'json') return <FileCode className="h-4 w-4 text-green-500" />
+      if (ext === 'md' || ext === 'txt')
+        return <FileText className="h-4 w-4 text-blue-500" />
+      if (ext === 'html' || ext === 'css')
+        return <Code className="h-4 w-4 text-purple-500" />
       return <File className="h-4 w-4 text-gray-500" />
     }
 
     return (
-      <div key={path || "root"}>
+      <div key={path || 'root'}>
         <div
-          onClick={(e) => {
+          onClick={e => {
             e.stopPropagation()
             if (inspectMode) {
-              handleInspectElement(node, isFolder ? "directory" : "file", path)
+              handleInspectElement(node, isFolder ? 'directory' : 'file', path)
             } else {
               if (isFolder) {
                 toggleFolder(path)
@@ -325,9 +373,9 @@ export function VisualizationPanel({
               }
             }
           }}
-          className={`flex items-center py-1 px-2 rounded-md cursor-pointer ${
-            isSelected ? "bg-primary/10 text-primary" : "hover:bg-muted"
-          } ${inspectMode ? "hover:bg-blue-100 hover:ring-2 hover:ring-blue-300" : ""}`}
+          className={`group flex items-center py-1 px-2 rounded-md cursor-pointer ${
+            isSelected ? 'bg-primary/10 text-primary' : 'hover:bg-muted'
+          } ${inspectMode ? 'hover:bg-blue-100 hover:ring-2 hover:ring-blue-300' : ''}`}
           style={{ paddingLeft: `${level * 12 + 4}px` }}
         >
           <div className="flex-1 flex items-center overflow-hidden">
@@ -335,12 +383,16 @@ export function VisualizationPanel({
               <>
                 <button
                   className="mr-1 p-0.5 rounded-sm hover:bg-muted-foreground/10"
-                  onClick={(e) => {
+                  onClick={e => {
                     e.stopPropagation()
                     toggleFolder(path)
                   }}
                 >
-                  {isExpanded ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+                  {isExpanded ? (
+                    <ChevronDown className="h-3.5 w-3.5" />
+                  ) : (
+                    <ChevronRight className="h-3.5 w-3.5" />
+                  )}
                 </button>
                 {isExpanded ? (
                   <FolderOpen className="h-4 w-4 text-amber-500 mr-2" />
@@ -360,7 +412,7 @@ export function VisualizationPanel({
                   variant="ghost"
                   size="icon"
                   className="h-6 w-6 opacity-0 group-hover:opacity-100 hover:opacity-100"
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={e => e.stopPropagation()}
                 >
                   <MoreHorizontal className="h-3.5 w-3.5" />
                 </Button>
@@ -379,8 +431,13 @@ export function VisualizationPanel({
                     <Separator className="my-1" />
                   </>
                 )}
-                <DropdownMenuItem onClick={() => handleRenameNode(path)}>Rename</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleDeleteNode(path)} className="text-red-500">
+                <DropdownMenuItem onClick={() => handleRenameNode(path)}>
+                  Rename
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => handleDeleteNode(path)}
+                  className="text-red-500"
+                >
                   Delete
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -389,8 +446,12 @@ export function VisualizationPanel({
         </div>
         {isFolder && isExpanded && node.children && (
           <div>
-            {node.children.map((child) =>
-              renderFileStructure(child, path ? `${path}/${child.name}` : child.name, level + 1),
+            {node.children.map(child =>
+              renderFileStructure(
+                child,
+                path ? `${path}/${child.name}` : child.name,
+                level + 1
+              )
             )}
           </div>
         )}
@@ -407,7 +468,8 @@ export function VisualizationPanel({
           </div>
           <h3 className="text-xl font-medium mb-2">No File Selected</h3>
           <p className="text-muted-foreground mb-6 max-w-md">
-            Select a file to edit its content or use the auto-formatter to improve your code structure and style.
+            Select a file to edit its content or use the auto-formatter to
+            improve your code structure and style.
           </p>
           <Button
             onClick={onFormatAll}
@@ -420,9 +482,16 @@ export function VisualizationPanel({
       )
     }
 
-    const node = getNodeByPath(activeFileStructure, selectedNode.split("/").filter(Boolean))
-    if (!node || node.type !== "file") {
-      return <div className="flex items-center justify-center h-full text-muted-foreground">Invalid selection</div>
+    const node = getNodeByPath(
+      activeFileStructure,
+      selectedNode.split('/').filter(Boolean)
+    )
+    if (!node || node.type !== 'file') {
+      return (
+        <div className="flex items-center justify-center h-full text-muted-foreground">
+          Invalid selection
+        </div>
+      )
     }
 
     return (
@@ -447,12 +516,12 @@ export function VisualizationPanel({
           <textarea
             className="w-full h-full min-h-[300px] font-mono text-sm p-4 bg-slate-900 text-slate-100 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500 resize-none border-none placeholder-slate-500 selection:bg-indigo-500/30"
             value={editingContent}
-            onChange={(e) => setEditingContent(e.target.value)}
+            onChange={e => setEditingContent(e.target.value)}
             spellCheck={false}
             style={{
-              lineHeight: "1.5",
-              caretColor: "#14b8a6", // teal-500
-              boxShadow: "inset 0 0 0 1px rgba(71, 85, 105, 0.2)",
+              lineHeight: '1.5',
+              caretColor: '#14b8a6', // teal-500
+              boxShadow: 'inset 0 0 0 1px rgba(71, 85, 105, 0.2)',
             }}
           />
         </div>
@@ -477,10 +546,18 @@ export function VisualizationPanel({
               <Zap className="h-8 w-8 text-teal-600" />
             </div>
             <h3 className="text-2xl font-bold mb-2">{projectDetails.name}</h3>
-            <p className="text-muted-foreground mb-4">{projectDetails.description}</p>
+            <p className="text-muted-foreground mb-4">
+              {projectDetails.description}
+            </p>
             <div className="flex items-center justify-center space-x-4 text-sm">
-              <span className="px-3 py-1 bg-teal-100 text-teal-800 rounded-full">{projectDetails.framework}</span>
-              <span className="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full">{projectDetails.language}</span>
+              <span className="px-3 py-1 bg-teal-100 text-teal-800 rounded-full">
+                {projectDetails.framework}
+              </span>
+              <span className="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full">
+                {projectDetails.languages?.length
+                  ? projectDetails.languages.join(', ')
+                  : 'N/A'}
+              </span>
             </div>
           </div>
 
@@ -492,7 +569,8 @@ export function VisualizationPanel({
                   Project Structure
                 </h4>
                 <div className="text-sm text-muted-foreground">
-                  {getFileCount(activeFileStructure)} files in {getFolderCount(activeFileStructure)} folders
+                  {getFileCount(activeFileStructure)} files in{' '}
+                  {getFolderCount(activeFileStructure)} folders
                 </div>
               </CardContent>
             </Card>
@@ -504,7 +582,9 @@ export function VisualizationPanel({
                   Team
                 </h4>
                 <div className="text-sm text-muted-foreground">
-                  {currentTeam ? `Working in ${currentTeam.name}` : "Personal project"}
+                  {currentTeam
+                    ? `Working in ${currentTeam.name}`
+                    : 'Personal project'}
                 </div>
               </CardContent>
             </Card>
@@ -520,7 +600,7 @@ export function VisualizationPanel({
                     className="flex items-center p-2 rounded-md hover:bg-muted cursor-pointer"
                     onClick={() => {
                       selectNode(file.path)
-                      setActiveView("structure")
+                      setActiveView('structure')
                     }}
                   >
                     {getFileIcon(file.name)}
@@ -534,12 +614,19 @@ export function VisualizationPanel({
       )
     }
 
-    const node = getNodeByPath(activeFileStructure, selectedNode.split("/").filter(Boolean))
+    const node = getNodeByPath(
+      activeFileStructure,
+      selectedNode.split('/').filter(Boolean)
+    )
     if (!node) {
-      return <div className="flex items-center justify-center h-full text-muted-foreground">File not found</div>
+      return (
+        <div className="flex items-center justify-center h-full text-muted-foreground">
+          File not found
+        </div>
+      )
     }
 
-    if (node.type === "directory") {
+    if (node.type === 'directory') {
       // Directory preview
       return (
         <div className="p-6">
@@ -556,10 +643,12 @@ export function VisualizationPanel({
               <Card
                 key={index}
                 className={`hover:shadow-md transition-shadow cursor-pointer ${
-                  inspectMode ? "hover:ring-2 hover:ring-blue-300" : ""
+                  inspectMode ? 'hover:ring-2 hover:ring-blue-300' : ''
                 }`}
                 onClick={() => {
-                  const childPath = selectedNode ? `${selectedNode}/${child.name}` : child.name
+                  const childPath = selectedNode
+                    ? `${selectedNode}/${child.name}`
+                    : child.name
                   if (inspectMode) {
                     handleInspectElement(child, child.type, childPath)
                   } else {
@@ -569,7 +658,7 @@ export function VisualizationPanel({
               >
                 <CardContent className="p-4">
                   <div className="flex items-center">
-                    {child.type === "directory" ? (
+                    {child.type === 'directory' ? (
                       <Folder className="h-8 w-8 text-amber-500 mr-3" />
                     ) : (
                       <div className="mr-3">{getFileIcon(child.name)}</div>
@@ -577,7 +666,7 @@ export function VisualizationPanel({
                     <div>
                       <div className="font-medium truncate">{child.name}</div>
                       <div className="text-xs text-muted-foreground">
-                        {child.type === "directory"
+                        {child.type === 'directory'
                           ? `${child.children?.length || 0} items`
                           : getFileExtension(child.name)}
                       </div>
@@ -600,9 +689,9 @@ export function VisualizationPanel({
 
     // File preview
     const fileExtension = getFileExtension(node.name).toLowerCase()
-    const content = node.content || ""
+    const content = node.content || ''
 
-    if (fileExtension === "md") {
+    if (fileExtension === 'md') {
       // Markdown preview
       return (
         <div className="h-full flex flex-col">
@@ -613,13 +702,15 @@ export function VisualizationPanel({
             </h3>
           </div>
           <div className="flex-1 p-6 overflow-auto prose prose-sm max-w-none">
-            <div dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }} />
+            <div
+              dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
+            />
           </div>
         </div>
       )
     }
 
-    if (fileExtension === "json") {
+    if (fileExtension === 'json') {
       // JSON preview
       return (
         <div className="h-full flex flex-col">
@@ -638,7 +729,7 @@ export function VisualizationPanel({
       )
     }
 
-    if (fileExtension === "html") {
+    if (fileExtension === 'html') {
       // HTML preview
       return (
         <div className="h-full flex flex-col">
@@ -660,7 +751,7 @@ export function VisualizationPanel({
       )
     }
 
-    if (["jpg", "jpeg", "png", "gif", "svg", "webp"].includes(fileExtension)) {
+    if (['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(fileExtension)) {
       // Image preview
       return (
         <div className="h-full flex flex-col">
@@ -672,7 +763,10 @@ export function VisualizationPanel({
           </div>
           <div className="flex-1 flex items-center justify-center p-6 bg-checkered">
             <img
-              src={content || `/placeholder.svg?height=300&width=400&text=${encodeURIComponent(node.name)}`}
+              src={
+                content ||
+                `/placeholder.svg?height=300&width=400&text=${encodeURIComponent(node.name)}`
+              }
               alt={node.name}
               className="max-w-full max-h-full object-contain rounded-lg shadow-lg"
             />
@@ -692,7 +786,7 @@ export function VisualizationPanel({
         </div>
         <div className="flex-1 p-4 overflow-auto">
           <pre className="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm overflow-auto">
-            <code>{content || "// Empty file"}</code>
+            <code>{content || '// Empty file'}</code>
           </pre>
         </div>
       </div>
@@ -701,19 +795,31 @@ export function VisualizationPanel({
 
   // Helper functions
   const getFileCount = (node: FileStructureNode): number => {
-    if (node.type === "file") return 1
-    return (node.children || []).reduce((count, child) => count + getFileCount(child), 0)
+    if (node.type === 'file') return 1
+    return (node.children || []).reduce(
+      (count, child) => count + getFileCount(child),
+      0
+    )
   }
 
   const getFolderCount = (node: FileStructureNode): number => {
-    if (node.type === "file") return 0
-    return 1 + (node.children || []).reduce((count, child) => count + getFolderCount(child), 0)
+    if (node.type === 'file') return 0
+    return (
+      1 +
+      (node.children || []).reduce(
+        (count, child) => count + getFolderCount(child),
+        0
+      )
+    )
   }
 
-  const getRecentFiles = (node: FileStructureNode, path = ""): Array<{ name: string; path: string }> => {
+  const getRecentFiles = (
+    node: FileStructureNode,
+    path = ''
+  ): Array<{ name: string; path: string }> => {
     const files: Array<{ name: string; path: string }> = []
 
-    if (node.type === "file") {
+    if (node.type === 'file') {
       files.push({ name: node.name, path })
     } else if (node.children) {
       for (const child of node.children) {
@@ -726,28 +832,30 @@ export function VisualizationPanel({
   }
 
   const getFileExtension = (filename: string): string => {
-    return filename.split(".").pop() || ""
+    return filename.split('.').pop() || ''
   }
 
   const getFileIcon = (name: string) => {
-    const ext = name.split(".").pop()?.toLowerCase()
-    if (ext === "js" || ext === "jsx" || ext === "ts" || ext === "tsx")
+    const ext = name.split('.').pop()?.toLowerCase()
+    if (ext === 'js' || ext === 'jsx' || ext === 'ts' || ext === 'tsx')
       return <FileCode className="h-4 w-4 text-yellow-500" />
-    if (ext === "json") return <FileCode className="h-4 w-4 text-green-500" />
-    if (ext === "md" || ext === "txt") return <FileText className="h-4 w-4 text-blue-500" />
-    if (ext === "html" || ext === "css") return <Code className="h-4 w-4 text-purple-500" />
+    if (ext === 'json') return <FileCode className="h-4 w-4 text-green-500" />
+    if (ext === 'md' || ext === 'txt')
+      return <FileText className="h-4 w-4 text-blue-500" />
+    if (ext === 'html' || ext === 'css')
+      return <Code className="h-4 w-4 text-purple-500" />
     return <File className="h-4 w-4 text-gray-500" />
   }
 
   const renderMarkdown = (content: string): string => {
     // Simple markdown to HTML conversion
     return content
-      .replace(/^# (.*$)/gim, "<h1>$1</h1>")
-      .replace(/^## (.*$)/gim, "<h2>$1</h2>")
-      .replace(/^### (.*$)/gim, "<h3>$1</h3>")
-      .replace(/\*\*(.*)\*\*/gim, "<strong>$1</strong>")
-      .replace(/\*(.*)\*/gim, "<em>$1</em>")
-      .replace(/\n/gim, "<br>")
+      .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+      .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+      .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+      .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
+      .replace(/\*(.*)\*/gim, '<em>$1</em>')
+      .replace(/\n/gim, '<br>')
   }
 
   const formatJSON = (content: string): string => {
@@ -764,28 +872,62 @@ export function VisualizationPanel({
       <div className="flex items-center justify-between p-2 border-b bg-muted/50">
         <div className="flex items-center space-x-2">
           <Button
-            variant={activeView === "structure" ? "default" : "outline"}
+            variant={activeView === 'structure' ? 'default' : 'outline'}
             size="sm"
-            onClick={() => setActiveView("structure")}
+            onClick={() => setActiveView('structure')}
           >
             <Folder className="h-4 w-4 mr-2" />
             Structure
           </Button>
           <Button
-            variant={activeView === "port" ? "default" : "outline"}
+            variant={activeView === 'preview' ? 'default' : 'outline'}
             size="sm"
-            onClick={() => setActiveView("port")}
+            onClick={() => setActiveView('preview')}
+          >
+            <FileText className="h-4 w-4 mr-2" />
+            Preview
+          </Button>
+          <Button
+            variant={activeView === 'code' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setActiveView('code')}
+          >
+            <Code className="h-4 w-4 mr-2" />
+            Code
+          </Button>
+          <Button
+            variant={activeView === 'port' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setActiveView('port')}
           >
             <Activity className="h-4 w-4 mr-2" />
             Port
           </Button>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline" size="icon" onClick={onUndo} disabled={!canUndo}>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={onUndo}
+            disabled={!canUndo}
+          >
             <Undo className="h-4 w-4" />
           </Button>
-          <Button variant="outline" size="icon" onClick={onRedo} disabled={!canRedo}>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={onRedo}
+            disabled={!canRedo}
+          >
             <Redo className="h-4 w-4" />
+          </Button>
+          <Button
+            variant={inspectMode ? 'default' : 'outline'}
+            size="icon"
+            onClick={() => setInspectMode(v => !v)}
+            title="Toggle Inspect Mode"
+          >
+            <Target className="h-4 w-4" />
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -807,9 +949,36 @@ export function VisualizationPanel({
                 <GitBranch className="h-4 w-4 mr-2" />
                 Create Branch
               </DropdownMenuItem>
+              <DropdownMenuItem onClick={onSwitchBranch}>
+                <GitBranch className="h-4 w-4 mr-2" />
+                Switch Branch
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onRenameBranch}>
+                <GitBranch className="h-4 w-4 mr-2" />
+                Rename Branch
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={onDeleteBranch}
+                className="text-red-500"
+              >
+                <GitBranch className="h-4 w-4 mr-2" />
+                Delete Branch
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={onCreateTag}>
                 <Tag className="h-4 w-4 mr-2" />
                 Create Tag
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onUpdateTag}>
+                <Tag className="h-4 w-4 mr-2" />
+                Update Tag
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onMoveTag}>
+                <Tag className="h-4 w-4 mr-2" />
+                Move Tag
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onDeleteTag} className="text-red-500">
+                <Tag className="h-4 w-4 mr-2" />
+                Delete Tag
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => {}}>
                 <Share className="h-4 w-4 mr-2" />
@@ -830,16 +999,24 @@ export function VisualizationPanel({
 
       {/* Main content */}
       <div className="flex-1 overflow-auto relative">
-        {activeView === "structure" && (
+        {activeView === 'structure' && (
           <div className="p-2">
             <div className="flex items-center justify-between mb-2">
               <h3 className="font-medium">Project Files</h3>
               <div className="flex space-x-1">
-                <Button variant="ghost" size="sm" onClick={() => handleAddFile("")}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleAddFile('')}
+                >
                   <File className="h-4 w-4 mr-1" />
                   Add File
                 </Button>
-                <Button variant="ghost" size="sm" onClick={() => handleAddFolder("")}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleAddFolder('')}
+                >
                   <Folder className="h-4 w-4 mr-1" />
                   Add Folder
                 </Button>
@@ -848,15 +1025,24 @@ export function VisualizationPanel({
             <Card>
               <CardContent className="p-2">
                 {renderFileStructure(activeFileStructure)}
-                {(!activeFileStructure.children || activeFileStructure.children.length === 0) && (
+                {(!activeFileStructure.children ||
+                  activeFileStructure.children.length === 0) && (
                   <div className="py-8 text-center text-muted-foreground">
                     <p>No files yet. Start by adding a file or folder.</p>
                     <div className="flex justify-center mt-4 space-x-2">
-                      <Button variant="outline" size="sm" onClick={() => handleAddFile("")}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleAddFile('')}
+                      >
                         <Plus className="h-4 w-4 mr-1" />
                         Add File
                       </Button>
-                      <Button variant="outline" size="sm" onClick={() => handleAddFolder("")}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleAddFolder('')}
+                      >
                         <Plus className="h-4 w-4 mr-1" />
                         Add Folder
                       </Button>
@@ -867,8 +1053,9 @@ export function VisualizationPanel({
             </Card>
           </div>
         )}
-        {activeView === "code" && renderCodeEditor()}
-        {activeView === "port" && (
+        {activeView === 'code' && renderCodeEditor()}
+        {activeView === 'preview' && renderPreview()}
+        {activeView === 'port' && (
           <div className="h-full">
             <PortViewer projectDetails={projectDetails} />
           </div>
@@ -881,14 +1068,22 @@ export function VisualizationPanel({
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   <Target className="h-4 w-4 mr-2 text-blue-500" />
-                  <h3 className="font-semibold">Inspect: {inspectedElement.name}</h3>
+                  <h3 className="font-semibold">
+                    Inspect: {inspectedElement.name}
+                  </h3>
                 </div>
-                <Button variant="ghost" size="icon" onClick={() => setShowInspectPanel(false)} className="h-6 w-6">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowInspectPanel(false)}
+                  className="h-6 w-6"
+                >
                   ×
                 </Button>
               </div>
               <p className="text-xs text-muted-foreground mt-1">
-                {inspectedElement.type === "file" ? "File" : "Directory"} • {inspectedElement.path}
+                {inspectedElement.type === 'file' ? 'File' : 'Directory'} •{' '}
+                {inspectedElement.path}
               </p>
             </div>
 
@@ -897,12 +1092,16 @@ export function VisualizationPanel({
               <div className="mb-4">
                 <h4 className="text-sm font-medium mb-2">Properties</h4>
                 <div className="space-y-1 text-xs">
-                  {Object.entries(inspectedElement.properties).map(([key, value]) => (
-                    <div key={key} className="flex justify-between">
-                      <span className="text-muted-foreground capitalize">{key}:</span>
-                      <span>{String(value)}</span>
-                    </div>
-                  ))}
+                  {Object.entries(inspectedElement.properties).map(
+                    ([key, value]) => (
+                      <div key={key} className="flex justify-between">
+                        <span className="text-muted-foreground capitalize">
+                          {key}:
+                        </span>
+                        <span>{String(value)}</span>
+                      </div>
+                    )
+                  )}
                 </div>
               </div>
 
@@ -919,7 +1118,7 @@ export function VisualizationPanel({
                       className="w-full text-left p-2 text-xs bg-muted/50 hover:bg-muted rounded border border-transparent hover:border-primary/20 transition-colors"
                       onClick={() => {
                         // Here you would typically send this prompt to the chat
-                        console.log("Selected prompt:", prompt)
+                        console.log('Selected prompt:', prompt)
                         setShowInspectPanel(false)
                         setInspectMode(false)
                       }}

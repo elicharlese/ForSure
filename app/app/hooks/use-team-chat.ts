@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import { useState, useEffect, useCallback } from "react"
-import { useAuth } from "@/contexts/auth-context"
-import { useTeams } from "./use-teams"
-import type { TeamChatMessage } from "../types/team"
+import { useState, useEffect, useCallback } from 'react'
+import { useAuth } from '@/contexts/auth-context'
+import { useTeams } from './use-teams'
+import type { TeamChatMessage } from '../types/team'
 
 export function useTeamChat(teamId: string | null) {
   const [messages, setMessages] = useState<TeamChatMessage[]>([])
@@ -26,7 +26,7 @@ export function useTeamChat(teamId: string | null) {
       const team = getTeam(teamId)
 
       if (!team) {
-        setError("Team not found")
+        setError('Team not found')
         setIsLoading(false)
         return
       }
@@ -40,15 +40,17 @@ export function useTeamChat(teamId: string | null) {
         setMessages(team.chat.messages || [])
 
         // Calculate unread messages
-        const lastRead = team.chat.lastReadTimestamp?.[user.id] || "0"
+        const lastRead = team.chat.lastReadTimestamp?.[user.id] || '0'
         const unread =
-          team.chat.messages?.filter((msg) => msg.userId !== user.id && msg.timestamp > lastRead).length || 0
+          team.chat.messages?.filter(
+            msg => msg.userId !== user.id && msg.timestamp > lastRead
+          ).length || 0
 
         setUnreadCount(unread)
       }
     } catch (err) {
-      console.error("Failed to load chat messages:", err)
-      setError("Failed to load chat messages")
+      console.error('Failed to load chat messages:', err)
+      setError('Failed to load chat messages')
     } finally {
       setIsLoading(false)
     }
@@ -61,21 +63,31 @@ export function useTeamChat(teamId: string | null) {
 
   // Send a new message
   const sendMessage = useCallback(
-    async (content: string, attachments?: TeamChatMessage["attachments"], files?: File[]) => {
+    async (
+      content: string,
+      attachments?: TeamChatMessage['attachments'],
+      files?: File[]
+    ) => {
       if (!teamId || !user) {
-        setError("You must be logged in and have a team selected to send messages")
+        setError(
+          'You must be logged in and have a team selected to send messages'
+        )
         return false
       }
 
-      if (!content.trim() && (!attachments || attachments.length === 0) && (!files || files.length === 0)) {
-        setError("Message cannot be empty")
+      if (
+        !content.trim() &&
+        (!attachments || attachments.length === 0) &&
+        (!files || files.length === 0)
+      ) {
+        setError('Message cannot be empty')
         return false
       }
 
       try {
         const team = getTeam(teamId)
         if (!team) {
-          setError("Team not found")
+          setError('Team not found')
           return false
         }
 
@@ -83,14 +95,14 @@ export function useTeamChat(teamId: string | null) {
 
         // Process uploaded files
         if (files && files.length > 0) {
-          const { FileService } = await import("../services/file-service")
+          const { FileService } = await import('../services/file-service')
 
           for (const file of files) {
             try {
               const attachment = await FileService.processFile(file)
               processedAttachments.push(attachment)
             } catch (err) {
-              console.error("Failed to process file:", file.name, err)
+              console.error('Failed to process file:', file.name, err)
               setError(`Failed to process file: ${file.name}`)
               return false
             }
@@ -106,7 +118,8 @@ export function useTeamChat(teamId: string | null) {
           userAvatar: user.avatar,
           content: content.trim(),
           timestamp: new Date().toISOString(),
-          attachments: processedAttachments.length > 0 ? processedAttachments : undefined,
+          attachments:
+            processedAttachments.length > 0 ? processedAttachments : undefined,
           isRead: { [user.id]: true },
         }
 
@@ -134,51 +147,53 @@ export function useTeamChat(teamId: string | null) {
         setMessages(updatedMessages)
         return true
       } catch (err) {
-        console.error("Failed to send message:", err)
-        setError("Failed to send message")
+        console.error('Failed to send message:', err)
+        setError('Failed to send message')
         return false
       }
     },
-    [teamId, user, getTeam, updateTeam],
+    [teamId, user, getTeam, updateTeam]
   )
 
   // Upload files
   const uploadFiles = useCallback(
     async (files: File[]) => {
       if (!teamId || !user) {
-        setError("You must be logged in and have a team selected to upload files")
+        setError(
+          'You must be logged in and have a team selected to upload files'
+        )
         return false
       }
 
       if (files.length === 0) {
-        setError("No files selected")
+        setError('No files selected')
         return false
       }
 
       try {
-        const { FileService } = await import("../services/file-service")
-        const attachments: TeamChatMessage["attachments"] = []
+        const { FileService } = await import('../services/file-service')
+        const attachments: TeamChatMessage['attachments'] = []
 
         for (const file of files) {
           try {
             const attachment = await FileService.processFile(file)
             attachments.push(attachment)
           } catch (err) {
-            console.error("Failed to process file:", file.name, err)
+            console.error('Failed to process file:', file.name, err)
             setError(`Failed to process file: ${file.name}`)
             return false
           }
         }
 
         // Send message with file attachments
-        return await sendMessage("", attachments)
+        return await sendMessage('', attachments)
       } catch (err) {
-        console.error("Failed to upload files:", err)
-        setError("Failed to upload files")
+        console.error('Failed to upload files:', err)
+        setError('Failed to upload files')
         return false
       }
     },
-    [teamId, user, sendMessage],
+    [teamId, user, sendMessage]
   )
 
   // Mark all messages as read
@@ -202,7 +217,7 @@ export function useTeamChat(teamId: string | null) {
 
       setUnreadCount(0)
     } catch (err) {
-      console.error("Failed to mark messages as read:", err)
+      console.error('Failed to mark messages as read:', err)
     }
   }, [teamId, user, getTeam, updateTeam])
 
@@ -216,7 +231,9 @@ export function useTeamChat(teamId: string | null) {
         if (!team || !team.chat || !team.chat.messages) return
 
         // Find message
-        const messageIndex = team.chat.messages.findIndex((msg) => msg.id === messageId)
+        const messageIndex = team.chat.messages.findIndex(
+          msg => msg.id === messageId
+        )
         if (messageIndex === -1) return
 
         const message = team.chat.messages[messageIndex]
@@ -227,17 +244,21 @@ export function useTeamChat(teamId: string | null) {
         }
 
         // Check if user already reacted with this emoji
-        const existingReaction = message.reactions.find((r) => r.emoji === emoji)
+        const existingReaction = message.reactions.find(r => r.emoji === emoji)
 
         if (existingReaction) {
           // If user already reacted, remove their reaction
           if (existingReaction.users.includes(user.id)) {
-            existingReaction.users = existingReaction.users.filter((id) => id !== user.id)
+            existingReaction.users = existingReaction.users.filter(
+              id => id !== user.id
+            )
             existingReaction.count = existingReaction.users.length
 
             // Remove reaction if no users left
             if (existingReaction.count === 0) {
-              message.reactions = message.reactions.filter((r) => r.emoji !== emoji)
+              message.reactions = message.reactions.filter(
+                r => r.emoji !== emoji
+              )
             }
           } else {
             // Add user to existing reaction
@@ -267,10 +288,10 @@ export function useTeamChat(teamId: string | null) {
         // Update local state
         setMessages(updatedMessages)
       } catch (err) {
-        console.error("Failed to add reaction:", err)
+        console.error('Failed to add reaction:', err)
       }
     },
-    [teamId, user, getTeam, updateTeam],
+    [teamId, user, getTeam, updateTeam]
   )
 
   // Delete a message
@@ -283,12 +304,17 @@ export function useTeamChat(teamId: string | null) {
         if (!team || !team.chat || !team.chat.messages) return
 
         // Find message
-        const message = team.chat.messages.find((msg) => msg.id === messageId)
+        const message = team.chat.messages.find(msg => msg.id === messageId)
         if (!message) return
 
         // Check if user is the message author or has admin/owner rights
-        const userMember = team.members.find((member) => member.userId === user.id)
-        const canDelete = message.userId === user.id || userMember?.role === "admin" || userMember?.role === "owner"
+        const userMember = team.members.find(
+          member => member.userId === user.id
+        )
+        const canDelete =
+          message.userId === user.id ||
+          userMember?.role === 'admin' ||
+          userMember?.role === 'owner'
 
         if (!canDelete) {
           setError("You don't have permission to delete this message")
@@ -296,7 +322,9 @@ export function useTeamChat(teamId: string | null) {
         }
 
         // Remove message
-        const updatedMessages = team.chat.messages.filter((msg) => msg.id !== messageId)
+        const updatedMessages = team.chat.messages.filter(
+          msg => msg.id !== messageId
+        )
 
         updateTeam(teamId, {
           chat: {
@@ -308,11 +336,11 @@ export function useTeamChat(teamId: string | null) {
         // Update local state
         setMessages(updatedMessages)
       } catch (err) {
-        console.error("Failed to delete message:", err)
-        setError("Failed to delete message")
+        console.error('Failed to delete message:', err)
+        setError('Failed to delete message')
       }
     },
-    [teamId, user, getTeam, updateTeam],
+    [teamId, user, getTeam, updateTeam]
   )
 
   return {

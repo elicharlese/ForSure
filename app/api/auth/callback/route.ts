@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import { redirect } from 'next/navigation'
 
@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
 
     if (code) {
       const { data, error } = await supabase.auth.exchangeCodeForSession(code)
-      
+
       if (error) {
         console.error('Auth callback error:', error)
         return redirect(`/login?error=${encodeURIComponent(error.message)}`)
@@ -23,7 +23,9 @@ export async function GET(request: NextRequest) {
           .upsert({
             id: data.user.id,
             email: data.user.email!,
-            name: data.user.user_metadata?.full_name || data.user.email!.split('@')[0],
+            name:
+              data.user.user_metadata?.full_name ||
+              data.user.email!.split('@')[0],
             avatar_url: data.user.user_metadata?.avatar_url,
             updated_at: new Date().toISOString(),
             is_verified: true,

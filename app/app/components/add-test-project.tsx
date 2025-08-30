@@ -1,7 +1,7 @@
-"use client"
+'use client'
 
-import { Button } from "@/components/ui/button"
-import { useToast } from "@/hooks/use-toast"
+import { Button } from '@/components/ui/button'
+import { useToast } from '@/hooks/use-toast'
 
 export function AddTestProject() {
   const { toast } = useToast()
@@ -9,7 +9,7 @@ export function AddTestProject() {
   const addTestProject = () => {
     try {
       // Get existing projects or initialize empty array
-      const existingProjects = localStorage.getItem("forsure-saved-projects")
+      const existingProjects = localStorage.getItem('forsure-saved-projects')
       const projects = existingProjects ? JSON.parse(existingProjects) : []
 
       // Create a test project
@@ -19,19 +19,19 @@ export function AddTestProject() {
 
       const testProject = {
         id: projectId,
-        name: "Test Project",
+        name: 'Test Project',
         details: {
           id: projectId,
-          name: "Test Project",
-          description: "A test project to demonstrate loading functionality",
-          type: "web",
-          framework: "nextjs",
-          languages: ["typescript", "javascript"],
+          name: 'Test Project',
+          description: 'A test project to demonstrate loading functionality',
+          type: 'web',
+          framework: 'nextjs',
+          languages: ['typescript', 'javascript'],
           team: {
-            size: "small",
-            experience: "intermediate",
+            size: 'small',
+            experience: 'intermediate',
           },
-          goals: ["learning", "productivity"],
+          goals: ['learning', 'productivity'],
         },
         lastUpdated: now,
         versions: [
@@ -39,16 +39,17 @@ export function AddTestProject() {
             versionId: versionId,
             details: {
               id: projectId,
-              name: "Test Project",
-              description: "A test project to demonstrate loading functionality",
-              type: "web",
-              framework: "nextjs",
-              languages: ["typescript", "javascript"],
+              name: 'Test Project',
+              description:
+                'A test project to demonstrate loading functionality',
+              type: 'web',
+              framework: 'nextjs',
+              languages: ['typescript', 'javascript'],
               team: {
-                size: "small",
-                experience: "intermediate",
+                size: 'small',
+                experience: 'intermediate',
               },
-              goals: ["learning", "productivity"],
+              goals: ['learning', 'productivity'],
             },
             timestamp: now,
           },
@@ -60,18 +61,18 @@ export function AddTestProject() {
       projects.push(testProject)
 
       // Save back to localStorage
-      localStorage.setItem("forsure-saved-projects", JSON.stringify(projects))
+      localStorage.setItem('forsure-saved-projects', JSON.stringify(projects))
 
       toast({
-        title: "Test Project Added",
-        description: "A test project has been added to your saved projects.",
+        title: 'Test Project Added',
+        description: 'A test project has been added to your saved projects.',
       })
     } catch (error) {
-      console.error("Failed to add test project:", error)
+      console.error('Failed to add test project:', error)
       toast({
-        title: "Error",
-        description: "Failed to add test project.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to add test project.',
+        variant: 'destructive',
       })
     }
   }

@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 export function DemoBanner() {
   // Return null to effectively remove the banner

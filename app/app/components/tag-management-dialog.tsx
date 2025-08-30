@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -12,13 +12,19 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Badge } from '@/components/ui/badge'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import {
   TagIcon,
   Plus,
@@ -32,11 +38,16 @@ import {
   Package,
   Search,
   Filter,
-} from "lucide-react"
-import type { Tag, ProjectVersion } from "../hooks/use-saved-projects"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Separator } from "@/components/ui/separator"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+} from 'lucide-react'
+import type { Tag, ProjectVersion } from '../hooks/use-saved-projects'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+import { Separator } from '@/components/ui/separator'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 interface TagManagementDialogProps {
   projectId: string
@@ -46,22 +57,30 @@ interface TagManagementDialogProps {
   onCreateTag: (
     versionId: string,
     name: string,
-    type: Tag["type"],
+    type: Tag['type'],
     description?: string,
-    metadata?: Tag["metadata"],
+    metadata?: Tag['metadata']
   ) => void
   onDeleteTag: (tagId: string) => void
-  onUpdateTag: (tagId: string, updates: Partial<Pick<Tag, "name" | "description" | "metadata">>) => void
+  onUpdateTag: (
+    tagId: string,
+    updates: Partial<Pick<Tag, 'name' | 'description' | 'metadata'>>
+  ) => void
   onMoveTag: (tagId: string, newVersionId: string) => void
   trigger?: React.ReactNode
 }
 
 const TAG_TYPES = [
-  { value: "release", label: "Release", icon: Package, color: "bg-green-500" },
-  { value: "milestone", label: "Milestone", icon: Milestone, color: "bg-blue-500" },
-  { value: "hotfix", label: "Hotfix", icon: Zap, color: "bg-red-500" },
-  { value: "feature", label: "Feature", icon: Star, color: "bg-purple-500" },
-  { value: "custom", label: "Custom", icon: TagIcon, color: "bg-gray-500" },
+  { value: 'release', label: 'Release', icon: Package, color: 'bg-green-500' },
+  {
+    value: 'milestone',
+    label: 'Milestone',
+    icon: Milestone,
+    color: 'bg-blue-500',
+  },
+  { value: 'hotfix', label: 'Hotfix', icon: Zap, color: 'bg-red-500' },
+  { value: 'feature', label: 'Feature', icon: Star, color: 'bg-purple-500' },
+  { value: 'custom', label: 'Custom', icon: TagIcon, color: 'bg-gray-500' },
 ] as const
 
 export function TagManagementDialog({
@@ -76,80 +95,82 @@ export function TagManagementDialog({
   trigger,
 }: TagManagementDialogProps) {
   const [open, setOpen] = useState(false)
-  const [activeTab, setActiveTab] = useState("list")
-  const [searchQuery, setSearchQuery] = useState("")
-  const [filterType, setFilterType] = useState<Tag["type"] | "all">("all")
+  const [activeTab, setActiveTab] = useState('list')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [filterType, setFilterType] = useState<Tag['type'] | 'all'>('all')
   const [editingTag, setEditingTag] = useState<Tag | null>(null)
 
   // Create tag form state
   const [createTagForm, setCreateTagForm] = useState({
-    name: "",
-    type: "custom" as Tag["type"],
-    description: "",
+    name: '',
+    type: 'custom' as Tag['type'],
+    description: '',
     versionId: currentVersionId,
-    version: "",
-    changelog: "",
-    releaseNotes: "",
+    version: '',
+    changelog: '',
+    releaseNotes: '',
   })
 
   // Edit tag form state
   const [editTagForm, setEditTagForm] = useState({
-    name: "",
-    description: "",
-    version: "",
-    changelog: "",
-    releaseNotes: "",
+    name: '',
+    description: '',
+    version: '',
+    changelog: '',
+    releaseNotes: '',
   })
 
   const handleCreateTag = () => {
     if (!createTagForm.name.trim()) return
 
-    const metadata: Tag["metadata"] = {}
+    const metadata: Tag['metadata'] = {}
     if (createTagForm.version) metadata.version = createTagForm.version
     if (createTagForm.changelog) metadata.changelog = createTagForm.changelog
-    if (createTagForm.releaseNotes) metadata.releaseNotes = createTagForm.releaseNotes
+    if (createTagForm.releaseNotes)
+      metadata.releaseNotes = createTagForm.releaseNotes
 
     onCreateTag(
       createTagForm.versionId,
       createTagForm.name,
       createTagForm.type,
       createTagForm.description || undefined,
-      Object.keys(metadata).length > 0 ? metadata : undefined,
+      Object.keys(metadata).length > 0 ? metadata : undefined
     )
 
     // Reset form
     setCreateTagForm({
-      name: "",
-      type: "custom",
-      description: "",
+      name: '',
+      type: 'custom',
+      description: '',
       versionId: currentVersionId,
-      version: "",
-      changelog: "",
-      releaseNotes: "",
+      version: '',
+      changelog: '',
+      releaseNotes: '',
     })
 
-    setActiveTab("list")
+    setActiveTab('list')
   }
 
   const handleEditTag = (tag: Tag) => {
     setEditingTag(tag)
     setEditTagForm({
       name: tag.name,
-      description: tag.description || "",
-      version: tag.metadata?.version || "",
-      changelog: tag.metadata?.changelog || "",
-      releaseNotes: tag.metadata?.releaseNotes || "",
+      description: tag.description || '',
+      version: tag.metadata?.version || '',
+      changelog: tag.metadata?.changelog || '',
+      releaseNotes: tag.metadata?.releaseNotes || '',
     })
-    setActiveTab("edit")
+    setActiveTab('edit')
   }
 
   const handleUpdateTag = () => {
     if (!editingTag) return
 
-    const metadata: Tag["metadata"] = { ...editingTag.metadata }
+    const metadata: Tag['metadata'] = { ...editingTag.metadata }
     if (editTagForm.version) metadata.version = editTagForm.version
     if (editTagForm.changelog) metadata.changelog = editTagForm.changelog
-    if (editTagForm.releaseNotes) metadata.releaseNotes = editTagForm.releaseNotes
+    if (editTagForm.releaseNotes)
+      metadata.releaseNotes = editTagForm.releaseNotes
 
     onUpdateTag(editingTag.id, {
       name: editTagForm.name,
@@ -158,17 +179,17 @@ export function TagManagementDialog({
     })
 
     setEditingTag(null)
-    setActiveTab("list")
+    setActiveTab('list')
   }
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
-    return new Intl.DateTimeFormat("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "numeric",
-      minute: "numeric",
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
     }).format(date)
   }
 
@@ -176,13 +197,13 @@ export function TagManagementDialog({
     return id.substring(0, 7)
   }
 
-  const getTagTypeInfo = (type: Tag["type"]) => {
-    return TAG_TYPES.find((t) => t.value === type) || TAG_TYPES[4]
+  const getTagTypeInfo = (type: Tag['type']) => {
+    return TAG_TYPES.find(t => t.value === type) || TAG_TYPES[4]
   }
 
   const getVersionInfo = (versionId: string) => {
-    const version = versions.find((v) => v.versionId === versionId)
-    if (!version) return { shortId: "Unknown", timestamp: "" }
+    const version = versions.find(v => v.versionId === versionId)
+    if (!version) return { shortId: 'Unknown', timestamp: '' }
 
     return {
       shortId: getShortId(versionId),
@@ -191,19 +212,21 @@ export function TagManagementDialog({
   }
 
   // Filter tags based on search and type
-  const filteredTags = tags.filter((tag) => {
+  const filteredTags = tags.filter(tag => {
     const matchesSearch =
       tag.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       tag.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       tag.metadata?.version?.toLowerCase().includes(searchQuery.toLowerCase())
 
-    const matchesType = filterType === "all" || tag.type === filterType
+    const matchesType = filterType === 'all' || tag.type === filterType
 
     return matchesSearch && matchesType
   })
 
   // Sort tags by creation date (newest first)
-  const sortedTags = [...filteredTags].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+  const sortedTags = [...filteredTags].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  )
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -219,16 +242,21 @@ export function TagManagementDialog({
         <DialogHeader>
           <DialogTitle>Tag Management</DialogTitle>
           <DialogDescription>
-            Create and manage version tags for releases, milestones, and important checkpoints.
+            Create and manage version tags for releases, milestones, and
+            important checkpoints.
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="flex-1 flex flex-col"
+        >
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="list">Tags ({tags.length})</TabsTrigger>
             <TabsTrigger value="create">Create Tag</TabsTrigger>
             <TabsTrigger value="edit" disabled={!editingTag}>
-              {editingTag ? "Edit Tag" : "Edit"}
+              {editingTag ? 'Edit Tag' : 'Edit'}
             </TabsTrigger>
           </TabsList>
 
@@ -241,18 +269,23 @@ export function TagManagementDialog({
                   <Input
                     placeholder="Search tags..."
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={e => setSearchQuery(e.target.value)}
                     className="pl-10"
                   />
                 </div>
-                <Select value={filterType} onValueChange={(value) => setFilterType(value as Tag["type"] | "all")}>
+                <Select
+                  value={filterType}
+                  onValueChange={value =>
+                    setFilterType(value as Tag['type'] | 'all')
+                  }
+                >
                   <SelectTrigger className="w-[140px]">
                     <Filter className="h-4 w-4 mr-2" />
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Types</SelectItem>
-                    {TAG_TYPES.map((type) => (
+                    {TAG_TYPES.map(type => (
                       <SelectItem key={type.value} value={type.value}>
                         {type.label}
                       </SelectItem>
@@ -267,21 +300,30 @@ export function TagManagementDialog({
                   <div className="py-8 text-center text-muted-foreground">
                     <GitTag className="mx-auto h-12 w-12 opacity-20 mb-2" />
                     <p>No tags found</p>
-                    {searchQuery && <p className="text-sm mt-1">Try adjusting your search or filter criteria</p>}
+                    {searchQuery && (
+                      <p className="text-sm mt-1">
+                        Try adjusting your search or filter criteria
+                      </p>
+                    )}
                   </div>
                 ) : (
                   <div className="space-y-3 pr-4">
-                    {sortedTags.map((tag) => {
+                    {sortedTags.map(tag => {
                       const typeInfo = getTagTypeInfo(tag.type)
                       const versionInfo = getVersionInfo(tag.versionId)
                       const TypeIcon = typeInfo.icon
 
                       return (
-                        <div key={tag.id} className="p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                        <div
+                          key={tag.id}
+                          className="p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                        >
                           <div className="flex items-start justify-between">
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 mb-2">
-                                <div className={`p-1 rounded ${typeInfo.color} text-white`}>
+                                <div
+                                  className={`p-1 rounded ${typeInfo.color} text-white`}
+                                >
                                   <TypeIcon className="h-3 w-3" />
                                 </div>
                                 <h4 className="font-medium">{tag.name}</h4>
@@ -289,19 +331,27 @@ export function TagManagementDialog({
                                   {typeInfo.label}
                                 </Badge>
                                 {tag.metadata?.version && (
-                                  <Badge variant="secondary" className="text-xs">
+                                  <Badge
+                                    variant="secondary"
+                                    className="text-xs"
+                                  >
                                     v{tag.metadata.version}
                                   </Badge>
                                 )}
                                 {tag.isProtected && (
-                                  <Badge variant="destructive" className="text-xs">
+                                  <Badge
+                                    variant="destructive"
+                                    className="text-xs"
+                                  >
                                     Protected
                                   </Badge>
                                 )}
                               </div>
 
                               {tag.description && (
-                                <p className="text-sm text-muted-foreground mb-2">{tag.description}</p>
+                                <p className="text-sm text-muted-foreground mb-2">
+                                  {tag.description}
+                                </p>
                               )}
 
                               <div className="flex items-center gap-4 text-xs text-muted-foreground">
@@ -317,7 +367,9 @@ export function TagManagementDialog({
 
                               {tag.metadata?.changelog && (
                                 <div className="mt-2 p-2 bg-muted rounded text-xs">
-                                  <div className="font-medium mb-1">Changelog:</div>
+                                  <div className="font-medium mb-1">
+                                    Changelog:
+                                  </div>
                                   <p>{tag.metadata.changelog}</p>
                                 </div>
                               )}
@@ -327,7 +379,11 @@ export function TagManagementDialog({
                               <TooltipProvider>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
-                                    <Button variant="ghost" size="icon" onClick={() => handleEditTag(tag)}>
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      onClick={() => handleEditTag(tag)}
+                                    >
                                       <Edit className="h-4 w-4" />
                                     </Button>
                                   </TooltipTrigger>
@@ -341,7 +397,11 @@ export function TagManagementDialog({
                                 <TooltipProvider>
                                   <Tooltip>
                                     <TooltipTrigger asChild>
-                                      <Button variant="ghost" size="icon" onClick={() => onDeleteTag(tag.id)}>
+                                      <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => onDeleteTag(tag.id)}
+                                      >
                                         <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
                                       </Button>
                                     </TooltipTrigger>
@@ -372,7 +432,12 @@ export function TagManagementDialog({
                       id="tag-name"
                       placeholder="e.g., v1.0.0, milestone-1"
                       value={createTagForm.name}
-                      onChange={(e) => setCreateTagForm({ ...createTagForm, name: e.target.value })}
+                      onChange={e =>
+                        setCreateTagForm({
+                          ...createTagForm,
+                          name: e.target.value,
+                        })
+                      }
                     />
                   </div>
 
@@ -380,18 +445,25 @@ export function TagManagementDialog({
                     <Label htmlFor="tag-type">Tag Type</Label>
                     <Select
                       value={createTagForm.type}
-                      onValueChange={(value) => setCreateTagForm({ ...createTagForm, type: value as Tag["type"] })}
+                      onValueChange={value =>
+                        setCreateTagForm({
+                          ...createTagForm,
+                          type: value as Tag['type'],
+                        })
+                      }
                     >
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {TAG_TYPES.map((type) => {
+                        {TAG_TYPES.map(type => {
                           const TypeIcon = type.icon
                           return (
                             <SelectItem key={type.value} value={type.value}>
                               <div className="flex items-center gap-2">
-                                <div className={`p-1 rounded ${type.color} text-white`}>
+                                <div
+                                  className={`p-1 rounded ${type.color} text-white`}
+                                >
                                   <TypeIcon className="h-3 w-3" />
                                 </div>
                                 {type.label}
@@ -408,19 +480,30 @@ export function TagManagementDialog({
                   <Label htmlFor="tag-version">Target Version</Label>
                   <Select
                     value={createTagForm.versionId}
-                    onValueChange={(value) => setCreateTagForm({ ...createTagForm, versionId: value })}
+                    onValueChange={value =>
+                      setCreateTagForm({ ...createTagForm, versionId: value })
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       {versions
-                        .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+                        .sort(
+                          (a, b) =>
+                            new Date(b.timestamp).getTime() -
+                            new Date(a.timestamp).getTime()
+                        )
                         .map((version, index) => (
-                          <SelectItem key={version.versionId} value={version.versionId}>
+                          <SelectItem
+                            key={version.versionId}
+                            value={version.versionId}
+                          >
                             <div className="flex items-center gap-2">
                               <span>Version {versions.length - index}</span>
-                              <span className="text-muted-foreground">({getShortId(version.versionId)})</span>
+                              <span className="text-muted-foreground">
+                                ({getShortId(version.versionId)})
+                              </span>
                               {version.versionId === currentVersionId && (
                                 <Badge variant="outline" className="text-xs">
                                   Current
@@ -439,7 +522,12 @@ export function TagManagementDialog({
                     id="tag-description"
                     placeholder="Describe this tag..."
                     value={createTagForm.description}
-                    onChange={(e) => setCreateTagForm({ ...createTagForm, description: e.target.value })}
+                    onChange={e =>
+                      setCreateTagForm({
+                        ...createTagForm,
+                        description: e.target.value,
+                      })
+                    }
                     rows={3}
                   />
                 </div>
@@ -455,7 +543,12 @@ export function TagManagementDialog({
                       id="semantic-version"
                       placeholder="e.g., 1.0.0"
                       value={createTagForm.version}
-                      onChange={(e) => setCreateTagForm({ ...createTagForm, version: e.target.value })}
+                      onChange={e =>
+                        setCreateTagForm({
+                          ...createTagForm,
+                          version: e.target.value,
+                        })
+                      }
                     />
                   </div>
 
@@ -465,7 +558,12 @@ export function TagManagementDialog({
                       id="changelog"
                       placeholder="What changed in this version..."
                       value={createTagForm.changelog}
-                      onChange={(e) => setCreateTagForm({ ...createTagForm, changelog: e.target.value })}
+                      onChange={e =>
+                        setCreateTagForm({
+                          ...createTagForm,
+                          changelog: e.target.value,
+                        })
+                      }
                       rows={3}
                     />
                   </div>
@@ -476,7 +574,12 @@ export function TagManagementDialog({
                       id="release-notes"
                       placeholder="Detailed release notes..."
                       value={createTagForm.releaseNotes}
-                      onChange={(e) => setCreateTagForm({ ...createTagForm, releaseNotes: e.target.value })}
+                      onChange={e =>
+                        setCreateTagForm({
+                          ...createTagForm,
+                          releaseNotes: e.target.value,
+                        })
+                      }
                       rows={3}
                     />
                   </div>
@@ -485,10 +588,13 @@ export function TagManagementDialog({
             </ScrollArea>
 
             <div className="flex justify-end gap-2 mt-4 pt-4 border-t">
-              <Button variant="outline" onClick={() => setActiveTab("list")}>
+              <Button variant="outline" onClick={() => setActiveTab('list')}>
                 Cancel
               </Button>
-              <Button onClick={handleCreateTag} disabled={!createTagForm.name.trim()}>
+              <Button
+                onClick={handleCreateTag}
+                disabled={!createTagForm.name.trim()}
+              >
                 <Plus className="h-4 w-4 mr-2" />
                 Create Tag
               </Button>
@@ -504,7 +610,9 @@ export function TagManagementDialog({
                     <Input
                       id="edit-tag-name"
                       value={editTagForm.name}
-                      onChange={(e) => setEditTagForm({ ...editTagForm, name: e.target.value })}
+                      onChange={e =>
+                        setEditTagForm({ ...editTagForm, name: e.target.value })
+                      }
                     />
                   </div>
 
@@ -513,7 +621,12 @@ export function TagManagementDialog({
                     <Textarea
                       id="edit-tag-description"
                       value={editTagForm.description}
-                      onChange={(e) => setEditTagForm({ ...editTagForm, description: e.target.value })}
+                      onChange={e =>
+                        setEditTagForm({
+                          ...editTagForm,
+                          description: e.target.value,
+                        })
+                      }
                       rows={3}
                     />
                   </div>
@@ -524,11 +637,18 @@ export function TagManagementDialog({
                     <h4 className="font-medium">Metadata</h4>
 
                     <div className="space-y-2">
-                      <Label htmlFor="edit-semantic-version">Semantic Version</Label>
+                      <Label htmlFor="edit-semantic-version">
+                        Semantic Version
+                      </Label>
                       <Input
                         id="edit-semantic-version"
                         value={editTagForm.version}
-                        onChange={(e) => setEditTagForm({ ...editTagForm, version: e.target.value })}
+                        onChange={e =>
+                          setEditTagForm({
+                            ...editTagForm,
+                            version: e.target.value,
+                          })
+                        }
                       />
                     </div>
 
@@ -537,7 +657,12 @@ export function TagManagementDialog({
                       <Textarea
                         id="edit-changelog"
                         value={editTagForm.changelog}
-                        onChange={(e) => setEditTagForm({ ...editTagForm, changelog: e.target.value })}
+                        onChange={e =>
+                          setEditTagForm({
+                            ...editTagForm,
+                            changelog: e.target.value,
+                          })
+                        }
                         rows={3}
                       />
                     </div>
@@ -547,7 +672,12 @@ export function TagManagementDialog({
                       <Textarea
                         id="edit-release-notes"
                         value={editTagForm.releaseNotes}
-                        onChange={(e) => setEditTagForm({ ...editTagForm, releaseNotes: e.target.value })}
+                        onChange={e =>
+                          setEditTagForm({
+                            ...editTagForm,
+                            releaseNotes: e.target.value,
+                          })
+                        }
                         rows={3}
                       />
                     </div>
@@ -561,12 +691,15 @@ export function TagManagementDialog({
                 variant="outline"
                 onClick={() => {
                   setEditingTag(null)
-                  setActiveTab("list")
+                  setActiveTab('list')
                 }}
               >
                 Cancel
               </Button>
-              <Button onClick={handleUpdateTag} disabled={!editTagForm.name.trim()}>
+              <Button
+                onClick={handleUpdateTag}
+                disabled={!editTagForm.name.trim()}
+              >
                 <Edit className="h-4 w-4 mr-2" />
                 Update Tag
               </Button>

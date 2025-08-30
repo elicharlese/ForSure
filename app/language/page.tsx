@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import { useState, useEffect, useRef } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useState, useEffect, useRef } from 'react'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   ArrowRight,
   Code,
@@ -21,34 +21,46 @@ import {
   Info,
   HelpCircle,
   Bookmark,
-} from "lucide-react"
-import CodeExample from "@/components/code-example"
-import AnimateOnScroll from "@/components/animate-on-scroll"
-import ForSureInteractiveDemo from "@/components/forsure-interactive-demo"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
+} from 'lucide-react'
+import CodeExample from '@/components/code-example'
+import AnimateOnScroll from '@/components/animate-on-scroll'
+import ForSureInteractiveDemo from '@/components/forsure-interactive-demo'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
+import { Badge } from '@/components/ui/badge'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
 
 export default function LanguagePage() {
-  const [openSection, setOpenSection] = useState<string | null>("syntax")
+  const [openSection, setOpenSection] = useState<string | null>('syntax')
   const [copied, setCopied] = useState<string | null>(null)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [activeTab, setActiveTab] = useState("overview")
+  const [searchQuery, setSearchQuery] = useState('')
+  const [activeTab, setActiveTab] = useState('overview')
   const [showTip, setShowTip] = useState(0)
   const tipInterval = useRef<NodeJS.Timeout | null>(null)
 
   const languageTips = [
-    "Use indentation to represent nesting in your file structure",
-    "Add metadata tags to document your files and directories",
-    "Import common structures with @import directives",
-    "Use comments with # to add notes to your ForSure files",
-    "Create templates for reusable project structures",
+    'Use indentation to represent nesting in your file structure',
+    'Add metadata tags to document your files and directories',
+    'Import common structures with @import directives',
+    'Use comments with # to add notes to your ForSure files',
+    'Create templates for reusable project structures',
   ]
 
   useEffect(() => {
     tipInterval.current = setInterval(() => {
-      setShowTip((prev) => (prev + 1) % languageTips.length)
+      setShowTip(prev => (prev + 1) % languageTips.length)
     }, 8000)
 
     return () => {
@@ -78,16 +90,21 @@ export default function LanguagePage() {
         {/* Hero Section */}
         <div className="flex flex-col md:flex-row gap-8 items-center">
           <div className="flex-1">
-            <Badge variant="outline" className="mb-4 px-3 py-1 border-primary/30 bg-primary/5 text-primary">
+            <Badge
+              variant="outline"
+              className="mb-4 px-3 py-1 border-primary/30 bg-primary/5 text-primary"
+            >
               <Code className="h-3.5 w-3.5 mr-1" />
               ForSure Language
             </Badge>
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 leading-tight">
-              Define file structures <span className="text-primary">with confidence</span>
+              Define file structures{' '}
+              <span className="text-primary">with confidence</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mb-6">
-              A human-readable language for defining and documenting file structures with rich metadata, designed for
-              clarity and maintainability.
+              A human-readable language for defining and documenting file
+              structures with rich metadata, designed for clarity and
+              maintainability.
             </p>
             <div className="flex flex-wrap gap-4">
               <Button asChild className="bg-primary hover:bg-primary/90">
@@ -114,7 +131,9 @@ export default function LanguagePage() {
                     <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                     <div className="w-3 h-3 rounded-full bg-green-500"></div>
                   </div>
-                  <div className="ml-3 text-xs font-medium opacity-70">project.forsure</div>
+                  <div className="ml-3 text-xs font-medium opacity-70">
+                    project.forsure
+                  </div>
                 </div>
               </CardHeader>
               <CardContent className="p-0">
@@ -159,7 +178,12 @@ export default function LanguagePage() {
 
         {/* Language Overview Tabs */}
         <section className="bg-white dark:bg-secondary-dark/20 rounded-lg shadow-sm border border-primary/10 overflow-hidden">
-          <Tabs defaultValue="overview" value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <Tabs
+            defaultValue="overview"
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
             <div className="border-b border-primary/10">
               <TabsList className="bg-transparent h-auto p-0">
                 <div className="flex w-full overflow-x-auto">
@@ -202,9 +226,11 @@ export default function LanguagePage() {
                 <div>
                   <h2 className="text-2xl font-bold mb-4">What is ForSure?</h2>
                   <p className="mb-4 text-muted-foreground">
-                    ForSure is a declarative language designed to define, document, and generate file structures for
-                    software projects. It provides a human-readable way to specify directories, files, and their
-                    relationships, along with rich metadata.
+                    ForSure is a declarative language designed to define,
+                    document, and generate file structures for software
+                    projects. It provides a human-readable way to specify
+                    directories, files, and their relationships, along with rich
+                    metadata.
                   </p>
 
                   <h3 className="text-xl font-bold mt-6 mb-3">Key Benefits</h3>
@@ -214,8 +240,8 @@ export default function LanguagePage() {
                         <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
                       </div>
                       <div>
-                        <span className="font-medium">Self-documenting</span> - Structures include built-in
-                        documentation
+                        <span className="font-medium">Self-documenting</span> -
+                        Structures include built-in documentation
                       </div>
                     </li>
                     <li className="flex items-start">
@@ -223,7 +249,8 @@ export default function LanguagePage() {
                         <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
                       </div>
                       <div>
-                        <span className="font-medium">Reusable</span> - Import common structures across projects
+                        <span className="font-medium">Reusable</span> - Import
+                        common structures across projects
                       </div>
                     </li>
                     <li className="flex items-start">
@@ -231,7 +258,8 @@ export default function LanguagePage() {
                         <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
                       </div>
                       <div>
-                        <span className="font-medium">Maintainable</span> - Easy to update and evolve over time
+                        <span className="font-medium">Maintainable</span> - Easy
+                        to update and evolve over time
                       </div>
                     </li>
                     <li className="flex items-start">
@@ -239,8 +267,8 @@ export default function LanguagePage() {
                         <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
                       </div>
                       <div>
-                        <span className="font-medium">Generative</span> - Automatically create file structures from
-                        definitions
+                        <span className="font-medium">Generative</span> -
+                        Automatically create file structures from definitions
                       </div>
                     </li>
                   </ul>
@@ -257,7 +285,9 @@ export default function LanguagePage() {
                         <p
                           key={index}
                           className={`absolute transition-all duration-500 ease-in-out text-muted-foreground ${
-                            index === showTip ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+                            index === showTip
+                              ? 'translate-y-0 opacity-100'
+                              : 'translate-y-8 opacity-0'
                           }`}
                         >
                           {tip}
@@ -268,7 +298,9 @@ export default function LanguagePage() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => setShowTip((prev) => (prev + 1) % languageTips.length)}
+                        onClick={() =>
+                          setShowTip(prev => (prev + 1) % languageTips.length)
+                        }
                         className="h-8 text-xs"
                       >
                         <RefreshCw className="h-3 w-3 mr-1" />
@@ -279,7 +311,9 @@ export default function LanguagePage() {
 
                   <div className="flex items-center gap-4 mb-4">
                     <hr className="flex-1 border-primary/10" />
-                    <span className="text-sm text-muted-foreground">Get Started</span>
+                    <span className="text-sm text-muted-foreground">
+                      Get Started
+                    </span>
                     <hr className="flex-1 border-primary/10" />
                   </div>
 
@@ -293,7 +327,10 @@ export default function LanguagePage() {
                           </CardTitle>
                         </CardHeader>
                         <CardContent>
-                          <CardDescription>Install the ForSure CLI to start generating file structures</CardDescription>
+                          <CardDescription>
+                            Install the ForSure CLI to start generating file
+                            structures
+                          </CardDescription>
                         </CardContent>
                       </Card>
                     </Link>
@@ -307,7 +344,9 @@ export default function LanguagePage() {
                           </CardTitle>
                         </CardHeader>
                         <CardContent>
-                          <CardDescription>Learn the ForSure language with comprehensive guides</CardDescription>
+                          <CardDescription>
+                            Learn the ForSure language with comprehensive guides
+                          </CardDescription>
                         </CardContent>
                       </Card>
                     </Link>
@@ -321,8 +360,9 @@ export default function LanguagePage() {
                 <div>
                   <h2 className="text-2xl font-bold mb-4">Basic Syntax</h2>
                   <p className="mb-4 text-muted-foreground">
-                    ForSure uses a hierarchical structure with indentation to represent nesting. Each entry starts with
-                    a hyphen and has properties like Type and Name.
+                    ForSure uses a hierarchical structure with indentation to
+                    represent nesting. Each entry starts with a hyphen and has
+                    properties like Type and Name.
                   </p>
 
                   <h3 className="text-xl font-bold mt-6 mb-3">Core Concepts</h3>
@@ -334,8 +374,8 @@ export default function LanguagePage() {
                         </span>
                       </div>
                       <div>
-                        <span className="font-medium">Root Declaration</span> - Every ForSure file starts with a root
-                        declaration
+                        <span className="font-medium">Root Declaration</span> -
+                        Every ForSure file starts with a root declaration
                       </div>
                     </li>
                     <li className="flex items-start">
@@ -345,8 +385,8 @@ export default function LanguagePage() {
                         </span>
                       </div>
                       <div>
-                        <span className="font-medium">Entries</span> - Files and directories are defined as entries with
-                        a hyphen prefix
+                        <span className="font-medium">Entries</span> - Files and
+                        directories are defined as entries with a hyphen prefix
                       </div>
                     </li>
                     <li className="flex items-start">
@@ -356,7 +396,8 @@ export default function LanguagePage() {
                         </span>
                       </div>
                       <div>
-                        <span className="font-medium">Properties</span> - Each entry has properties like Type and Name
+                        <span className="font-medium">Properties</span> - Each
+                        entry has properties like Type and Name
                       </div>
                     </li>
                     <li className="flex items-start">
@@ -366,8 +407,8 @@ export default function LanguagePage() {
                         </span>
                       </div>
                       <div>
-                        <span className="font-medium">Metadata</span> - Additional information is enclosed in angle
-                        brackets
+                        <span className="font-medium">Metadata</span> -
+                        Additional information is enclosed in angle brackets
                       </div>
                     </li>
                     <li className="flex items-start">
@@ -377,8 +418,9 @@ export default function LanguagePage() {
                         </span>
                       </div>
                       <div>
-                        <span className="font-medium">Indentation</span> - Nesting is represented by indentation (2
-                        spaces recommended)
+                        <span className="font-medium">Indentation</span> -
+                        Nesting is represented by indentation (2 spaces
+                        recommended)
                       </div>
                     </li>
                   </ul>
@@ -394,15 +436,19 @@ export default function LanguagePage() {
                             <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                             <div className="w-3 h-3 rounded-full bg-green-500"></div>
                           </div>
-                          <div className="ml-3 text-xs font-medium opacity-70">basic-syntax.forsure</div>
+                          <div className="ml-3 text-xs font-medium opacity-70">
+                            basic-syntax.forsure
+                          </div>
                         </div>
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => copyToClipboard(basicSyntaxExample, "syntax")}
+                          onClick={() =>
+                            copyToClipboard(basicSyntaxExample, 'syntax')
+                          }
                           className="h-8"
                         >
-                          {copied === "syntax" ? (
+                          {copied === 'syntax' ? (
                             <>
                               <Check className="h-3.5 w-3.5 mr-1" />
                               Copied
@@ -416,7 +462,11 @@ export default function LanguagePage() {
                         </Button>
                       </CardHeader>
                       <CardContent className="p-0">
-                        <CodeExample code={basicSyntaxExample} language="forsure" className="border-0" />
+                        <CodeExample
+                          code={basicSyntaxExample}
+                          language="forsure"
+                          className="border-0"
+                        />
                       </CardContent>
                     </Card>
 
@@ -425,7 +475,8 @@ export default function LanguagePage() {
                         <Info className="h-5 w-5 text-amber-500 mr-2 mt-0.5 flex-shrink-0" />
                         <div>
                           <p className="text-sm text-amber-800 dark:text-amber-200">
-                            Indentation is significant in ForSure. Use consistent indentation (2 spaces recommended) to
+                            Indentation is significant in ForSure. Use
+                            consistent indentation (2 spaces recommended) to
                             indicate nesting levels.
                           </p>
                         </div>
@@ -441,49 +492,80 @@ export default function LanguagePage() {
                 <div>
                   <h2 className="text-2xl font-bold mb-4">Metadata Tags</h2>
                   <p className="mb-4 text-muted-foreground">
-                    ForSure supports various metadata tags to document your file structure. Metadata is enclosed in
-                    angle brackets and can span multiple lines.
+                    ForSure supports various metadata tags to document your file
+                    structure. Metadata is enclosed in angle brackets and can
+                    span multiple lines.
                   </p>
 
                   <div className="overflow-x-auto">
                     <table className="w-full border-collapse mb-6">
                       <thead>
                         <tr className="border-b border-primary/10">
-                          <th className="text-left py-2 px-4 font-semibold">Tag</th>
-                          <th className="text-left py-2 px-4 font-semibold">Description</th>
-                          <th className="text-left py-2 px-4 font-semibold">Usage</th>
+                          <th className="text-left py-2 px-4 font-semibold">
+                            Tag
+                          </th>
+                          <th className="text-left py-2 px-4 font-semibold">
+                            Description
+                          </th>
+                          <th className="text-left py-2 px-4 font-semibold">
+                            Usage
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr className="border-b border-primary/10">
-                          <td className="py-3 px-4 font-mono text-sm">&lt;description&gt;</td>
+                          <td className="py-3 px-4 font-mono text-sm">
+                            &lt;description&gt;
+                          </td>
                           <td className="py-3 px-4">General description</td>
-                          <td className="py-3 px-4 text-sm text-muted-foreground">For all entries</td>
+                          <td className="py-3 px-4 text-sm text-muted-foreground">
+                            For all entries
+                          </td>
                         </tr>
                         <tr className="border-b border-primary/10">
-                          <td className="py-3 px-4 font-mono text-sm">&lt;purpose&gt;</td>
+                          <td className="py-3 px-4 font-mono text-sm">
+                            &lt;purpose&gt;
+                          </td>
                           <td className="py-3 px-4">Purpose or role</td>
-                          <td className="py-3 px-4 text-sm text-muted-foreground">For all entries</td>
+                          <td className="py-3 px-4 text-sm text-muted-foreground">
+                            For all entries
+                          </td>
                         </tr>
                         <tr className="border-b border-primary/10">
-                          <td className="py-3 px-4 font-mono text-sm">&lt;author&gt;</td>
+                          <td className="py-3 px-4 font-mono text-sm">
+                            &lt;author&gt;
+                          </td>
                           <td className="py-3 px-4">Author information</td>
-                          <td className="py-3 px-4 text-sm text-muted-foreground">For all entries</td>
+                          <td className="py-3 px-4 text-sm text-muted-foreground">
+                            For all entries
+                          </td>
                         </tr>
                         <tr className="border-b border-primary/10">
-                          <td className="py-3 px-4 font-mono text-sm">&lt;version&gt;</td>
+                          <td className="py-3 px-4 font-mono text-sm">
+                            &lt;version&gt;
+                          </td>
                           <td className="py-3 px-4">Version information</td>
-                          <td className="py-3 px-4 text-sm text-muted-foreground">For all entries</td>
+                          <td className="py-3 px-4 text-sm text-muted-foreground">
+                            For all entries
+                          </td>
                         </tr>
                         <tr className="border-b border-primary/10">
-                          <td className="py-3 px-4 font-mono text-sm">&lt;content&gt;</td>
+                          <td className="py-3 px-4 font-mono text-sm">
+                            &lt;content&gt;
+                          </td>
                           <td className="py-3 px-4">File content</td>
-                          <td className="py-3 px-4 text-sm text-muted-foreground">For files only</td>
+                          <td className="py-3 px-4 text-sm text-muted-foreground">
+                            For files only
+                          </td>
                         </tr>
                         <tr className="border-b border-primary/10">
-                          <td className="py-3 px-4 font-mono text-sm">&lt;dependencies&gt;</td>
+                          <td className="py-3 px-4 font-mono text-sm">
+                            &lt;dependencies&gt;
+                          </td>
                           <td className="py-3 px-4">Dependencies</td>
-                          <td className="py-3 px-4 text-sm text-muted-foreground">For project roots</td>
+                          <td className="py-3 px-4 text-sm text-muted-foreground">
+                            For project roots
+                          </td>
                         </tr>
                       </tbody>
                     </table>
@@ -495,7 +577,8 @@ export default function LanguagePage() {
                       Custom Metadata
                     </h3>
                     <p className="text-muted-foreground text-sm">
-                      ForSure also supports custom metadata tags. Simply use any tag name enclosed in angle brackets:
+                      ForSure also supports custom metadata tags. Simply use any
+                      tag name enclosed in angle brackets:
                     </p>
                     <pre className="mt-2 bg-secondary/5 p-2 rounded text-xs overflow-x-auto">
                       &lt;team&gt;Frontend&lt;/team&gt;
@@ -512,15 +595,19 @@ export default function LanguagePage() {
                           <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                           <div className="w-3 h-3 rounded-full bg-green-500"></div>
                         </div>
-                        <div className="ml-3 text-xs font-medium opacity-70">metadata-example.forsure</div>
+                        <div className="ml-3 text-xs font-medium opacity-70">
+                          metadata-example.forsure
+                        </div>
                       </div>
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => copyToClipboard(metadataExample, "metadata")}
+                        onClick={() =>
+                          copyToClipboard(metadataExample, 'metadata')
+                        }
                         className="h-8"
                       >
-                        {copied === "metadata" ? (
+                        {copied === 'metadata' ? (
                           <>
                             <Check className="h-3.5 w-3.5 mr-1" />
                             Copied
@@ -534,41 +621,64 @@ export default function LanguagePage() {
                       </Button>
                     </CardHeader>
                     <CardContent className="p-0">
-                      <CodeExample code={metadataExample} language="forsure" className="border-0" />
+                      <CodeExample
+                        code={metadataExample}
+                        language="forsure"
+                        className="border-0"
+                      />
                     </CardContent>
                   </Card>
 
                   <div className="mt-6 space-y-4">
-                    <h3 className="text-xl font-bold">Metadata Best Practices</h3>
+                    <h3 className="text-xl font-bold">
+                      Metadata Best Practices
+                    </h3>
 
                     <Accordion type="single" collapsible className="w-full">
-                      <AccordionItem value="item-1" className="border-primary/10">
+                      <AccordionItem
+                        value="item-1"
+                        className="border-primary/10"
+                      >
                         <AccordionTrigger className="hover:no-underline hover:bg-primary/5 px-4 py-2 rounded-md">
-                          <span className="text-base font-medium">Be Consistent</span>
+                          <span className="text-base font-medium">
+                            Be Consistent
+                          </span>
                         </AccordionTrigger>
                         <AccordionContent className="px-4 pt-2 pb-4 text-muted-foreground">
-                          Use the same metadata tags consistently across your project. This makes it easier to parse and
-                          understand your file structure.
+                          Use the same metadata tags consistently across your
+                          project. This makes it easier to parse and understand
+                          your file structure.
                         </AccordionContent>
                       </AccordionItem>
 
-                      <AccordionItem value="item-2" className="border-primary/10">
+                      <AccordionItem
+                        value="item-2"
+                        className="border-primary/10"
+                      >
                         <AccordionTrigger className="hover:no-underline hover:bg-primary/5 px-4 py-2 rounded-md">
-                          <span className="text-base font-medium">Be Concise</span>
+                          <span className="text-base font-medium">
+                            Be Concise
+                          </span>
                         </AccordionTrigger>
                         <AccordionContent className="px-4 pt-2 pb-4 text-muted-foreground">
-                          Keep metadata descriptions concise and to the point. Long descriptions can make your ForSure
-                          files harder to read.
+                          Keep metadata descriptions concise and to the point.
+                          Long descriptions can make your ForSure files harder
+                          to read.
                         </AccordionContent>
                       </AccordionItem>
 
-                      <AccordionItem value="item-3" className="border-primary/10">
+                      <AccordionItem
+                        value="item-3"
+                        className="border-primary/10"
+                      >
                         <AccordionTrigger className="hover:no-underline hover:bg-primary/5 px-4 py-2 rounded-md">
-                          <span className="text-base font-medium">Use Custom Tags</span>
+                          <span className="text-base font-medium">
+                            Use Custom Tags
+                          </span>
                         </AccordionTrigger>
                         <AccordionContent className="px-4 pt-2 pb-4 text-muted-foreground">
-                          Don't hesitate to create custom metadata tags for your specific needs. ForSure is designed to
-                          be extensible.
+                          Don't hesitate to create custom metadata tags for your
+                          specific needs. ForSure is designed to be extensible.
                         </AccordionContent>
                       </AccordionItem>
                     </Accordion>
@@ -582,8 +692,9 @@ export default function LanguagePage() {
                 <div>
                   <h2 className="text-2xl font-bold mb-4">Import Directives</h2>
                   <p className="mb-4 text-muted-foreground">
-                    ForSure allows you to import other ForSure files to reuse common structures. This promotes
-                    modularity and maintainability.
+                    ForSure allows you to import other ForSure files to reuse
+                    common structures. This promotes modularity and
+                    maintainability.
                   </p>
 
                   <h3 className="text-xl font-bold mt-6 mb-3">Import Syntax</h3>
@@ -591,14 +702,17 @@ export default function LanguagePage() {
                     @import 'path/to/file.forsure'
                   </div>
 
-                  <h3 className="text-xl font-bold mt-6 mb-3">Benefits of Imports</h3>
+                  <h3 className="text-xl font-bold mt-6 mb-3">
+                    Benefits of Imports
+                  </h3>
                   <ul className="space-y-3">
                     <li className="flex items-start">
                       <div className="mr-3 mt-1 p-1 rounded-full bg-green-100 dark:bg-green-900/30">
                         <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
                       </div>
                       <div>
-                        <span className="font-medium">Reusability</span> - Reuse common file structures across projects
+                        <span className="font-medium">Reusability</span> - Reuse
+                        common file structures across projects
                       </div>
                     </li>
                     <li className="flex items-start">
@@ -606,8 +720,8 @@ export default function LanguagePage() {
                         <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
                       </div>
                       <div>
-                        <span className="font-medium">Modularity</span> - Break down large structures into manageable
-                        files
+                        <span className="font-medium">Modularity</span> - Break
+                        down large structures into manageable files
                       </div>
                     </li>
                     <li className="flex items-start">
@@ -615,8 +729,8 @@ export default function LanguagePage() {
                         <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
                       </div>
                       <div>
-                        <span className="font-medium">Standardization</span> - Create libraries of standard project
-                        templates
+                        <span className="font-medium">Standardization</span> -
+                        Create libraries of standard project templates
                       </div>
                     </li>
                     <li className="flex items-start">
@@ -624,7 +738,8 @@ export default function LanguagePage() {
                         <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
                       </div>
                       <div>
-                        <span className="font-medium">Consistency</span> - Maintain consistency across multiple projects
+                        <span className="font-medium">Consistency</span> -
+                        Maintain consistency across multiple projects
                       </div>
                     </li>
                   </ul>
@@ -634,8 +749,8 @@ export default function LanguagePage() {
                       <Info className="h-5 w-5 text-blue-500 mr-2 mt-0.5 flex-shrink-0" />
                       <div>
                         <p className="text-sm text-blue-800 dark:text-blue-200">
-                          Imports are resolved relative to the current file. You can also use absolute paths starting
-                          with a slash (/).
+                          Imports are resolved relative to the current file. You
+                          can also use absolute paths starting with a slash (/).
                         </p>
                       </div>
                     </div>
@@ -652,15 +767,19 @@ export default function LanguagePage() {
                             <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                             <div className="w-3 h-3 rounded-full bg-green-500"></div>
                           </div>
-                          <div className="ml-3 text-xs font-medium opacity-70">components.forsure</div>
+                          <div className="ml-3 text-xs font-medium opacity-70">
+                            components.forsure
+                          </div>
                         </div>
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => copyToClipboard(componentsExample, "components")}
+                          onClick={() =>
+                            copyToClipboard(componentsExample, 'components')
+                          }
                           className="h-8"
                         >
-                          {copied === "components" ? (
+                          {copied === 'components' ? (
                             <>
                               <Check className="h-3.5 w-3.5 mr-1" />
                               Copied
@@ -674,7 +793,11 @@ export default function LanguagePage() {
                         </Button>
                       </CardHeader>
                       <CardContent className="p-0">
-                        <CodeExample code={componentsExample} language="forsure" className="border-0" />
+                        <CodeExample
+                          code={componentsExample}
+                          language="forsure"
+                          className="border-0"
+                        />
                       </CardContent>
                     </Card>
 
@@ -686,15 +809,17 @@ export default function LanguagePage() {
                             <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                             <div className="w-3 h-3 rounded-full bg-green-500"></div>
                           </div>
-                          <div className="ml-3 text-xs font-medium opacity-70">main.forsure</div>
+                          <div className="ml-3 text-xs font-medium opacity-70">
+                            main.forsure
+                          </div>
                         </div>
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => copyToClipboard(mainExample, "main")}
+                          onClick={() => copyToClipboard(mainExample, 'main')}
                           className="h-8"
                         >
-                          {copied === "main" ? (
+                          {copied === 'main' ? (
                             <>
                               <Check className="h-3.5 w-3.5 mr-1" />
                               Copied
@@ -708,51 +833,80 @@ export default function LanguagePage() {
                         </Button>
                       </CardHeader>
                       <CardContent className="p-0">
-                        <CodeExample code={mainExample} language="forsure" className="border-0" />
+                        <CodeExample
+                          code={mainExample}
+                          language="forsure"
+                          className="border-0"
+                        />
                       </CardContent>
                     </Card>
                   </div>
 
                   <div className="mt-6">
-                    <h3 className="text-xl font-bold mb-3">Advanced Import Techniques</h3>
+                    <h3 className="text-xl font-bold mb-3">
+                      Advanced Import Techniques
+                    </h3>
                     <Accordion type="single" collapsible className="w-full">
-                      <AccordionItem value="item-1" className="border-primary/10">
+                      <AccordionItem
+                        value="item-1"
+                        className="border-primary/10"
+                      >
                         <AccordionTrigger className="hover:no-underline hover:bg-primary/5 px-4 py-2 rounded-md">
-                          <span className="text-base font-medium">Conditional Imports</span>
+                          <span className="text-base font-medium">
+                            Conditional Imports
+                          </span>
                         </AccordionTrigger>
                         <AccordionContent className="px-4 pt-2 pb-4">
                           <p className="text-muted-foreground mb-2">
-                            You can use environment variables to conditionally import files:
+                            You can use environment variables to conditionally
+                            import files:
                           </p>
                           <pre className="bg-secondary/5 p-2 rounded text-xs overflow-x-auto">
-                            # Import development configuration in dev mode @import '$
-                            {'{ENV === "development" ? "dev" : "prod"}'}.forsure'
+                            # Import development configuration in dev mode
+                            @import '$
+                            {'{ENV === "development" ? "dev" : "prod"}'}
+                            .forsure'
                           </pre>
                         </AccordionContent>
                       </AccordionItem>
 
-                      <AccordionItem value="item-2" className="border-primary/10">
+                      <AccordionItem
+                        value="item-2"
+                        className="border-primary/10"
+                      >
                         <AccordionTrigger className="hover:no-underline hover:bg-primary/5 px-4 py-2 rounded-md">
-                          <span className="text-base font-medium">Import with Namespace</span>
+                          <span className="text-base font-medium">
+                            Import with Namespace
+                          </span>
                         </AccordionTrigger>
                         <AccordionContent className="px-4 pt-2 pb-4">
                           <p className="text-muted-foreground mb-2">
-                            You can import files with a namespace to avoid conflicts:
+                            You can import files with a namespace to avoid
+                            conflicts:
                           </p>
                           <pre className="bg-secondary/5 p-2 rounded text-xs overflow-x-auto">
-                            # Import with namespace @import 'components.forsure' as components
+                            # Import with namespace @import 'components.forsure'
+                            as components
                           </pre>
                         </AccordionContent>
                       </AccordionItem>
 
-                      <AccordionItem value="item-3" className="border-primary/10">
+                      <AccordionItem
+                        value="item-3"
+                        className="border-primary/10"
+                      >
                         <AccordionTrigger className="hover:no-underline hover:bg-primary/5 px-4 py-2 rounded-md">
-                          <span className="text-base font-medium">Remote Imports</span>
+                          <span className="text-base font-medium">
+                            Remote Imports
+                          </span>
                         </AccordionTrigger>
                         <AccordionContent className="px-4 pt-2 pb-4">
-                          <p className="text-muted-foreground mb-2">You can import files from remote locations:</p>
+                          <p className="text-muted-foreground mb-2">
+                            You can import files from remote locations:
+                          </p>
                           <pre className="bg-secondary/5 p-2 rounded text-xs overflow-x-auto">
-                            # Import from a remote location @import 'https://example.com/templates/react-app.forsure'
+                            # Import from a remote location @import
+                            'https://example.com/templates/react-app.forsure'
                           </pre>
                         </AccordionContent>
                       </AccordionItem>
@@ -773,14 +927,15 @@ export default function LanguagePage() {
                         placeholder="Search examples..."
                         className="pl-9 w-64"
                         value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onChange={e => setSearchQuery(e.target.value)}
                       />
                     </div>
                   </div>
 
                   <p className="text-muted-foreground mb-6">
-                    Here are some common patterns and examples for different project types. Use these as starting points
-                    for your own ForSure files.
+                    Here are some common patterns and examples for different
+                    project types. Use these as starting points for your own
+                    ForSure files.
                   </p>
 
                   <Tabs defaultValue="react" className="w-full">
@@ -820,15 +975,19 @@ export default function LanguagePage() {
                               <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                               <div className="w-3 h-3 rounded-full bg-green-500"></div>
                             </div>
-                            <div className="ml-3 text-xs font-medium opacity-70">react-project.forsure</div>
+                            <div className="ml-3 text-xs font-medium opacity-70">
+                              react-project.forsure
+                            </div>
                           </div>
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => copyToClipboard(reactComponentCode, "react")}
+                            onClick={() =>
+                              copyToClipboard(reactComponentCode, 'react')
+                            }
                             className="h-8"
                           >
-                            {copied === "react" ? (
+                            {copied === 'react' ? (
                               <>
                                 <Check className="h-3.5 w-3.5 mr-1" />
                                 Copied
@@ -842,7 +1001,11 @@ export default function LanguagePage() {
                           </Button>
                         </CardHeader>
                         <CardContent className="p-0">
-                          <CodeExample code={reactComponentCode} language="forsure" className="border-0" />
+                          <CodeExample
+                            code={reactComponentCode}
+                            language="forsure"
+                            className="border-0"
+                          />
                         </CardContent>
                       </Card>
                     </TabsContent>
@@ -856,15 +1019,19 @@ export default function LanguagePage() {
                               <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                               <div className="w-3 h-3 rounded-full bg-green-500"></div>
                             </div>
-                            <div className="ml-3 text-xs font-medium opacity-70">nextjs-project.forsure</div>
+                            <div className="ml-3 text-xs font-medium opacity-70">
+                              nextjs-project.forsure
+                            </div>
                           </div>
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => copyToClipboard(nextjsExample, "nextjs")}
+                            onClick={() =>
+                              copyToClipboard(nextjsExample, 'nextjs')
+                            }
                             className="h-8"
                           >
-                            {copied === "nextjs" ? (
+                            {copied === 'nextjs' ? (
                               <>
                                 <Check className="h-3.5 w-3.5 mr-1" />
                                 Copied
@@ -878,7 +1045,11 @@ export default function LanguagePage() {
                           </Button>
                         </CardHeader>
                         <CardContent className="p-0">
-                          <CodeExample code={nextjsExample} language="forsure" className="border-0" />
+                          <CodeExample
+                            code={nextjsExample}
+                            language="forsure"
+                            className="border-0"
+                          />
                         </CardContent>
                       </Card>
                     </TabsContent>
@@ -892,15 +1063,19 @@ export default function LanguagePage() {
                               <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                               <div className="w-3 h-3 rounded-full bg-green-500"></div>
                             </div>
-                            <div className="ml-3 text-xs font-medium opacity-70">api-project.forsure</div>
+                            <div className="ml-3 text-xs font-medium opacity-70">
+                              api-project.forsure
+                            </div>
                           </div>
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => copyToClipboard(apiProjectCode, "node")}
+                            onClick={() =>
+                              copyToClipboard(apiProjectCode, 'node')
+                            }
                             className="h-8"
                           >
-                            {copied === "node" ? (
+                            {copied === 'node' ? (
                               <>
                                 <Check className="h-3.5 w-3.5 mr-1" />
                                 Copied
@@ -914,7 +1089,11 @@ export default function LanguagePage() {
                           </Button>
                         </CardHeader>
                         <CardContent className="p-0">
-                          <CodeExample code={apiProjectCode} language="forsure" className="border-0" />
+                          <CodeExample
+                            code={apiProjectCode}
+                            language="forsure"
+                            className="border-0"
+                          />
                         </CardContent>
                       </Card>
                     </TabsContent>
@@ -928,15 +1107,19 @@ export default function LanguagePage() {
                               <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                               <div className="w-3 h-3 rounded-full bg-green-500"></div>
                             </div>
-                            <div className="ml-3 text-xs font-medium opacity-70">python-project.forsure</div>
+                            <div className="ml-3 text-xs font-medium opacity-70">
+                              python-project.forsure
+                            </div>
                           </div>
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => copyToClipboard(pythonExample, "python")}
+                            onClick={() =>
+                              copyToClipboard(pythonExample, 'python')
+                            }
                             className="h-8"
                           >
-                            {copied === "python" ? (
+                            {copied === 'python' ? (
                               <>
                                 <Check className="h-3.5 w-3.5 mr-1" />
                                 Copied
@@ -950,7 +1133,11 @@ export default function LanguagePage() {
                           </Button>
                         </CardHeader>
                         <CardContent className="p-0">
-                          <CodeExample code={pythonExample} language="forsure" className="border-0" />
+                          <CodeExample
+                            code={pythonExample}
+                            language="forsure"
+                            className="border-0"
+                          />
                         </CardContent>
                       </Card>
                     </TabsContent>
@@ -966,8 +1153,11 @@ export default function LanguagePage() {
                           <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
                         </div>
                         <div>
-                          <span className="font-medium">Use descriptive names</span> - Choose clear, descriptive names
-                          for files and directories
+                          <span className="font-medium">
+                            Use descriptive names
+                          </span>{' '}
+                          - Choose clear, descriptive names for files and
+                          directories
                         </div>
                       </li>
                       <li className="flex items-start">
@@ -975,7 +1165,8 @@ export default function LanguagePage() {
                           <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
                         </div>
                         <div>
-                          <span className="font-medium">Add metadata</span> - Include relevant metadata for all entries
+                          <span className="font-medium">Add metadata</span> -
+                          Include relevant metadata for all entries
                         </div>
                       </li>
                       <li className="flex items-start">
@@ -983,8 +1174,9 @@ export default function LanguagePage() {
                           <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
                         </div>
                         <div>
-                          <span className="font-medium">Use imports</span> - Break down large structures into smaller,
-                          reusable files
+                          <span className="font-medium">Use imports</span> -
+                          Break down large structures into smaller, reusable
+                          files
                         </div>
                       </li>
                       <li className="flex items-start">
@@ -992,8 +1184,8 @@ export default function LanguagePage() {
                           <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
                         </div>
                         <div>
-                          <span className="font-medium">Be consistent</span> - Maintain consistent formatting and
-                          structure
+                          <span className="font-medium">Be consistent</span> -
+                          Maintain consistent formatting and structure
                         </div>
                       </li>
                       <li className="flex items-start">
@@ -1001,7 +1193,8 @@ export default function LanguagePage() {
                           <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
                         </div>
                         <div>
-                          <span className="font-medium">Version control</span> - Store ForSure files in version control
+                          <span className="font-medium">Version control</span> -
+                          Store ForSure files in version control
                         </div>
                       </li>
                     </ul>
@@ -1029,8 +1222,11 @@ export default function LanguagePage() {
                           </svg>
                         </div>
                         <div>
-                          <span className="font-medium">Inconsistent indentation</span> - Mixing tabs and spaces or
-                          using inconsistent indentation
+                          <span className="font-medium">
+                            Inconsistent indentation
+                          </span>{' '}
+                          - Mixing tabs and spaces or using inconsistent
+                          indentation
                         </div>
                       </li>
                       <li className="flex items-start">
@@ -1052,8 +1248,8 @@ export default function LanguagePage() {
                           </svg>
                         </div>
                         <div>
-                          <span className="font-medium">Missing metadata</span> - Not including essential metadata for
-                          entries
+                          <span className="font-medium">Missing metadata</span>{' '}
+                          - Not including essential metadata for entries
                         </div>
                       </li>
                       <li className="flex items-start">
@@ -1075,8 +1271,9 @@ export default function LanguagePage() {
                           </svg>
                         </div>
                         <div>
-                          <span className="font-medium">Circular imports</span> - Creating circular dependencies between
-                          imported files
+                          <span className="font-medium">Circular imports</span>{' '}
+                          - Creating circular dependencies between imported
+                          files
                         </div>
                       </li>
                       <li className="flex items-start">
@@ -1098,8 +1295,10 @@ export default function LanguagePage() {
                           </svg>
                         </div>
                         <div>
-                          <span className="font-medium">Overly complex structures</span> - Creating unnecessarily deep
-                          or complex hierarchies
+                          <span className="font-medium">
+                            Overly complex structures
+                          </span>{' '}
+                          - Creating unnecessarily deep or complex hierarchies
                         </div>
                       </li>
                     </ul>
@@ -1118,8 +1317,9 @@ export default function LanguagePage() {
               <h2 className="text-2xl font-bold">Try ForSure Language</h2>
             </div>
             <p className="mb-6 text-white/90 max-w-3xl">
-              Edit the ForSure code below to see how the language works. The visualization will update in real-time to
-              show the resulting file structure.
+              Edit the ForSure code below to see how the language works. The
+              visualization will update in real-time to show the resulting file
+              structure.
             </p>
           </div>
 
@@ -1127,12 +1327,19 @@ export default function LanguagePage() {
 
           <div className="p-6 md:p-8 bg-secondary-dark/50 border-t border-primary/20">
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button asChild className="bg-primary hover:bg-primary/90 text-secondary-dark">
+              <Button
+                asChild
+                className="bg-primary hover:bg-primary/90 text-secondary-dark"
+              >
                 <Link href="/docs/language" className="flex items-center">
                   Language Documentation <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" className="border-white/20 text-white">
+              <Button
+                asChild
+                variant="outline"
+                className="border-white/20 text-white"
+              >
                 <Link href="/download" className="flex items-center">
                   Download ForSure CLI <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
@@ -1150,10 +1357,13 @@ export default function LanguagePage() {
                 <div className="p-3 bg-primary/10 rounded-full w-fit mb-4">
                   <FolderTree className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">Hierarchical Structure</h3>
+                <h3 className="text-xl font-bold mb-2">
+                  Hierarchical Structure
+                </h3>
                 <p className="text-secondary/80 dark:text-primary-light/70">
-                  Define nested directories and files with a clear, indentation-based syntax that mirrors the actual
-                  file system structure.
+                  Define nested directories and files with a clear,
+                  indentation-based syntax that mirrors the actual file system
+                  structure.
                 </p>
               </div>
             </AnimateOnScroll>
@@ -1165,8 +1375,8 @@ export default function LanguagePage() {
                 </div>
                 <h3 className="text-xl font-bold mb-2">Rich Metadata</h3>
                 <p className="text-secondary/80 dark:text-primary-light/70">
-                  Add descriptions, purposes, authors, and other metadata to document your file structure and make it
-                  self-explanatory.
+                  Add descriptions, purposes, authors, and other metadata to
+                  document your file structure and make it self-explanatory.
                 </p>
               </div>
             </AnimateOnScroll>
@@ -1194,8 +1404,8 @@ export default function LanguagePage() {
                 </div>
                 <h3 className="text-xl font-bold mb-2">Import Directives</h3>
                 <p className="text-secondary/80 dark:text-primary-light/70">
-                  Reuse common file structures across projects with import directives, making your definitions modular
-                  and maintainable.
+                  Reuse common file structures across projects with import
+                  directives, making your definitions modular and maintainable.
                 </p>
               </div>
             </AnimateOnScroll>
@@ -1215,11 +1425,11 @@ export default function LanguagePage() {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  Use variables in your ForSure files to create dynamic templates that can be customized at generation
-                  time.
+                  Use variables in your ForSure files to create dynamic
+                  templates that can be customized at generation time.
                 </p>
                 <div className="mt-3 bg-secondary/5 p-2 rounded text-xs font-mono overflow-x-auto">
-                  ${"{"}'PROJECT_NAME'{"}"}/src/
+                  ${'{'}'PROJECT_NAME'{'}'}/src/
                 </div>
               </CardContent>
             </Card>
@@ -1249,12 +1459,14 @@ export default function LanguagePage() {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  Define file content templates with placeholders that can be filled in during generation.
+                  Define file content templates with placeholders that can be
+                  filled in during generation.
                 </p>
                 <div className="mt-3 bg-secondary/5 p-2 rounded text-xs font-mono overflow-x-auto">
-                  &lt;content&gt; export const ${"{COMPONENT_NAME}"} = () =&gt; {"{"}
+                  &lt;content&gt; export const ${'{COMPONENT_NAME}'} = () =&gt;{' '}
+                  {'{'}
                   // ...
-                  {"}"}
+                  {'}'}
                   &lt;/content&gt;
                 </div>
               </CardContent>
@@ -1269,10 +1481,12 @@ export default function LanguagePage() {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  Use conditional logic to include or exclude files and directories based on variables.
+                  Use conditional logic to include or exclude files and
+                  directories based on variables.
                 </p>
                 <div className="mt-3 bg-secondary/5 p-2 rounded text-xs font-mono overflow-x-auto">
-                  # Only include if using TypeScript @if(TYPESCRIPT) - Type: File - Name: tsconfig.json @endif
+                  # Only include if using TypeScript @if(TYPESCRIPT) - Type:
+                  File - Name: tsconfig.json @endif
                 </div>
               </CardContent>
             </Card>
@@ -1313,12 +1527,17 @@ export default function LanguagePage() {
                   </svg>
                   Community Templates
                 </CardTitle>
-                <CardDescription>Explore and use templates created by the ForSure community</CardDescription>
+                <CardDescription>
+                  Explore and use templates created by the ForSure community
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-3">
                   <li>
-                    <Link href="#" className="flex items-center text-sm hover:text-primary transition-colors">
+                    <Link
+                      href="#"
+                      className="flex items-center text-sm hover:text-primary transition-colors"
+                    >
                       <Bookmark className="h-4 w-4 mr-2 text-primary" />
                       <span>React Component Library</span>
                       <Badge variant="outline" className="ml-2 text-xs">
@@ -1327,19 +1546,28 @@ export default function LanguagePage() {
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="flex items-center text-sm hover:text-primary transition-colors">
+                    <Link
+                      href="#"
+                      className="flex items-center text-sm hover:text-primary transition-colors"
+                    >
                       <Bookmark className="h-4 w-4 mr-2 text-primary" />
                       <span>Next.js App Router Project</span>
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="flex items-center text-sm hover:text-primary transition-colors">
+                    <Link
+                      href="#"
+                      className="flex items-center text-sm hover:text-primary transition-colors"
+                    >
                       <Bookmark className="h-4 w-4 mr-2 text-primary" />
                       <span>Express API with MongoDB</span>
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="flex items-center text-sm hover:text-primary transition-colors">
+                    <Link
+                      href="#"
+                      className="flex items-center text-sm hover:text-primary transition-colors"
+                    >
                       <Bookmark className="h-4 w-4 mr-2 text-primary" />
                       <span>Django Web Application</span>
                     </Link>
@@ -1375,7 +1603,9 @@ export default function LanguagePage() {
                   </svg>
                   Community & Support
                 </CardTitle>
-                <CardDescription>Connect with other ForSure users and get help</CardDescription>
+                <CardDescription>
+                  Connect with other ForSure users and get help
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-3">
@@ -1459,7 +1689,10 @@ export default function LanguagePage() {
                     </Link>
                   </li>
                   <li>
-                    <Link href="/docs/faq" className="flex items-center text-sm hover:text-primary transition-colors">
+                    <Link
+                      href="/docs/faq"
+                      className="flex items-center text-sm hover:text-primary transition-colors"
+                    >
                       <HelpCircle className="h-4 w-4 mr-2" />
                       <span>FAQ & Troubleshooting</span>
                     </Link>
@@ -1491,7 +1724,8 @@ export default function LanguagePage() {
                 Read the Documentation
               </div>
               <div className="text-secondary/80 dark:text-primary-light/70 text-sm">
-                Explore the complete language reference with detailed examples and best practices.
+                Explore the complete language reference with detailed examples
+                and best practices.
               </div>
             </Link>
             <Link
@@ -1503,7 +1737,8 @@ export default function LanguagePage() {
                 Download ForSure CLI
               </div>
               <div className="text-secondary/80 dark:text-primary-light/70 text-sm">
-                Get the command-line tool to start generating file structures from your ForSure files.
+                Get the command-line tool to start generating file structures
+                from your ForSure files.
               </div>
             </Link>
             <Link
@@ -1515,7 +1750,8 @@ export default function LanguagePage() {
                 Browse Examples
               </div>
               <div className="text-secondary/80 dark:text-primary-light/70 text-sm">
-                See real-world examples of ForSure files for different project types and use cases.
+                See real-world examples of ForSure files for different project
+                types and use cases.
               </div>
             </Link>
           </div>

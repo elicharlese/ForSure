@@ -1,7 +1,7 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -9,13 +9,13 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Textarea } from "@/components/ui/textarea"
-import { useToast } from "@/components/ui/use-toast"
-import { GitMerge } from "lucide-react"
+} from '@/components/ui/dialog'
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Textarea } from '@/components/ui/textarea'
+import { useToast } from '@/components/ui/use-toast'
+import { GitMerge } from 'lucide-react'
 
 interface Version {
   versionId: string
@@ -46,15 +46,15 @@ export function VersionMergeDialog({
   targetVersion,
   onMerge,
 }: VersionMergeDialogProps) {
-  const [mergeStrategy, setMergeStrategy] = useState("auto")
+  const [mergeStrategy, setMergeStrategy] = useState('auto')
   const [selectedChanges, setSelectedChanges] = useState<string[]>([])
   const [createNewVersion, setCreateNewVersion] = useState(true)
-  const [notes, setNotes] = useState("")
+  const [notes, setNotes] = useState('')
   const { toast } = useToast()
 
   const handleMerge = () => {
     const mergeNotes = `Merge of versions ${currentVersion.versionId} and ${targetVersion.versionId}${
-      notes ? `: ${notes}` : ""
+      notes ? `: ${notes}` : ''
     }`
 
     onMerge({
@@ -66,27 +66,37 @@ export function VersionMergeDialog({
   }
 
   const toggleChange = (changeId: string) => {
-    setSelectedChanges((prev) => (prev.includes(changeId) ? prev.filter((id) => id !== changeId) : [...prev, changeId]))
+    setSelectedChanges(prev =>
+      prev.includes(changeId)
+        ? prev.filter(id => id !== changeId)
+        : [...prev, changeId]
+    )
   }
 
   // Mock changes for demonstration
   const mockChanges = [
-    { id: "change1", description: "Updated project name" },
-    { id: "change2", description: "Modified file structure" },
+    { id: 'change1', description: 'Updated project name' },
+    { id: 'change2', description: 'Modified file structure' },
   ]
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Dialog open={isOpen} onOpenChange={open => !open && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Merge Versions</DialogTitle>
-          <DialogDescription>Merge changes from the selected version into your current version.</DialogDescription>
+          <DialogDescription>
+            Merge changes from the selected version into your current version.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
           <div className="space-y-2">
             <Label>Merge Strategy</Label>
-            <RadioGroup value={mergeStrategy} onValueChange={setMergeStrategy} className="flex flex-col space-y-1">
+            <RadioGroup
+              value={mergeStrategy}
+              onValueChange={setMergeStrategy}
+              className="flex flex-col space-y-1"
+            >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="auto" id="auto" />
                 <Label htmlFor="auto">Auto (Recommended)</Label>
@@ -98,11 +108,11 @@ export function VersionMergeDialog({
             </RadioGroup>
           </div>
 
-          {mergeStrategy === "manual" && (
+          {mergeStrategy === 'manual' && (
             <div className="space-y-2">
               <Label>Select Changes to Include</Label>
               <div className="space-y-2">
-                {mockChanges.map((change) => (
+                {mockChanges.map(change => (
                   <div key={change.id} className="flex items-center space-x-2">
                     <Checkbox
                       id={change.id}
@@ -120,9 +130,13 @@ export function VersionMergeDialog({
             <Checkbox
               id="create-new-version"
               checked={createNewVersion}
-              onCheckedChange={(checked) => setCreateNewVersion(checked as boolean)}
+              onCheckedChange={checked =>
+                setCreateNewVersion(checked as boolean)
+              }
             />
-            <Label htmlFor="create-new-version">Create New Version After Merge</Label>
+            <Label htmlFor="create-new-version">
+              Create New Version After Merge
+            </Label>
           </div>
 
           <div className="space-y-2">
@@ -131,7 +145,7 @@ export function VersionMergeDialog({
               id="merge-notes"
               placeholder="Add notes about this merge"
               value={notes}
-              onChange={(e) => setNotes(e.target.value)}
+              onChange={e => setNotes(e.target.value)}
             />
           </div>
         </div>

@@ -7,11 +7,13 @@ The ForSure backend is built with Next.js API routes and Supabase. Follow these 
 ### 1. Environment Setup
 
 1. Copy `.env.example` to `.env.local`:
+
 ```bash
 cp .env.example .env.local
 ```
 
 2. Update the environment variables with your Supabase credentials:
+
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=your-supabase-project-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
@@ -46,6 +48,7 @@ The API will be available at `http://localhost:3000/api/`. See `API_DOCUMENTATIO
 ### API Route Structure
 
 All API routes are in `/app/api/`:
+
 - `/api/auth/*` - Authentication endpoints
 - `/api/users/*` - User management
 - `/api/projects/*` - Project CRUD operations
@@ -77,7 +80,7 @@ export const GET = withAuth(async (request: NextRequest, { user }) => {
       .from('your_table')
       .select('*')
       .eq('user_id', user.id)
-    
+
     return apiResponse(data)
   } catch (error) {
     return apiError('Internal server error', 500)
@@ -112,17 +115,21 @@ The frontend auth context is already configured to work with these API endpoints
 ## Common Issues
 
 ### Build Errors
+
 If you get Supabase errors during build:
+
 - Ensure all environment variables are set
 - Check that Supabase URL and keys are correct
 - Verify database schema is properly set up
 
 ### Authentication Issues
+
 - Ensure JWT_SECRET is set and consistent
 - Check that Supabase RLS policies are correctly configured
 - Verify user exists in both auth.users and profiles tables
 
 ### CORS Issues
+
 Next.js API routes handle CORS automatically for same-origin requests. For external requests, add CORS headers as needed.
 
 ## Security Notes
@@ -145,6 +152,7 @@ Next.js API routes handle CORS automatically for same-origin requests. For exter
 ### Environment Variables for Production
 
 Ensure these are set in your Vercel dashboard:
+
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`

@@ -1,19 +1,23 @@
-"use client"
+'use client'
 
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { MessageSquare } from "lucide-react"
-import { TeamChatDialog } from "./team-chat-dialog"
-import { useTeamChat } from "../hooks/use-team-chat"
-import type { Team } from "../types/team"
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { MessageSquare } from 'lucide-react'
+import { TeamChatDialog } from './team-chat-dialog'
+import { useTeamChat } from '../hooks/use-team-chat'
+import type { Team } from '../types/team'
 
 interface TeamChatButtonProps {
   team: Team | null
-  variant?: "default" | "outline" | "ghost"
-  size?: "default" | "sm" | "lg" | "icon"
+  variant?: 'default' | 'outline' | 'ghost'
+  size?: 'default' | 'sm' | 'lg' | 'icon'
 }
 
-export function TeamChatButton({ team, variant = "outline", size = "sm" }: TeamChatButtonProps) {
+export function TeamChatButton({
+  team,
+  variant = 'outline',
+  size = 'sm',
+}: TeamChatButtonProps) {
   const { unreadCount } = useTeamChat(team?.id || null)
 
   return (

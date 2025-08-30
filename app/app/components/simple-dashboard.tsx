@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Plus } from "lucide-react"
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Plus } from 'lucide-react'
 
 interface SimpleDashboardProps {
   projects: any[]
@@ -26,8 +26,9 @@ export default function SimpleDashboard({
   const handleQuickStart = () => {
     const initialMessages = [
       {
-        role: "assistant",
-        content: "Hi! I'm ForSure AI. What kind of project would you like to create today?",
+        role: 'assistant',
+        content:
+          "Hi! I'm ForSure AI. What kind of project would you like to create today?",
       },
     ]
     onStartChat(initialMessages)
@@ -41,7 +42,9 @@ export default function SimpleDashboard({
           <CardTitle>Quick Start</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-muted-foreground">Start chatting with ForSure AI to create your project quickly.</p>
+          <p className="text-muted-foreground">
+            Start chatting with ForSure AI to create your project quickly.
+          </p>
           <Button onClick={handleQuickStart} className="w-full">
             Start Chat with AI
           </Button>
@@ -61,19 +64,32 @@ export default function SimpleDashboard({
           {isLoaded ? (
             projects.length > 0 ? (
               <div className="grid gap-4">
-                {projects.map((project) => (
-                  <div key={project.id} className="flex items-center justify-between p-4 border rounded-lg">
+                {projects.map(project => (
+                  <div
+                    key={project.id}
+                    className="flex items-center justify-between p-4 border rounded-lg"
+                  >
                     <div>
-                      <h3 className="font-medium">{project.details?.name || project.name}</h3>
+                      <h3 className="font-medium">
+                        {project.details?.name || project.name}
+                      </h3>
                       <p className="text-sm text-muted-foreground">
-                        {project.details?.framework || "Unknown"} • {project.details?.type || "Project"}
+                        {project.details?.framework || 'Unknown'} •{' '}
+                        {project.details?.type || 'Project'}
                       </p>
                     </div>
                     <div className="flex gap-2">
-                      <Button size="sm" onClick={() => onSelectProject(project.id)}>
+                      <Button
+                        size="sm"
+                        onClick={() => onSelectProject(project.id)}
+                      >
                         Open
                       </Button>
-                      <Button size="sm" variant="outline" onClick={() => onDeleteProject(project.id)}>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => onDeleteProject(project.id)}
+                      >
                         Delete
                       </Button>
                     </div>
@@ -83,7 +99,9 @@ export default function SimpleDashboard({
             ) : (
               <div className="text-center py-8">
                 <p className="text-muted-foreground mb-4">No projects yet</p>
-                <Button onClick={onNewProject}>Create Your First Project</Button>
+                <Button onClick={onNewProject}>
+                  Create Your First Project
+                </Button>
               </div>
             )
           ) : (

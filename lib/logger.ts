@@ -9,7 +9,7 @@ const LOG_LEVELS: LogLevel = {
   INFO: 'info',
   WARN: 'warn',
   ERROR: 'error',
-  DEBUG: 'debug'
+  DEBUG: 'debug',
 }
 
 interface LogEntry {
@@ -27,30 +27,36 @@ class Logger {
 
   private formatMessage(entry: LogEntry): string {
     const { level, message, timestamp, metadata, userId, requestId } = entry
-    
+
     const meta = {
       service: this.serviceName,
       ...(userId && { userId }),
       ...(requestId && { requestId }),
-      ...(metadata && { metadata })
+      ...(metadata && { metadata }),
     }
 
     return JSON.stringify({
       level,
       message,
       timestamp,
-      ...meta
+      ...meta,
     })
   }
 
-  private log(level: 'info' | 'warn' | 'error' | 'debug', message: string, metadata?: Record<string, any>, userId?: string, requestId?: string) {
+  private log(
+    level: 'info' | 'warn' | 'error' | 'debug',
+    message: string,
+    metadata?: Record<string, any>,
+    userId?: string,
+    requestId?: string
+  ) {
     const entry: LogEntry = {
       level,
       message,
       timestamp: new Date().toISOString(),
       metadata,
       userId,
-      requestId
+      requestId,
     }
 
     const formattedMessage = this.formatMessage(entry)
@@ -83,93 +89,180 @@ class Logger {
     }
   }
 
-  info(message: string, metadata?: Record<string, any>, userId?: string, requestId?: string) {
+  info(
+    message: string,
+    metadata?: Record<string, any>,
+    userId?: string,
+    requestId?: string
+  ) {
     this.log(LOG_LEVELS.INFO, message, metadata, userId, requestId)
   }
 
-  warn(message: string, metadata?: Record<string, any>, userId?: string, requestId?: string) {
+  warn(
+    message: string,
+    metadata?: Record<string, any>,
+    userId?: string,
+    requestId?: string
+  ) {
     this.log(LOG_LEVELS.WARN, message, metadata, userId, requestId)
   }
 
-  error(message: string, error?: Error, metadata?: Record<string, any>, userId?: string, requestId?: string) {
+  error(
+    message: string,
+    error?: Error,
+    metadata?: Record<string, any>,
+    userId?: string,
+    requestId?: string
+  ) {
     const errorMetadata = {
       ...metadata,
       ...(error && {
         error: {
           name: error.name,
           message: error.message,
-          stack: error.stack
-        }
-      })
+          stack: error.stack,
+        },
+      }),
     }
     this.log(LOG_LEVELS.ERROR, message, errorMetadata, userId, requestId)
   }
 
-  debug(message: string, metadata?: Record<string, any>, userId?: string, requestId?: string) {
+  debug(
+    message: string,
+    metadata?: Record<string, any>,
+    userId?: string,
+    requestId?: string
+  ) {
     if (this.isDevelopment || process.env.LOG_LEVEL === 'debug') {
       this.log(LOG_LEVELS.DEBUG, message, metadata, userId, requestId)
     }
   }
 
   // API request logging
-  apiRequest(method: string, path: string, userId?: string, requestId?: string, metadata?: Record<string, any>) {
-    this.info(`${method} ${path}`, {
-      type: 'api_request',
-      method,
-      path,
-      ...metadata
-    }, userId, requestId)
+  apiRequest(
+    method: string,
+    path: string,
+    userId?: string,
+    requestId?: string,
+    metadata?: Record<string, any>
+  ) {
+    this.info(
+      `${method} ${path}`,
+      {
+        type: 'api_request',
+        method,
+        path,
+        ...metadata,
+      },
+      userId,
+      requestId
+    )
   }
 
-  apiResponse(method: string, path: string, statusCode: number, duration: number, userId?: string, requestId?: string) {
-    this.info(`${method} ${path} - ${statusCode} (${duration}ms)`, {
-      type: 'api_response',
-      method,
-      path,
-      statusCode,
-      duration
-    }, userId, requestId)
+  apiResponse(
+    method: string,
+    path: string,
+    statusCode: number,
+    duration: number,
+    userId?: string,
+    requestId?: string
+  ) {
+    this.info(
+      `${method} ${path} - ${statusCode} (${duration}ms)`,
+      {
+        type: 'api_response',
+        method,
+        path,
+        statusCode,
+        duration,
+      },
+      userId,
+      requestId
+    )
   }
 
-  apiError(method: string, path: string, error: Error, userId?: string, requestId?: string) {
-    this.error(`${method} ${path} - Error`, error, {
-      type: 'api_error',
-      method,
-      path
-    }, userId, requestId)
+  apiError(
+    method: string,
+    path: string,
+    error: Error,
+    userId?: string,
+    requestId?: string
+  ) {
+    this.error(
+      `${method} ${path} - Error`,
+      error,
+      {
+        type: 'api_error',
+        method,
+        path,
+      },
+      userId,
+      requestId
+    )
   }
 
   // Database logging
-  dbQuery(query: string, duration: number, userId?: string, requestId?: string) {
-    this.debug('Database query executed', {
-      type: 'db_query',
-      query: query.substring(0, 200), // Truncate long queries
-      duration
-    }, userId, requestId)
+  dbQuery(
+    query: string,
+    duration: number,
+    userId?: string,
+    requestId?: string
+  ) {
+    this.debug(
+      'Database query executed',
+      {
+        type: 'db_query',
+        query: query.substring(0, 200), // Truncate long queries
+        duration,
+      },
+      userId,
+      requestId
+    )
   }
 
   dbError(query: string, error: Error, userId?: string, requestId?: string) {
-    this.error('Database query failed', error, {
-      type: 'db_error',
-      query: query.substring(0, 200)
-    }, userId, requestId)
+    this.error(
+      'Database query failed',
+      error,
+      {
+        type: 'db_error',
+        query: query.substring(0, 200),
+      },
+      userId,
+      requestId
+    )
   }
 
   // Auth logging
   authSuccess(userId: string, method: string, requestId?: string) {
-    this.info(`Authentication successful: ${method}`, {
-      type: 'auth_success',
-      method
-    }, userId, requestId)
+    this.info(
+      `Authentication successful: ${method}`,
+      {
+        type: 'auth_success',
+        method,
+      },
+      userId,
+      requestId
+    )
   }
 
-  authFailure(reason: string, method: string, requestId?: string, metadata?: Record<string, any>) {
-    this.warn(`Authentication failed: ${method} - ${reason}`, {
-      type: 'auth_failure',
-      method,
-      reason,
-      ...metadata
-    }, undefined, requestId)
+  authFailure(
+    reason: string,
+    method: string,
+    requestId?: string,
+    metadata?: Record<string, any>
+  ) {
+    this.warn(
+      `Authentication failed: ${method} - ${reason}`,
+      {
+        type: 'auth_failure',
+        method,
+        reason,
+        ...metadata,
+      },
+      undefined,
+      requestId
+    )
   }
 }
 
@@ -194,7 +287,7 @@ export function requestLogger() {
         const status = response.status || 200
 
         logger.apiResponse(method, path, status, duration, undefined, requestId)
-        
+
         return response
       } catch (error) {
         const duration = Date.now() - start

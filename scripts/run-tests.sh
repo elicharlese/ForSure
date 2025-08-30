@@ -25,12 +25,12 @@ print_error() {
     echo -e "${RED}❌ $1${NC}"
 }
 
-# Set exit on error
-set -e
+# Strict mode: exit on error, treat unset vars as errors, fail pipelines
+set -euo pipefail
 
 # 1. Run linting
 echo -e "\n${YELLOW}🔍 Running ESLint...${NC}"
-if npm run lint; then
+if pnpm run lint; then
     print_status "Linting passed"
 else
     print_error "Linting failed"
@@ -39,7 +39,7 @@ fi
 
 # 2. Run type checking
 echo -e "\n${YELLOW}🔍 Running TypeScript type checking...${NC}"
-if npm run type-check; then
+if pnpm run type-check; then
     print_status "Type checking passed"
 else
     print_error "Type checking failed"
@@ -48,7 +48,7 @@ fi
 
 # 3. Run unit tests with coverage
 echo -e "\n${YELLOW}🧪 Running unit tests with coverage...${NC}"
-if npm run test:ci; then
+if pnpm run test:ci; then
     print_status "Unit tests passed"
 else
     print_error "Unit tests failed"
@@ -85,7 +85,7 @@ echo -e "\n${YELLOW}🌐 Running API endpoint tests...${NC}"
 API_TEST_FILES=$(find __tests__/api -name "*.test.ts" -o -name "*.test.js" 2>/dev/null | wc -l)
 if [ "$API_TEST_FILES" -gt 0 ]; then
     print_status "Found $API_TEST_FILES API test files"
-    if npm run test -- --testPathPattern="__tests__/api"; then
+    if pnpm run test -- --testPathPattern="__tests__/api"; then
         print_status "API tests passed"
     else
         print_error "API tests failed"

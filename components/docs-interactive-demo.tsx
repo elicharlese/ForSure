@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Clipboard, Check, Play, FileCode, FolderTree } from "lucide-react"
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Clipboard, Check, Play, FileCode, FolderTree } from 'lucide-react'
 
 const initialCode = `root:
   # Source code directory
@@ -24,7 +24,7 @@ const initialCode = `root:
 
 interface FileNode {
   name: string
-  type: "file" | "directory"
+  type: 'file' | 'directory'
   children?: FileNode[]
   metadata?: Record<string, any>
 }
@@ -33,7 +33,7 @@ export default function DocsInteractiveDemo() {
   const [code, setCode] = useState(initialCode)
   const [copied, setCopied] = useState(false)
   const [output, setOutput] = useState<FileNode[]>([])
-  const [activeTab, setActiveTab] = useState("code")
+  const [activeTab, setActiveTab] = useState('code')
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(code)
@@ -44,15 +44,15 @@ export default function DocsInteractiveDemo() {
   const parseForSure = () => {
     // This is a simplified parser for demo purposes
     // In a real implementation, you'd have a more robust parser
-    const lines = code.split("\n")
+    const lines = code.split('\n')
     const result: FileNode[] = []
     let currentIndent = 0
     let currentNode: FileNode | null = null
     const nodeStack: FileNode[] = []
 
-    lines.forEach((line) => {
+    lines.forEach(line => {
       // Skip empty lines and comments
-      if (!line.trim() || line.trim().startsWith("#")) return
+      if (!line.trim() || line.trim().startsWith('#')) return
 
       // Calculate indent level (assuming 2 spaces per level)
       const indent = line.search(/\S|$/) / 2
@@ -62,12 +62,12 @@ export default function DocsInteractiveDemo() {
       if (!match) return
 
       const name = match[1].trim()
-      const isDirectory = !!match[2] || line.trim().endsWith(":")
+      const isDirectory = !!match[2] || line.trim().endsWith(':')
 
       // Create new node
       const newNode: FileNode = {
         name,
-        type: isDirectory ? "directory" : "file",
+        type: isDirectory ? 'directory' : 'file',
         children: isDirectory ? [] : undefined,
       }
 
@@ -79,7 +79,7 @@ export default function DocsInteractiveDemo() {
           const metadataStr = `{${metadataMatch[1]}}`
           newNode.metadata = JSON.parse(metadataStr.replace(/(\w+):/g, '"$1":'))
         } catch (e) {
-          console.error("Failed to parse metadata", e)
+          console.error('Failed to parse metadata', e)
         }
       }
 
@@ -128,23 +128,25 @@ export default function DocsInteractiveDemo() {
     })
 
     setOutput(result)
-    setActiveTab("output")
+    setActiveTab('output')
   }
 
   const renderFileTree = (nodes: FileNode[], level = 0) => {
     return (
-      <ul className={`${level > 0 ? "ml-4" : ""}`}>
+      <ul className={`${level > 0 ? 'ml-4' : ''}`}>
         {nodes.map((node, index) => (
           <li key={index} className="my-1">
             <div className="flex items-center">
-              {node.type === "directory" ? (
+              {node.type === 'directory' ? (
                 <FolderTree className="h-4 w-4 mr-2 text-blue-500" />
               ) : (
                 <FileCode className="h-4 w-4 mr-2 text-green-500" />
               )}
               <span>{node.name}</span>
               {node.metadata && (
-                <span className="ml-2 text-xs text-muted-foreground">{JSON.stringify(node.metadata)}</span>
+                <span className="ml-2 text-xs text-muted-foreground">
+                  {JSON.stringify(node.metadata)}
+                </span>
               )}
             </div>
             {node.children && renderFileTree(node.children, level + 1)}
@@ -158,7 +160,9 @@ export default function DocsInteractiveDemo() {
     <div className="border rounded-lg overflow-hidden my-6">
       <div className="bg-muted p-4 border-b">
         <h3 className="font-medium">Interactive ForSure Demo</h3>
-        <p className="text-sm text-muted-foreground">Edit the ForSure code and see the generated file structure</p>
+        <p className="text-sm text-muted-foreground">
+          Edit the ForSure code and see the generated file structure
+        </p>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -175,7 +179,12 @@ export default function DocsInteractiveDemo() {
           </TabsList>
 
           <div className="flex space-x-2">
-            <Button variant="outline" size="sm" onClick={copyToClipboard} className="h-8">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={copyToClipboard}
+              className="h-8"
+            >
               {copied ? (
                 <>
                   <Check className="h-4 w-4 mr-1" />
@@ -188,7 +197,12 @@ export default function DocsInteractiveDemo() {
                 </>
               )}
             </Button>
-            <Button variant="default" size="sm" onClick={parseForSure} className="h-8">
+            <Button
+              variant="default"
+              size="sm"
+              onClick={parseForSure}
+              className="h-8"
+            >
               <Play className="h-4 w-4 mr-1" />
               Generate
             </Button>
@@ -199,7 +213,7 @@ export default function DocsInteractiveDemo() {
           <div className="p-4">
             <textarea
               value={code}
-              onChange={(e) => setCode(e.target.value)}
+              onChange={e => setCode(e.target.value)}
               className="w-full h-64 font-mono text-sm p-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               spellCheck="false"
             />
@@ -209,12 +223,16 @@ export default function DocsInteractiveDemo() {
         <TabsContent value="output" className="p-0 m-0">
           <div className="p-4 min-h-[16rem]">
             {output.length > 0 ? (
-              <div className="border rounded-md p-4 bg-muted/30">{renderFileTree(output)}</div>
+              <div className="border rounded-md p-4 bg-muted/30">
+                {renderFileTree(output)}
+              </div>
             ) : (
               <div className="flex flex-col items-center justify-center h-64 text-center">
                 <FolderTree className="h-12 w-12 text-muted-foreground mb-4" />
                 <h3 className="text-lg font-medium">No output yet</h3>
-                <p className="text-muted-foreground mb-4">Click the "Generate" button to see the file structure</p>
+                <p className="text-muted-foreground mb-4">
+                  Click the "Generate" button to see the file structure
+                </p>
                 <Button onClick={parseForSure}>
                   <Play className="h-4 w-4 mr-2" />
                   Generate Structure

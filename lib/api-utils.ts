@@ -16,11 +16,7 @@ export function apiResponse<T>(
   )
 }
 
-export function apiError(
-  message: string,
-  status: number = 400,
-  details?: any
-) {
+export function apiError(message: string, status: number = 400, details?: any) {
   return NextResponse.json(
     {
       success: false,
@@ -53,11 +49,11 @@ export async function handleApiRequest<T>(
     return apiResponse(result)
   } catch (error) {
     console.error('API Error:', error)
-    
+
     if (error instanceof Error) {
       return apiError(error.message, 500)
     }
-    
+
     return apiError(errorMessage, 500)
   }
 }

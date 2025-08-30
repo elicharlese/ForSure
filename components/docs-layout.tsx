@@ -1,14 +1,14 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Menu, X } from "lucide-react"
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Menu, X } from 'lucide-react'
 
 interface DocsSidebarNavProps {
   items: {
@@ -39,9 +39,9 @@ export function DocsSidebarNav({ items }: DocsSidebarNavProps) {
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside)
+    document.addEventListener('mousedown', handleClickOutside)
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
+      document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [isMobileMenuOpen])
 
@@ -57,7 +57,11 @@ export function DocsSidebarNav({ items }: DocsSidebarNavProps) {
           aria-expanded={isMobileMenuOpen}
           aria-controls="sidebar-menu"
         >
-          {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          {isMobileMenuOpen ? (
+            <X className="h-5 w-5" />
+          ) : (
+            <Menu className="h-5 w-5" />
+          )}
           <span className="ml-2">Menu</span>
         </Button>
       </div>
@@ -67,19 +71,26 @@ export function DocsSidebarNav({ items }: DocsSidebarNavProps) {
         data-sidebar="true"
         id="sidebar-menu"
         className={cn(
-          "fixed inset-0 z-40 bg-background flex-col border-r w-72 lg:sticky lg:top-16 lg:flex",
-          isMobileMenuOpen ? "flex" : "hidden lg:flex",
+          'fixed inset-0 z-40 bg-background flex-col border-r w-72 lg:sticky lg:top-16 lg:flex',
+          isMobileMenuOpen ? 'flex' : 'hidden lg:flex'
         )}
       >
         <div className="flex justify-end p-4 lg:hidden">
-          <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)} aria-label="Close menu">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsMobileMenuOpen(false)}
+            aria-label="Close menu"
+          >
             <X className="h-5 w-5" />
           </Button>
         </div>
         <ScrollArea className="flex-1 py-6 px-4 max-h-[calc(100vh-10rem)] overflow-y-auto">
           {items.map((item, index) => (
             <div key={index} className="pb-6">
-              <h4 className="mb-2 text-sm font-semibold text-primary">{item.title}</h4>
+              <h4 className="mb-2 text-sm font-semibold text-primary">
+                {item.title}
+              </h4>
               {item.items?.length && (
                 <div className="grid grid-flow-row auto-rows-max">
                   {item.items.map((subItem, idx) => (
@@ -87,10 +98,10 @@ export function DocsSidebarNav({ items }: DocsSidebarNavProps) {
                       key={idx}
                       href={subItem.href}
                       className={cn(
-                        "flex w-full items-center rounded-md py-2 text-sm",
+                        'flex w-full items-center rounded-md py-2 text-sm',
                         pathname === subItem.href
-                          ? "font-medium text-primary"
-                          : "text-muted-foreground hover:text-foreground",
+                          ? 'font-medium text-primary'
+                          : 'text-muted-foreground hover:text-foreground'
                       )}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
@@ -114,148 +125,148 @@ interface DocsLayoutProps {
 export default function DocsLayout({ children }: DocsLayoutProps) {
   const sidebarItems = [
     {
-      title: "Getting Started",
-      href: "/docs",
+      title: 'Getting Started',
+      href: '/docs',
       items: [
         {
-          title: "Introduction",
-          href: "/docs",
+          title: 'Introduction',
+          href: '/docs',
         },
         {
-          title: "Installation",
-          href: "/docs/installation",
+          title: 'Installation',
+          href: '/docs/installation',
         },
         {
-          title: "Quick Start",
-          href: "/docs/quick-start",
+          title: 'Quick Start',
+          href: '/docs/quick-start',
         },
         {
-          title: "Downloads",
-          href: "/docs/download",
+          title: 'Downloads',
+          href: '/docs/download',
         },
       ],
     },
     {
-      title: "Syntax",
-      href: "/docs/syntax",
+      title: 'Syntax',
+      href: '/docs/syntax',
       items: [
         {
-          title: "Basic Syntax",
-          href: "/docs/syntax",
+          title: 'Basic Syntax',
+          href: '/docs/syntax',
         },
         {
-          title: "File Structure",
-          href: "/docs/syntax/file-structure",
+          title: 'File Structure',
+          href: '/docs/syntax/file-structure',
         },
         {
-          title: "Comments",
-          href: "/docs/syntax/comments",
+          title: 'Comments',
+          href: '/docs/syntax/comments',
         },
         {
-          title: "Attributes",
-          href: "/docs/syntax/attributes",
+          title: 'Attributes',
+          href: '/docs/syntax/attributes',
         },
         {
-          title: "Import Directives",
-          href: "/docs/syntax/import-directives",
+          title: 'Import Directives',
+          href: '/docs/syntax/import-directives',
         },
       ],
     },
     {
-      title: "AI & Neural Network",
-      href: "/docs/ai",
+      title: 'AI & Neural Network',
+      href: '/docs/ai',
       items: [
         {
-          title: "Overview",
-          href: "/docs/ai",
+          title: 'Overview',
+          href: '/docs/ai',
         },
         {
-          title: "Examples",
-          href: "/docs/ai/examples",
+          title: 'Examples',
+          href: '/docs/ai/examples',
         },
         {
-          title: "Advanced Features",
-          href: "/docs/ai/advanced",
+          title: 'Advanced Features',
+          href: '/docs/ai/advanced',
         },
         {
-          title: "Team Usage",
-          href: "/docs/ai/team-usage",
+          title: 'Team Usage',
+          href: '/docs/ai/team-usage',
         },
         {
-          title: "API Reference",
-          href: "/docs/ai/api",
+          title: 'API Reference',
+          href: '/docs/ai/api',
         },
       ],
     },
     {
-      title: "Examples",
-      href: "/docs/examples",
+      title: 'Examples',
+      href: '/docs/examples',
       items: [
         {
-          title: "Basic Examples",
-          href: "/docs/examples",
+          title: 'Basic Examples',
+          href: '/docs/examples',
         },
         {
-          title: "Intermediate Examples",
-          href: "/docs/examples/intermediate",
+          title: 'Intermediate Examples',
+          href: '/docs/examples/intermediate',
         },
         {
-          title: "Advanced Examples",
-          href: "/docs/examples/advanced",
+          title: 'Advanced Examples',
+          href: '/docs/examples/advanced',
         },
       ],
     },
     {
-      title: "CLI Reference",
-      href: "/docs/cli",
+      title: 'CLI Reference',
+      href: '/docs/cli',
       items: [
         {
-          title: "Commands",
-          href: "/docs/cli",
+          title: 'Commands',
+          href: '/docs/cli',
         },
         {
-          title: "Options",
-          href: "/docs/cli/options",
+          title: 'Options',
+          href: '/docs/cli/options',
         },
         {
-          title: "Configuration",
-          href: "/docs/cli/configuration",
+          title: 'Configuration',
+          href: '/docs/cli/configuration',
         },
       ],
     },
     {
-      title: "API Reference",
-      href: "/docs/api",
+      title: 'API Reference',
+      href: '/docs/api',
       items: [
         {
-          title: "Overview",
-          href: "/docs/api",
+          title: 'Overview',
+          href: '/docs/api',
         },
         {
-          title: "Node API",
-          href: "/docs/api/node",
+          title: 'Node API',
+          href: '/docs/api/node',
         },
         {
-          title: "Programmatic Usage",
-          href: "/docs/api/programmatic-usage",
+          title: 'Programmatic Usage',
+          href: '/docs/api/programmatic-usage',
         },
       ],
     },
     {
-      title: "Tools & Extensions",
-      href: "/docs/tools",
+      title: 'Tools & Extensions',
+      href: '/docs/tools',
       items: [
         {
-          title: "VS Code Extension",
-          href: "/docs/tools/vscode",
+          title: 'VS Code Extension',
+          href: '/docs/tools/vscode',
         },
         {
-          title: "Syntax Highlighting",
-          href: "/docs/tools/syntax-highlighting",
+          title: 'Syntax Highlighting',
+          href: '/docs/tools/syntax-highlighting',
         },
         {
-          title: "Editor Integrations",
-          href: "/docs/tools/editor-integrations",
+          title: 'Editor Integrations',
+          href: '/docs/tools/editor-integrations',
         },
       ],
     },

@@ -4,7 +4,10 @@ import { supabase } from '@/lib/supabase'
 import { updateProjectSchema } from '@/lib/validations'
 import { apiResponse, apiError, validateRequestBody } from '@/lib/api-utils'
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   const authResult = await authMiddleware(request)
   if (authResult.error) {
     return apiError(authResult.error, authResult.status!)
@@ -30,7 +33,10 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   const authResult = await authMiddleware(request)
   if (authResult.error) {
     return apiError(authResult.error, authResult.status!)
@@ -39,7 +45,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
   try {
     const body = await request.json()
-    
+
     const validation = validateRequestBody(body, updateProjectSchema)
     if (!validation.success) {
       return apiError('Validation failed', 422, validation.errors)
@@ -79,7 +85,10 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   const authResult = await authMiddleware(request)
   if (authResult.error) {
     return apiError(authResult.error, authResult.status!)

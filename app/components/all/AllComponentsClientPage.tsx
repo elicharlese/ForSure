@@ -1,23 +1,37 @@
-"use client"
+'use client'
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Search, Filter, Download, Star, Eye, Copy, ArrowLeft } from "lucide-react"
-import Link from "next/link"
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import {
+  Search,
+  Filter,
+  Download,
+  Star,
+  Eye,
+  Copy,
+  ArrowLeft,
+} from 'lucide-react'
+import Link from 'next/link'
 
 // Extended component list (you can expand this)
 const allComponents = [
   // ... (include all the featured components plus many more)
   {
-    id: "blog-template",
-    name: "Blog Template",
-    description: "Complete blog with posts, categories, and comments",
-    category: "layout",
-    tags: ["blog", "cms", "posts"],
+    id: 'blog-template',
+    name: 'Blog Template',
+    description: 'Complete blog with posts, categories, and comments',
+    category: 'layout',
+    tags: ['blog', 'cms', 'posts'],
     downloads: 456,
     stars: 23,
-    preview: "/placeholder.svg?height=200&width=300&text=Blog+Template",
+    preview: '/placeholder.svg?height=200&width=300&text=Blog+Template',
     prompt: `blog:
   pages:
     - home
@@ -30,14 +44,14 @@ const allComponents = [
     - sidebar`,
   },
   {
-    id: "e-commerce",
-    name: "E-commerce Kit",
-    description: "Product catalog, cart, and checkout components",
-    category: "layout",
-    tags: ["ecommerce", "shop", "cart"],
+    id: 'e-commerce',
+    name: 'E-commerce Kit',
+    description: 'Product catalog, cart, and checkout components',
+    category: 'layout',
+    tags: ['ecommerce', 'shop', 'cart'],
     downloads: 789,
     stars: 56,
-    preview: "/placeholder.svg?height=200&width=300&text=E-commerce+Kit",
+    preview: '/placeholder.svg?height=200&width=300&text=E-commerce+Kit',
     prompt: `ecommerce:
   pages:
     - product-catalog
@@ -85,7 +99,7 @@ export default function AllComponentsClientPage() {
 
         {/* Components Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {allComponents.map((component) => (
+          {allComponents.map(component => (
             <ComponentCard key={component.id} component={component} />
           ))}
         </div>
@@ -94,7 +108,11 @@ export default function AllComponentsClientPage() {
   )
 }
 
-function ComponentCard({ component }: { component: (typeof allComponents)[0] }) {
+function ComponentCard({
+  component,
+}: {
+  component: (typeof allComponents)[0]
+}) {
   const copyPrompt = () => {
     navigator.clipboard.writeText(component.prompt)
   }
@@ -102,7 +120,11 @@ function ComponentCard({ component }: { component: (typeof allComponents)[0] }) 
   return (
     <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden">
       <div className="relative">
-        <img src={component.preview || "/placeholder.svg"} alt={component.name} className="w-full h-32 object-cover" />
+        <img
+          src={component.preview || '/placeholder.svg'}
+          alt={component.name}
+          className="w-full h-32 object-cover"
+        />
         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
           <Button size="sm" variant="secondary">
             <Eye className="h-4 w-4 mr-1" />
@@ -117,7 +139,9 @@ function ComponentCard({ component }: { component: (typeof allComponents)[0] }) 
 
       <CardHeader className="pb-2">
         <CardTitle className="text-base">{component.name}</CardTitle>
-        <CardDescription className="text-sm">{component.description}</CardDescription>
+        <CardDescription className="text-sm">
+          {component.description}
+        </CardDescription>
       </CardHeader>
 
       <CardContent>

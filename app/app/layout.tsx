@@ -1,13 +1,9 @@
-import type React from "react"
-import { DemoBanner } from "@/components/demo-banner"
-import { ProtectedRoute } from "@/components/protected-route"
-import { SecondaryNavbar } from "./components/secondary-navbar"
+import type React from 'react'
+import { DemoBanner } from '@/components/demo-banner'
+import { ProtectedRoute } from '@/components/protected-route'
+import { SecondaryNavbar } from './components/secondary-navbar'
 
-export default function AppLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <ProtectedRoute>
       <div className="h-screen flex flex-col overflow-hidden">

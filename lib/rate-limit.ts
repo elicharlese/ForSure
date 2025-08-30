@@ -22,9 +22,10 @@ export function createRateLimiter(config: Partial<RateLimitConfig> = {}) {
 
   return async (request: NextRequest): Promise<NextResponse | null> => {
     const now = Date.now()
-    const ip = request.headers.get('x-forwarded-for') || 
-               request.headers.get('x-real-ip') || 
-               'anonymous'
+    const ip =
+      request.headers.get('x-forwarded-for') ||
+      request.headers.get('x-real-ip') ||
+      'anonymous'
     const key = `rate_limit:${ip}`
 
     // Clean up expired entries
@@ -57,7 +58,7 @@ export function createRateLimiter(config: Partial<RateLimitConfig> = {}) {
     if (entry.count >= finalConfig.maxRequests) {
       // Rate limit exceeded
       const remainingTime = Math.ceil((entry.resetTime - now) / 1000)
-      
+
       return NextResponse.json(
         {
           error: 'Rate limit exceeded',
@@ -90,9 +91,12 @@ export function withRateLimit(
 ) {
   const rateLimiter = createRateLimiter(config)
 
-  return async (request: NextRequest, ...args: any[]): Promise<NextResponse> => {
+  return async (
+    request: NextRequest,
+    ...args: any[]
+  ): Promise<NextResponse> => {
     const rateLimitResponse = await rateLimiter(request)
-    
+
     if (rateLimitResponse) {
       return rateLimitResponse
     }

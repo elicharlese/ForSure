@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Clipboard, Check } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Clipboard, Check } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface DocsCodeBlockProps {
   code: string
@@ -15,7 +15,7 @@ interface DocsCodeBlockProps {
 
 export default function DocsCodeBlock({
   code,
-  language = "forsure",
+  language = 'forsure',
   className,
   showLineNumbers = false,
   fileName,
@@ -29,7 +29,12 @@ export default function DocsCodeBlock({
   }
 
   return (
-    <div className={cn("relative rounded-lg overflow-hidden code-window my-4", className)}>
+    <div
+      className={cn(
+        'relative rounded-lg overflow-hidden code-window my-4',
+        className
+      )}
+    >
       {fileName && (
         <div className="px-4 py-1 bg-secondary-dark/90 text-xs font-mono text-primary/80 border-b border-primary/20 truncate">
           {fileName}
@@ -56,7 +61,12 @@ export default function DocsCodeBlock({
           )}
         </Button>
       </div>
-      <div className={cn("p-4 overflow-x-auto text-sm text-white font-mono", showLineNumbers && "line-numbers")}>
+      <div
+        className={cn(
+          'p-4 overflow-x-auto text-sm text-white font-mono',
+          showLineNumbers && 'line-numbers'
+        )}
+      >
         <code>{code}</code>
       </div>
     </div>

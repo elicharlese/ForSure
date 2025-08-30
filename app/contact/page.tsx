@@ -1,13 +1,13 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Mail, MapPin, Phone, Send, Check } from "lucide-react"
-import AnimateOnScroll from "@/components/animate-on-scroll"
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Mail, MapPin, Phone, Send, Check } from 'lucide-react'
+import AnimateOnScroll from '@/components/animate-on-scroll'
 
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -18,7 +18,7 @@ export default function ContactPage() {
     setIsSubmitting(true)
 
     // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    await new Promise(resolve => setTimeout(resolve, 1500))
 
     setIsSubmitting(false)
     setIsSubmitted(true)
@@ -29,7 +29,9 @@ export default function ContactPage() {
       <div className="space-y-12">
         <div>
           <h1 className="text-4xl font-bold tracking-tight mb-4">Contact Us</h1>
-          <p className="text-xl text-muted-foreground">Get in touch with our team. We'd love to hear from you!</p>
+          <p className="text-xl text-muted-foreground">
+            Get in touch with our team. We'd love to hear from you!
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -38,8 +40,9 @@ export default function ContactPage() {
               <div className="space-y-4">
                 <h2 className="text-2xl font-bold">Get in Touch</h2>
                 <p className="text-muted-foreground">
-                  Have questions about ForSure? Want to learn more about our products or services? Fill out the form and
-                  we'll get back to you as soon as possible.
+                  Have questions about ForSure? Want to learn more about our
+                  products or services? Fill out the form and we'll get back to
+                  you as soon as possible.
                 </p>
               </div>
 
@@ -50,7 +53,9 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-bold">Email</h3>
-                    <p className="text-muted-foreground">info@forsure-lang.com</p>
+                    <p className="text-muted-foreground">
+                      info@forsure-lang.com
+                    </p>
                   </div>
                 </div>
 
@@ -92,9 +97,13 @@ export default function ContactPage() {
                   </div>
                   <h3 className="text-xl font-bold">Message Sent!</h3>
                   <p className="text-center text-muted-foreground">
-                    Thank you for contacting us. We'll get back to you as soon as possible.
+                    Thank you for contacting us. We'll get back to you as soon
+                    as possible.
                   </p>
-                  <Button onClick={() => setIsSubmitted(false)} className="mt-4">
+                  <Button
+                    onClick={() => setIsSubmitted(false)}
+                    className="mt-4"
+                  >
                     Send Another Message
                   </Button>
                 </div>
@@ -111,24 +120,42 @@ export default function ContactPage() {
                     <label htmlFor="email" className="text-sm font-medium">
                       Email
                     </label>
-                    <Input id="email" type="email" placeholder="Your email" required />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="Your email"
+                      required
+                    />
                   </div>
 
                   <div className="space-y-2">
                     <label htmlFor="subject" className="text-sm font-medium">
                       Subject
                     </label>
-                    <Input id="subject" placeholder="Subject of your message" required />
+                    <Input
+                      id="subject"
+                      placeholder="Subject of your message"
+                      required
+                    />
                   </div>
 
                   <div className="space-y-2">
                     <label htmlFor="message" className="text-sm font-medium">
                       Message
                     </label>
-                    <Textarea id="message" placeholder="Your message" rows={5} required />
+                    <Textarea
+                      id="message"
+                      placeholder="Your message"
+                      rows={5}
+                      required
+                    />
                   </div>
 
-                  <Button type="submit" className="w-full" disabled={isSubmitting}>
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={isSubmitting}
+                  >
                     {isSubmitting ? (
                       <span className="flex items-center">
                         <svg
@@ -172,27 +199,29 @@ export default function ContactPage() {
               <div className="space-y-2">
                 <h3 className="font-bold">Is ForSure open source?</h3>
                 <p className="text-muted-foreground">
-                  Yes, ForSure is completely open source. You can find the source code on our GitHub repository.
+                  Yes, ForSure is completely open source. You can find the
+                  source code on our GitHub repository.
                 </p>
               </div>
               <div className="space-y-2">
                 <h3 className="font-bold">Do you offer enterprise support?</h3>
                 <p className="text-muted-foreground">
-                  Yes, we offer enterprise support plans for organizations that need dedicated support and custom
-                  features.
+                  Yes, we offer enterprise support plans for organizations that
+                  need dedicated support and custom features.
                 </p>
               </div>
               <div className="space-y-2">
                 <h3 className="font-bold">How can I contribute to ForSure?</h3>
                 <p className="text-muted-foreground">
-                  We welcome contributions! Check out our GitHub repository for contribution guidelines and open issues.
+                  We welcome contributions! Check out our GitHub repository for
+                  contribution guidelines and open issues.
                 </p>
               </div>
               <div className="space-y-2">
                 <h3 className="font-bold">Is ForSure free to use?</h3>
                 <p className="text-muted-foreground">
-                  Yes, ForSure is free and open source. You can use it for personal and commercial projects without any
-                  restrictions.
+                  Yes, ForSure is free and open source. You can use it for
+                  personal and commercial projects without any restrictions.
                 </p>
               </div>
             </div>

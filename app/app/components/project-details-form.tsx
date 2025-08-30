@@ -1,21 +1,43 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { useState, useRef } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ArrowRight, ArrowLeft, Check, Sparkles, FileUp, LayoutTemplate, FileCode, Info } from "lucide-react"
-import { TemplateBrowser } from "./template-browser"
-import { getTemplateById, applyTemplate } from "../services/template-service"
-import type { FileNode } from "./file-structure-visualization"
-import { Badge } from "@/components/ui/badge"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { useToast } from "@/components/ui/use-toast"
+import { useState, useRef } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+  ArrowRight,
+  ArrowLeft,
+  Check,
+  Sparkles,
+  FileUp,
+  LayoutTemplate,
+  FileCode,
+  Info,
+} from 'lucide-react'
+import { TemplateBrowser } from './template-browser'
+import { getTemplateById, applyTemplate } from '../services/template-service'
+import type { FileNode } from './file-structure-visualization'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { useToast } from '@/components/ui/use-toast'
 
 export type ProjectDetails = {
   id?: string
@@ -31,13 +53,13 @@ export type ProjectDetails = {
 }
 
 const initialProjectDetails: ProjectDetails = {
-  name: "",
-  description: "",
-  type: "",
-  framework: "",
+  name: '',
+  description: '',
+  type: '',
+  framework: '',
   languages: [],
-  teamSize: "",
-  goals: "",
+  teamSize: '',
+  goals: '',
 }
 
 type FormStep = {
@@ -47,24 +69,24 @@ type FormStep = {
 
 const formSteps: FormStep[] = [
   {
-    title: "Project Basics",
+    title: 'Project Basics',
     description: "Let's start with the basic information about your project",
   },
   {
-    title: "Technical Details",
-    description: "Tell us about the technical aspects of your project",
+    title: 'Technical Details',
+    description: 'Tell us about the technical aspects of your project',
   },
   {
-    title: "Template & Files",
-    description: "Choose a template or upload existing files",
+    title: 'Template & Files',
+    description: 'Choose a template or upload existing files',
   },
   {
-    title: "Team & Goals",
-    description: "Share information about your team and project goals",
+    title: 'Team & Goals',
+    description: 'Share information about your team and project goals',
   },
   {
-    title: "Review & Confirm",
-    description: "Review your project details before starting the chat",
+    title: 'Review & Confirm',
+    description: 'Review your project details before starting the chat',
   },
 ]
 
@@ -73,30 +95,40 @@ interface ProjectDetailsFormProps {
   initialDetails?: ProjectDetails
 }
 
-export function ProjectDetailsForm({ onComplete, initialDetails }: ProjectDetailsFormProps) {
+export function ProjectDetailsForm({
+  onComplete,
+  initialDetails,
+}: ProjectDetailsFormProps) {
   const [currentStep, setCurrentStep] = useState(0)
-  const [projectDetails, setProjectDetails] = useState<ProjectDetails>(initialDetails || initialProjectDetails)
+  const [projectDetails, setProjectDetails] = useState<ProjectDetails>(
+    initialDetails || initialProjectDetails
+  )
   const [templateBrowserOpen, setTemplateBrowserOpen] = useState(false)
-  const [selectedTemplate, setSelectedTemplate] = useState<{ id: string; name: string } | null>(null)
-  const [initialStructure, setInitialStructure] = useState<FileNode | undefined>(undefined)
-  const [uploadTab, setUploadTab] = useState<string>("template")
+  const [selectedTemplate, setSelectedTemplate] = useState<{
+    id: string
+    name: string
+  } | null>(null)
+  const [initialStructure, setInitialStructure] = useState<
+    FileNode | undefined
+  >(undefined)
+  const [uploadTab, setUploadTab] = useState<string>('template')
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { toast } = useToast()
 
   const updateProjectDetails = (field: keyof ProjectDetails, value: any) => {
-    setProjectDetails((prev) => ({
+    setProjectDetails(prev => ({
       ...prev,
       [field]: value,
     }))
   }
 
   const handleLanguageToggle = (language: string) => {
-    setProjectDetails((prev) => {
+    setProjectDetails(prev => {
       const languages = [...prev.languages]
       if (languages.includes(language)) {
         return {
           ...prev,
-          languages: languages.filter((l) => l !== language),
+          languages: languages.filter(l => l !== language),
         }
       } else {
         return {
@@ -109,7 +141,7 @@ export function ProjectDetailsForm({ onComplete, initialDetails }: ProjectDetail
 
   const nextStep = () => {
     if (currentStep < formSteps.length - 1) {
-      setCurrentStep((prev) => prev + 1)
+      setCurrentStep(prev => prev + 1)
     } else {
       onComplete(projectDetails, initialStructure)
     }
@@ -117,21 +149,30 @@ export function ProjectDetailsForm({ onComplete, initialDetails }: ProjectDetail
 
   const prevStep = () => {
     if (currentStep > 0) {
-      setCurrentStep((prev) => prev - 1)
+      setCurrentStep(prev => prev - 1)
     }
   }
 
   const isStepValid = () => {
     switch (currentStep) {
       case 0:
-        return projectDetails.name.trim() !== "" && projectDetails.description.trim() !== ""
+        return (
+          projectDetails.name.trim() !== '' &&
+          projectDetails.description.trim() !== ''
+        )
       case 1:
-        return projectDetails.type !== "" && projectDetails.framework !== "" && projectDetails.languages.length > 0
+        return (
+          projectDetails.type !== '' &&
+          projectDetails.framework !== '' &&
+          projectDetails.languages.length > 0
+        )
       case 2:
         // Template selection is optional
         return true
       case 3:
-        return projectDetails.teamSize !== "" && projectDetails.goals.trim() !== ""
+        return (
+          projectDetails.teamSize !== '' && projectDetails.goals.trim() !== ''
+        )
       case 4:
         return true
       default:
@@ -143,19 +184,22 @@ export function ProjectDetailsForm({ onComplete, initialDetails }: ProjectDetail
     const template = getTemplateById(templateId)
     if (template) {
       setSelectedTemplate({ id: templateId, name: template.name })
-      updateProjectDetails("templateId", templateId)
-      updateProjectDetails("templateName", template.name)
+      updateProjectDetails('templateId', templateId)
+      updateProjectDetails('templateName', template.name)
 
       // If framework and type are not set, use the template's values
       if (!projectDetails.framework) {
-        updateProjectDetails("framework", template.framework)
+        updateProjectDetails('framework', template.framework)
       }
       if (!projectDetails.type) {
-        updateProjectDetails("type", template.type)
+        updateProjectDetails('type', template.type)
       }
 
       // Generate the initial structure based on the template
-      const structure = applyTemplate(templateId, projectDetails.name || "New Project")
+      const structure = applyTemplate(
+        templateId,
+        projectDetails.name || 'New Project'
+      )
       if (structure) {
         setInitialStructure(structure)
       }
@@ -168,42 +212,44 @@ export function ProjectDetailsForm({ onComplete, initialDetails }: ProjectDetail
     if (!file) return
 
     const reader = new FileReader()
-    reader.onload = (e) => {
+    reader.onload = e => {
       try {
         const result = e.target?.result as string
-        const fileExtension = file.name.split(".").pop()?.toLowerCase()
+        const fileExtension = file.name.split('.').pop()?.toLowerCase()
 
-        if (fileExtension === "json") {
+        if (fileExtension === 'json') {
           const parsedData = JSON.parse(result)
 
           // Check if it's a valid file structure
           if (isValidFileStructure(parsedData)) {
             setInitialStructure(parsedData)
             toast({
-              title: "File structure loaded",
+              title: 'File structure loaded',
               description: `Successfully loaded file structure from ${file.name}`,
             })
           } else {
             toast({
-              title: "Invalid file structure",
-              description: "The uploaded file doesn't contain a valid file structure",
-              variant: "destructive",
+              title: 'Invalid file structure',
+              description:
+                "The uploaded file doesn't contain a valid file structure",
+              variant: 'destructive',
             })
           }
         } else {
           toast({
-            title: "Unsupported file format",
-            description: "Please upload a JSON file containing a valid file structure",
-            variant: "destructive",
+            title: 'Unsupported file format',
+            description:
+              'Please upload a JSON file containing a valid file structure',
+            variant: 'destructive',
           })
         }
       } catch (error) {
         toast({
-          title: "Error parsing file",
-          description: "There was an error reading the uploaded file",
-          variant: "destructive",
+          title: 'Error parsing file',
+          description: 'There was an error reading the uploaded file',
+          variant: 'destructive',
         })
-        console.error("Error parsing file:", error)
+        console.error('Error parsing file:', error)
       }
     }
 
@@ -214,10 +260,10 @@ export function ProjectDetailsForm({ onComplete, initialDetails }: ProjectDetail
   const isValidFileStructure = (data: any): boolean => {
     return (
       data &&
-      typeof data === "object" &&
-      "name" in data &&
-      "type" in data &&
-      (data.type === "directory" || data.type === "file")
+      typeof data === 'object' &&
+      'name' in data &&
+      'type' in data &&
+      (data.type === 'directory' || data.type === 'file')
     )
   }
 
@@ -232,25 +278,33 @@ export function ProjectDetailsForm({ onComplete, initialDetails }: ProjectDetail
         {currentStep === 0 && (
           <div className="space-y-4">
             <div>
-              <label htmlFor="project-name" className="block text-sm font-medium mb-1">
+              <label
+                htmlFor="project-name"
+                className="block text-sm font-medium mb-1"
+              >
                 Project Name
               </label>
               <Input
                 id="project-name"
                 placeholder="Enter your project name"
                 value={projectDetails.name}
-                onChange={(e) => updateProjectDetails("name", e.target.value)}
+                onChange={e => updateProjectDetails('name', e.target.value)}
               />
             </div>
             <div>
-              <label htmlFor="project-description" className="block text-sm font-medium mb-1">
+              <label
+                htmlFor="project-description"
+                className="block text-sm font-medium mb-1"
+              >
                 Project Description
               </label>
               <Textarea
                 id="project-description"
                 placeholder="Briefly describe what your project is about"
                 value={projectDetails.description}
-                onChange={(e) => updateProjectDetails("description", e.target.value)}
+                onChange={e =>
+                  updateProjectDetails('description', e.target.value)
+                }
                 rows={4}
               />
             </div>
@@ -261,10 +315,16 @@ export function ProjectDetailsForm({ onComplete, initialDetails }: ProjectDetail
         {currentStep === 1 && (
           <div className="space-y-4">
             <div>
-              <label htmlFor="project-type" className="block text-sm font-medium mb-1">
+              <label
+                htmlFor="project-type"
+                className="block text-sm font-medium mb-1"
+              >
                 Project Type
               </label>
-              <Select value={projectDetails.type} onValueChange={(value) => updateProjectDetails("type", value)}>
+              <Select
+                value={projectDetails.type}
+                onValueChange={value => updateProjectDetails('type', value)}
+              >
                 <SelectTrigger id="project-type">
                   <SelectValue placeholder="Select project type" />
                 </SelectTrigger>
@@ -279,12 +339,17 @@ export function ProjectDetailsForm({ onComplete, initialDetails }: ProjectDetail
               </Select>
             </div>
             <div>
-              <label htmlFor="framework" className="block text-sm font-medium mb-1">
+              <label
+                htmlFor="framework"
+                className="block text-sm font-medium mb-1"
+              >
                 Primary Framework
               </label>
               <Select
                 value={projectDetails.framework}
-                onValueChange={(value) => updateProjectDetails("framework", value)}
+                onValueChange={value =>
+                  updateProjectDetails('framework', value)
+                }
               >
                 <SelectTrigger id="framework">
                   <SelectValue placeholder="Select primary framework" />
@@ -309,30 +374,38 @@ export function ProjectDetailsForm({ onComplete, initialDetails }: ProjectDetail
               </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Programming Languages</label>
+              <label className="block text-sm font-medium mb-1">
+                Programming Languages
+              </label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-1">
                 {[
-                  "JavaScript",
-                  "TypeScript",
-                  "Python",
-                  "Java",
-                  "C#",
-                  "PHP",
-                  "Ruby",
-                  "Go",
-                  "Rust",
-                  "Swift",
-                  "Kotlin",
-                  "C++",
-                ].map((language) => (
+                  'JavaScript',
+                  'TypeScript',
+                  'Python',
+                  'Java',
+                  'C#',
+                  'PHP',
+                  'Ruby',
+                  'Go',
+                  'Rust',
+                  'Swift',
+                  'Kotlin',
+                  'C++',
+                ].map(language => (
                   <Button
                     key={language}
                     type="button"
-                    variant={projectDetails.languages.includes(language) ? "default" : "outline"}
+                    variant={
+                      projectDetails.languages.includes(language)
+                        ? 'default'
+                        : 'outline'
+                    }
                     className="justify-start"
                     onClick={() => handleLanguageToggle(language)}
                   >
-                    {projectDetails.languages.includes(language) && <Check className="mr-2 h-4 w-4" />}
+                    {projectDetails.languages.includes(language) && (
+                      <Check className="mr-2 h-4 w-4" />
+                    )}
                     {language}
                   </Button>
                 ))}
@@ -344,9 +417,16 @@ export function ProjectDetailsForm({ onComplete, initialDetails }: ProjectDetail
         {/* Step 3: Template & Files */}
         {currentStep === 2 && (
           <div className="space-y-4">
-            <Tabs value={uploadTab} onValueChange={setUploadTab} className="w-full">
+            <Tabs
+              value={uploadTab}
+              onValueChange={setUploadTab}
+              className="w-full"
+            >
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="template" className="flex items-center gap-2">
+                <TabsTrigger
+                  value="template"
+                  className="flex items-center gap-2"
+                >
                   <LayoutTemplate className="h-4 w-4" />
                   <span>Use Template</span>
                 </TabsTrigger>
@@ -362,7 +442,8 @@ export function ProjectDetailsForm({ onComplete, initialDetails }: ProjectDetail
                     <Info className="h-4 w-4" />
                     <AlertTitle>Start with a template</AlertTitle>
                     <AlertDescription>
-                      Choose from our pre-built templates to quickly set up your project structure.
+                      Choose from our pre-built templates to quickly set up your
+                      project structure.
                     </AlertDescription>
                   </Alert>
 
@@ -371,9 +452,15 @@ export function ProjectDetailsForm({ onComplete, initialDetails }: ProjectDetail
                       <div className="flex items-center justify-between">
                         <div>
                           <h3 className="font-medium">Selected Template</h3>
-                          <p className="text-sm text-muted-foreground">{selectedTemplate.name}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {selectedTemplate.name}
+                          </p>
                         </div>
-                        <Button variant="outline" size="sm" onClick={() => setSelectedTemplate(null)}>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setSelectedTemplate(null)}
+                        >
                           Change
                         </Button>
                       </div>
@@ -384,10 +471,13 @@ export function ProjectDetailsForm({ onComplete, initialDetails }: ProjectDetail
                       <div className="text-center">
                         <h3 className="font-medium">No template selected</h3>
                         <p className="text-sm text-muted-foreground mt-1">
-                          Choose a template to quickly set up your project structure
+                          Choose a template to quickly set up your project
+                          structure
                         </p>
                       </div>
-                      <Button onClick={() => setTemplateBrowserOpen(true)}>Browse Templates</Button>
+                      <Button onClick={() => setTemplateBrowserOpen(true)}>
+                        Browse Templates
+                      </Button>
                     </div>
                   )}
                 </div>
@@ -399,15 +489,20 @@ export function ProjectDetailsForm({ onComplete, initialDetails }: ProjectDetail
                     <Info className="h-4 w-4" />
                     <AlertTitle>Upload existing files</AlertTitle>
                     <AlertDescription>
-                      Upload a JSON file containing your project structure to continue working on an existing project.
+                      Upload a JSON file containing your project structure to
+                      continue working on an existing project.
                     </AlertDescription>
                   </Alert>
 
                   <div className="flex flex-col items-center justify-center border rounded-lg p-8 gap-4 border-dashed">
                     <FileCode className="h-12 w-12 text-muted-foreground" />
                     <div className="text-center">
-                      <h3 className="font-medium">Drag and drop your file here</h3>
-                      <p className="text-sm text-muted-foreground mt-1">Or click to browse your files</p>
+                      <h3 className="font-medium">
+                        Drag and drop your file here
+                      </h3>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Or click to browse your files
+                      </p>
                     </div>
                     <input
                       type="file"
@@ -416,7 +511,9 @@ export function ProjectDetailsForm({ onComplete, initialDetails }: ProjectDetail
                       accept=".json"
                       onChange={handleFileUpload}
                     />
-                    <Button onClick={() => fileInputRef.current?.click()}>Select File</Button>
+                    <Button onClick={() => fileInputRef.current?.click()}>
+                      Select File
+                    </Button>
                     {initialStructure && (
                       <Badge variant="outline" className="mt-2 px-3 py-1">
                         <Check className="mr-1 h-3 w-3" />
@@ -434,12 +531,15 @@ export function ProjectDetailsForm({ onComplete, initialDetails }: ProjectDetail
         {currentStep === 3 && (
           <div className="space-y-4">
             <div>
-              <label htmlFor="team-size" className="block text-sm font-medium mb-1">
+              <label
+                htmlFor="team-size"
+                className="block text-sm font-medium mb-1"
+              >
                 Team Size
               </label>
               <Select
                 value={projectDetails.teamSize}
-                onValueChange={(value) => updateProjectDetails("teamSize", value)}
+                onValueChange={value => updateProjectDetails('teamSize', value)}
               >
                 <SelectTrigger id="team-size">
                   <SelectValue placeholder="Select team size" />
@@ -453,14 +553,17 @@ export function ProjectDetailsForm({ onComplete, initialDetails }: ProjectDetail
               </Select>
             </div>
             <div>
-              <label htmlFor="project-goals" className="block text-sm font-medium mb-1">
+              <label
+                htmlFor="project-goals"
+                className="block text-sm font-medium mb-1"
+              >
                 Project Goals
               </label>
               <Textarea
                 id="project-goals"
                 placeholder="What are you trying to achieve with this project?"
                 value={projectDetails.goals}
-                onChange={(e) => updateProjectDetails("goals", e.target.value)}
+                onChange={e => updateProjectDetails('goals', e.target.value)}
                 rows={4}
               />
             </div>
@@ -474,10 +577,12 @@ export function ProjectDetailsForm({ onComplete, initialDetails }: ProjectDetail
               <h3 className="font-medium mb-2">Project Basics</h3>
               <div className="grid grid-cols-1 gap-2 text-sm">
                 <div>
-                  <span className="font-medium">Name:</span> {projectDetails.name}
+                  <span className="font-medium">Name:</span>{' '}
+                  {projectDetails.name}
                 </div>
                 <div>
-                  <span className="font-medium">Description:</span> {projectDetails.description}
+                  <span className="font-medium">Description:</span>{' '}
+                  {projectDetails.description}
                 </div>
               </div>
             </div>
@@ -486,22 +591,27 @@ export function ProjectDetailsForm({ onComplete, initialDetails }: ProjectDetail
               <h3 className="font-medium mb-2">Technical Details</h3>
               <div className="grid grid-cols-1 gap-2 text-sm">
                 <div>
-                  <span className="font-medium">Project Type:</span> {projectDetails.type}
+                  <span className="font-medium">Project Type:</span>{' '}
+                  {projectDetails.type}
                 </div>
                 <div>
-                  <span className="font-medium">Framework:</span> {projectDetails.framework}
+                  <span className="font-medium">Framework:</span>{' '}
+                  {projectDetails.framework}
                 </div>
                 <div>
-                  <span className="font-medium">Languages:</span> {projectDetails.languages.join(", ")}
+                  <span className="font-medium">Languages:</span>{' '}
+                  {projectDetails.languages.join(', ')}
                 </div>
                 {projectDetails.templateName && (
                   <div>
-                    <span className="font-medium">Template:</span> {projectDetails.templateName}
+                    <span className="font-medium">Template:</span>{' '}
+                    {projectDetails.templateName}
                   </div>
                 )}
                 {initialStructure && (
                   <div>
-                    <span className="font-medium">Initial Structure:</span> {initialStructure ? "Loaded" : "None"}
+                    <span className="font-medium">Initial Structure:</span>{' '}
+                    {initialStructure ? 'Loaded' : 'None'}
                   </div>
                 )}
               </div>
@@ -511,10 +621,12 @@ export function ProjectDetailsForm({ onComplete, initialDetails }: ProjectDetail
               <h3 className="font-medium mb-2">Team & Goals</h3>
               <div className="grid grid-cols-1 gap-2 text-sm">
                 <div>
-                  <span className="font-medium">Team Size:</span> {projectDetails.teamSize}
+                  <span className="font-medium">Team Size:</span>{' '}
+                  {projectDetails.teamSize}
                 </div>
                 <div>
-                  <span className="font-medium">Goals:</span> {projectDetails.goals}
+                  <span className="font-medium">Goals:</span>{' '}
+                  {projectDetails.goals}
                 </div>
               </div>
             </div>
@@ -522,7 +634,11 @@ export function ProjectDetailsForm({ onComplete, initialDetails }: ProjectDetail
         )}
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button variant="outline" onClick={prevStep} disabled={currentStep === 0}>
+        <Button
+          variant="outline"
+          onClick={prevStep}
+          disabled={currentStep === 0}
+        >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back
         </Button>

@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const query = Object.fromEntries(searchParams.entries())
-    
+
     const validation = validateRequestBody(query, paginationSchema)
     if (!validation.success) {
       return apiError('Invalid query parameters', 422, validation.errors)
@@ -18,11 +18,15 @@ export async function GET(request: NextRequest) {
 
     let supabaseQuery = supabase
       .from('blog_posts')
-      .select('*, profiles!blog_posts_author_id_fkey(name, avatar_url)', { count: 'exact' })
+      .select('*, profiles!blog_posts_author_id_fkey(name, avatar_url)', {
+        count: 'exact',
+      })
       .eq('published', true)
 
     if (search) {
-      supabaseQuery = supabaseQuery.or(`title.ilike.%${search}%,excerpt.ilike.%${search}%,tags.cs.{${search}}`)
+      supabaseQuery = supabaseQuery.or(
+        `title.ilike.%${search}%,excerpt.ilike.%${search}%,tags.cs.{${search}}`
+      )
     }
 
     if (sort) {
@@ -58,7 +62,7 @@ export async function GET(request: NextRequest) {
 export const POST = withAdminAuth(async (request: NextRequest, { user }) => {
   try {
     const body = await request.json()
-    
+
     const validation = validateRequestBody(body, createBlogPostSchema)
     if (!validation.success) {
       return apiError('Validation failed', 422, validation.errors)

@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { ThumbsUp, ThumbsDown, Send, Check } from "lucide-react"
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
+import { ThumbsUp, ThumbsDown, Send, Check } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -11,17 +11,17 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
+} from '@/components/ui/dialog'
 
 export default function DocsFeedback() {
-  const [feedback, setFeedback] = useState<"positive" | "negative" | null>(null)
+  const [feedback, setFeedback] = useState<'positive' | 'negative' | null>(null)
   const [showDialog, setShowDialog] = useState(false)
-  const [feedbackText, setFeedbackText] = useState("")
+  const [feedbackText, setFeedbackText] = useState('')
   const [submitted, setSubmitted] = useState(false)
 
-  const handleFeedback = (type: "positive" | "negative") => {
+  const handleFeedback = (type: 'positive' | 'negative') => {
     setFeedback(type)
-    if (type === "negative") {
+    if (type === 'negative') {
       setShowDialog(true)
     } else {
       // Just record positive feedback without asking for details
@@ -32,9 +32,9 @@ export default function DocsFeedback() {
 
   const submitFeedback = () => {
     // Here you would typically send the feedback to your backend
-    console.log("Feedback submitted:", { type: feedback, text: feedbackText })
+    console.log('Feedback submitted:', { type: feedback, text: feedbackText })
     setShowDialog(false)
-    setFeedbackText("")
+    setFeedbackText('')
     setSubmitted(true)
     setTimeout(() => setSubmitted(false), 3000)
   }
@@ -54,7 +54,7 @@ export default function DocsFeedback() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => handleFeedback("positive")}
+              onClick={() => handleFeedback('positive')}
               className="flex items-center"
             >
               <ThumbsUp className="mr-2 h-4 w-4" />
@@ -63,7 +63,7 @@ export default function DocsFeedback() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => handleFeedback("negative")}
+              onClick={() => handleFeedback('negative')}
               className="flex items-center"
             >
               <ThumbsDown className="mr-2 h-4 w-4" />
@@ -77,12 +77,14 @@ export default function DocsFeedback() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>How can we improve this page?</DialogTitle>
-            <DialogDescription>Your feedback helps us make our documentation better.</DialogDescription>
+            <DialogDescription>
+              Your feedback helps us make our documentation better.
+            </DialogDescription>
           </DialogHeader>
           <Textarea
             placeholder="Please let us know what was unclear or what could be improved..."
             value={feedbackText}
-            onChange={(e) => setFeedbackText(e.target.value)}
+            onChange={e => setFeedbackText(e.target.value)}
             className="min-h-[100px]"
           />
           <DialogFooter>

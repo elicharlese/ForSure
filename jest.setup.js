@@ -1,5 +1,3 @@
-import { jest } from '@jest/globals'
-
 // Mock environment variables for testing
 process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://test.supabase.co'
 process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'test-anon-key'
@@ -39,6 +37,9 @@ jest.mock('@/lib/supabase', () => ({
       insert: jest.fn().mockReturnThis(),
       update: jest.fn().mockReturnThis(),
       delete: jest.fn().mockReturnThis(),
+      order: jest.fn().mockReturnThis(),
+      or: jest.fn().mockReturnThis(),
+      range: jest.fn(),
       eq: jest.fn().mockReturnThis(),
       single: jest.fn(),
     })),
@@ -52,6 +53,9 @@ jest.mock('@/lib/supabase', () => ({
       insert: jest.fn().mockReturnThis(),
       update: jest.fn().mockReturnThis(),
       delete: jest.fn().mockReturnThis(),
+      order: jest.fn().mockReturnThis(),
+      or: jest.fn().mockReturnThis(),
+      range: jest.fn(),
       eq: jest.fn().mockReturnThis(),
       single: jest.fn(),
     })),

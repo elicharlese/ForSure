@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import { apiResponse, apiError } from '@/lib/api-utils'
 
@@ -6,7 +6,7 @@ import { apiResponse, apiError } from '@/lib/api-utils'
 export async function POST(request: NextRequest) {
   try {
     const { provider, redirectTo } = await request.json()
-    
+
     if (!provider || !['google', 'github'].includes(provider)) {
       return apiError('Invalid provider', 400)
     }
@@ -14,7 +14,8 @@ export async function POST(request: NextRequest) {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: provider as 'google' | 'github',
       options: {
-        redirectTo: redirectTo || `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
+        redirectTo:
+          redirectTo || `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
         queryParams: {
           access_type: 'offline',
           prompt: 'consent',
@@ -30,7 +31,7 @@ export async function POST(request: NextRequest) {
     return apiResponse({
       url: data.url,
       provider,
-      message: 'Social login initiated successfully'
+      message: 'Social login initiated successfully',
     })
   } catch (error) {
     console.error('Social login error:', error)

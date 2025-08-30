@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const query = Object.fromEntries(searchParams.entries())
-    
+
     const validation = validateRequestBody(query, paginationSchema)
     if (!validation.success) {
       return apiError('Invalid query parameters', 422, validation.errors)
@@ -23,7 +23,9 @@ export async function GET(request: NextRequest) {
       .eq('active', true)
 
     if (search) {
-      supabaseQuery = supabaseQuery.or(`title.ilike.%${search}%,description.ilike.%${search}%`)
+      supabaseQuery = supabaseQuery.or(
+        `title.ilike.%${search}%,description.ilike.%${search}%`
+      )
     }
 
     if (type) {
@@ -71,7 +73,7 @@ export async function GET(request: NextRequest) {
 export const POST = withAdminAuth(async (request: NextRequest, { user }) => {
   try {
     const body = await request.json()
-    
+
     const validation = validateRequestBody(body, createCareerSchema)
     if (!validation.success) {
       return apiError('Validation failed', 422, validation.errors)

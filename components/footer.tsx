@@ -1,13 +1,13 @@
-"use client"
+'use client'
 
-import Link from "next/link"
-import Image from "next/image"
-import { Github, Twitter, Terminal, Code, BookOpen } from "lucide-react"
-import { useTheme } from "next-themes"
+import Link from 'next/link'
+import Image from 'next/image'
+import { Github, Twitter, Terminal, Code, BookOpen } from 'lucide-react'
+import { useTheme } from 'next-themes'
 
 export default function Footer() {
   const { theme } = useTheme()
-  const isDark = theme === "dark"
+  const isDark = theme === 'dark'
 
   return (
     <footer className="w-full border-t border-primary/20 bg-background">
@@ -18,7 +18,7 @@ export default function Footer() {
               <div className="relative w-8 h-8">
                 <div
                   className={`absolute inset-0 rounded-full blur-lg ${
-                    isDark ? "bg-primary/15" : "bg-primary/10"
+                    isDark ? 'bg-primary/15' : 'bg-primary/10'
                   } scale-125`}
                 />
                 <Image
@@ -29,15 +29,20 @@ export default function Footer() {
                   className="h-8 w-8"
                   style={{
                     filter: isDark
-                      ? "drop-shadow(0 0 8px rgba(140, 255, 230, 0.25))"
-                      : "drop-shadow(0 0 6px rgba(140, 255, 230, 0.15))",
+                      ? 'drop-shadow(0 0 8px rgba(140, 255, 230, 0.25))'
+                      : 'drop-shadow(0 0 6px rgba(140, 255, 230, 0.15))',
                   }}
                 />
               </div>
-              <span className={`font-bold text-xl ${isDark ? "text-primary" : "text-secondary"}`}>ForSure</span>
+              <span
+                className={`font-bold text-xl ${isDark ? 'text-primary' : 'text-secondary'}`}
+              >
+                ForSure
+              </span>
             </Link>
             <p className="text-sm text-secondary/80 dark:text-white/80">
-              A powerful file structure definition language and CLI tool for developers.
+              A powerful file structure definition language and CLI tool for
+              developers.
             </p>
             <div className="flex gap-4">
               <Link
@@ -75,10 +80,16 @@ export default function Footer() {
             >
               <Code className="h-4 w-4" /> Language
             </Link>
-            <Link href="/app" className="text-sm text-secondary/80 dark:text-white hover:text-primary">
+            <Link
+              href="/app"
+              className="text-sm text-secondary/80 dark:text-white hover:text-primary"
+            >
               Web Editor
             </Link>
-            <Link href="/extensions" className="text-sm text-secondary/80 dark:text-white hover:text-primary">
+            <Link
+              href="/extensions"
+              className="text-sm text-secondary/80 dark:text-white hover:text-primary"
+            >
               IDE Extensions
             </Link>
           </div>
@@ -91,29 +102,50 @@ export default function Footer() {
             >
               <BookOpen className="h-4 w-4" /> Documentation
             </Link>
-            <Link href="/examples" className="text-sm text-secondary/80 dark:text-white hover:text-primary">
+            <Link
+              href="/examples"
+              className="text-sm text-secondary/80 dark:text-white hover:text-primary"
+            >
               Examples
             </Link>
-            <Link href="/templates" className="text-sm text-secondary/80 dark:text-white hover:text-primary">
+            <Link
+              href="/templates"
+              className="text-sm text-secondary/80 dark:text-white hover:text-primary"
+            >
               Templates
             </Link>
-            <Link href="/blog" className="text-sm text-secondary/80 dark:text-white hover:text-primary">
+            <Link
+              href="/blog"
+              className="text-sm text-secondary/80 dark:text-white hover:text-primary"
+            >
               Blog
             </Link>
           </div>
 
           <div className="flex flex-col gap-3">
             <h3 className="font-semibold text-lg">Company</h3>
-            <Link href="/about" className="text-sm text-secondary/80 dark:text-white hover:text-primary">
+            <Link
+              href="/about"
+              className="text-sm text-secondary/80 dark:text-white hover:text-primary"
+            >
               About
             </Link>
-            <Link href="/careers" className="text-sm text-secondary/80 dark:text-white hover:text-primary">
+            <Link
+              href="/careers"
+              className="text-sm text-secondary/80 dark:text-white hover:text-primary"
+            >
               Careers
             </Link>
-            <Link href="/contact" className="text-sm text-secondary/80 dark:text-white hover:text-primary">
+            <Link
+              href="/contact"
+              className="text-sm text-secondary/80 dark:text-white hover:text-primary"
+            >
               Contact
             </Link>
-            <Link href="/privacy" className="text-sm text-secondary/80 dark:text-white hover:text-primary">
+            <Link
+              href="/privacy"
+              className="text-sm text-secondary/80 dark:text-white hover:text-primary"
+            >
               Privacy Policy
             </Link>
           </div>
@@ -124,13 +156,22 @@ export default function Footer() {
             © {new Date().getFullYear()} ForSure. All rights reserved.
           </p>
           <div className="flex gap-6">
-            <Link href="/terms" className="text-sm text-secondary/60 dark:text-white/60 hover:text-primary">
+            <Link
+              href="/terms"
+              className="text-sm text-secondary/60 dark:text-white/60 hover:text-primary"
+            >
               Terms
             </Link>
-            <Link href="/privacy" className="text-sm text-secondary/60 dark:text-white/60 hover:text-primary">
+            <Link
+              href="/privacy"
+              className="text-sm text-secondary/60 dark:text-white/60 hover:text-primary"
+            >
               Privacy
             </Link>
-            <Link href="/cookies" className="text-sm text-secondary/60 dark:text-white/60 hover:text-primary">
+            <Link
+              href="/cookies"
+              className="text-sm text-secondary/60 dark:text-white/60 hover:text-primary"
+            >
               Cookies
             </Link>
           </div>

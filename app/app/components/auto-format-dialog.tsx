@@ -1,7 +1,7 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -9,39 +9,62 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Progress } from "@/components/ui/progress"
-import { Badge } from "@/components/ui/badge"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { Download, ChevronDown, ChevronRight, Wand2, CheckCircle, AlertCircle, Info } from "lucide-react"
+} from '@/components/ui/dialog'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Progress } from '@/components/ui/progress'
+import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible'
+import {
+  Download,
+  ChevronDown,
+  ChevronRight,
+  Wand2,
+  CheckCircle,
+  AlertCircle,
+  Info,
+} from 'lucide-react'
 import {
   autoFormatMultipleFiles,
   generateAutoFormatReport,
   type AutoFormatOptions,
   type AutoFormatResult,
   defaultAutoFormatOptions,
-} from "../services/forsure-auto-formatter"
+} from '../services/forsure-auto-formatter'
 
 interface AutoFormatDialogProps {
   isOpen: boolean
   onClose: () => void
   files: Array<{ name: string; content: string }>
-  onFilesFormatted: (formattedFiles: Array<{ name: string; content: string }>) => void
+  onFilesFormatted: (
+    formattedFiles: Array<{ name: string; content: string }>
+  ) => void
 }
 
-export function AutoFormatDialog({ isOpen, onClose, files, onFilesFormatted }: AutoFormatDialogProps) {
-  const [options, setOptions] = useState<AutoFormatOptions>(defaultAutoFormatOptions)
+export function AutoFormatDialog({
+  isOpen,
+  onClose,
+  files,
+  onFilesFormatted,
+}: AutoFormatDialogProps) {
+  const [options, setOptions] = useState<AutoFormatOptions>(
+    defaultAutoFormatOptions
+  )
   const [isFormatting, setIsFormatting] = useState(false)
   const [progress, setProgress] = useState(0)
-  const [currentFile, setCurrentFile] = useState("")
-  const [results, setResults] = useState<Array<{ name: string; result: AutoFormatResult }>>([])
+  const [currentFile, setCurrentFile] = useState('')
+  const [results, setResults] = useState<
+    Array<{ name: string; result: AutoFormatResult }>
+  >([])
   const [showResults, setShowResults] = useState(false)
   const [expandedFiles, setExpandedFiles] = useState<Set<string>>(new Set())
 
   const handleOptionChange = (key: keyof AutoFormatOptions, value: boolean) => {
-    setOptions((prev) => ({ ...prev, [key]: value }))
+    setOptions(prev => ({ ...prev, [key]: value }))
   }
 
   const handleFormat = async () => {
@@ -50,10 +73,14 @@ export function AutoFormatDialog({ isOpen, onClose, files, onFilesFormatted }: A
     setShowResults(false)
 
     try {
-      const formatResults = await autoFormatMultipleFiles(files, options, (current, total, fileName) => {
-        setProgress((current / total) * 100)
-        setCurrentFile(fileName)
-      })
+      const formatResults = await autoFormatMultipleFiles(
+        files,
+        options,
+        (current, total, fileName) => {
+          setProgress((current / total) * 100)
+          setCurrentFile(fileName)
+        }
+      )
 
       setResults(formatResults)
       setShowResults(true)
@@ -66,21 +93,21 @@ export function AutoFormatDialog({ isOpen, onClose, files, onFilesFormatted }: A
 
       onFilesFormatted(formattedFiles)
     } catch (error) {
-      console.error("Auto-format error:", error)
+      console.error('Auto-format error:', error)
     } finally {
       setIsFormatting(false)
       setProgress(0)
-      setCurrentFile("")
+      setCurrentFile('')
     }
   }
 
   const downloadReport = () => {
     const report = generateAutoFormatReport(results)
-    const blob = new Blob([report], { type: "text/plain" })
+    const blob = new Blob([report], { type: 'text/plain' })
     const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
+    const a = document.createElement('a')
     a.href = url
-    a.download = `forsure-autoformat-report-${new Date().toISOString().split("T")[0]}.txt`
+    a.download = `forsure-autoformat-report-${new Date().toISOString().split('T')[0]}.txt`
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
@@ -99,19 +126,22 @@ export function AutoFormatDialog({ isOpen, onClose, files, onFilesFormatted }: A
 
   const getChangeTypeIcon = (type: string) => {
     switch (type) {
-      case "fix":
+      case 'fix':
         return <CheckCircle className="h-4 w-4 text-green-500" />
-      case "improvement":
+      case 'improvement':
         return <Info className="h-4 w-4 text-blue-500" />
-      case "warning":
+      case 'warning':
         return <AlertCircle className="h-4 w-4 text-amber-500" />
       default:
         return <Info className="h-4 w-4 text-gray-500" />
     }
   }
 
-  const totalChanges = results.reduce((sum, r) => sum + r.result.changes.length, 0)
-  const filesWithChanges = results.filter((r) => r.result.hasChanges).length
+  const totalChanges = results.reduce(
+    (sum, r) => sum + r.result.changes.length,
+    0
+  )
+  const filesWithChanges = results.filter(r => r.result.hasChanges).length
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -123,7 +153,8 @@ export function AutoFormatDialog({ isOpen, onClose, files, onFilesFormatted }: A
           </DialogTitle>
           <DialogDescription>
             Automatically format and fix common issues in your ForSure files.
-            {files.length > 0 && ` Processing ${files.length} file${files.length === 1 ? "" : "s"}.`}
+            {files.length > 0 &&
+              ` Processing ${files.length} file${files.length === 1 ? '' : 's'}.`}
           </DialogDescription>
         </DialogHeader>
 
@@ -132,20 +163,29 @@ export function AutoFormatDialog({ isOpen, onClose, files, onFilesFormatted }: A
             <div className="space-y-6">
               {/* Formatting Options */}
               <div>
-                <h3 className="text-lg font-semibold mb-3">Formatting Options</h3>
+                <h3 className="text-lg font-semibold mb-3">
+                  Formatting Options
+                </h3>
                 <div className="grid grid-cols-2 gap-4">
                   {Object.entries(options).map(([key, value]) => (
                     <div key={key} className="flex items-center space-x-2">
                       <Checkbox
                         id={key}
                         checked={value}
-                        onCheckedChange={(checked) => handleOptionChange(key as keyof AutoFormatOptions, !!checked)}
+                        onCheckedChange={checked =>
+                          handleOptionChange(
+                            key as keyof AutoFormatOptions,
+                            !!checked
+                          )
+                        }
                       />
                       <label
                         htmlFor={key}
                         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                       >
-                        {key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())}
+                        {key
+                          .replace(/([A-Z])/g, ' $1')
+                          .replace(/^./, str => str.toUpperCase())}
                       </label>
                     </div>
                   ))}
@@ -160,7 +200,11 @@ export function AutoFormatDialog({ isOpen, onClose, files, onFilesFormatted }: A
                     <span>{Math.round(progress)}%</span>
                   </div>
                   <Progress value={progress} className="w-full" />
-                  {currentFile && <p className="text-sm text-muted-foreground">Processing: {currentFile}</p>}
+                  {currentFile && (
+                    <p className="text-sm text-muted-foreground">
+                      Processing: {currentFile}
+                    </p>
+                  )}
                 </div>
               )}
             </div>
@@ -168,19 +212,27 @@ export function AutoFormatDialog({ isOpen, onClose, files, onFilesFormatted }: A
             <div className="space-y-4">
               {/* Results Summary */}
               <div className="bg-muted/50 rounded-lg p-4">
-                <h3 className="text-lg font-semibold mb-2">Formatting Results</h3>
+                <h3 className="text-lg font-semibold mb-2">
+                  Formatting Results
+                </h3>
                 <div className="grid grid-cols-3 gap-4 text-sm">
                   <div>
                     <span className="font-medium">Files Processed:</span>
-                    <div className="text-2xl font-bold text-blue-600">{results.length}</div>
+                    <div className="text-2xl font-bold text-blue-600">
+                      {results.length}
+                    </div>
                   </div>
                   <div>
                     <span className="font-medium">Files Modified:</span>
-                    <div className="text-2xl font-bold text-green-600">{filesWithChanges}</div>
+                    <div className="text-2xl font-bold text-green-600">
+                      {filesWithChanges}
+                    </div>
                   </div>
                   <div>
                     <span className="font-medium">Total Changes:</span>
-                    <div className="text-2xl font-bold text-purple-600">{totalChanges}</div>
+                    <div className="text-2xl font-bold text-purple-600">
+                      {totalChanges}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -204,7 +256,8 @@ export function AutoFormatDialog({ isOpen, onClose, files, onFilesFormatted }: A
                             <span className="font-medium">{name}</span>
                             {result.hasChanges ? (
                               <Badge variant="secondary">
-                                {result.changes.length} change{result.changes.length === 1 ? "" : "s"}
+                                {result.changes.length} change
+                                {result.changes.length === 1 ? '' : 's'}
                               </Badge>
                             ) : (
                               <Badge variant="outline">No changes</Badge>
@@ -215,15 +268,26 @@ export function AutoFormatDialog({ isOpen, onClose, files, onFilesFormatted }: A
                           <div className="px-3 pb-3 space-y-2">
                             {result.changes.length > 0 ? (
                               result.changes.map((change, index) => (
-                                <div key={index} className="flex items-start gap-2 p-2 bg-muted/30 rounded text-sm">
+                                <div
+                                  key={index}
+                                  className="flex items-start gap-2 p-2 bg-muted/30 rounded text-sm"
+                                >
                                   {getChangeTypeIcon(change.type)}
                                   <div className="flex-1">
-                                    <div className="font-medium">{change.description}</div>
-                                    <div className="text-muted-foreground">Line {change.line}</div>
+                                    <div className="font-medium">
+                                      {change.description}
+                                    </div>
+                                    <div className="text-muted-foreground">
+                                      Line {change.line}
+                                    </div>
                                     {change.before.length < 100 && (
                                       <div className="mt-1 space-y-1">
-                                        <div className="text-red-600">- {change.before}</div>
-                                        <div className="text-green-600">+ {change.after}</div>
+                                        <div className="text-red-600">
+                                          - {change.before}
+                                        </div>
+                                        <div className="text-green-600">
+                                          + {change.after}
+                                        </div>
                                       </div>
                                     )}
                                   </div>
@@ -231,7 +295,8 @@ export function AutoFormatDialog({ isOpen, onClose, files, onFilesFormatted }: A
                               ))
                             ) : (
                               <p className="text-muted-foreground text-sm p-2">
-                                File is already well-formatted. No changes needed.
+                                File is already well-formatted. No changes
+                                needed.
                               </p>
                             )}
                           </div>
@@ -256,12 +321,15 @@ export function AutoFormatDialog({ isOpen, onClose, files, onFilesFormatted }: A
           </div>
           <div className="flex gap-2">
             <Button variant="outline" onClick={onClose}>
-              {showResults ? "Close" : "Cancel"}
+              {showResults ? 'Close' : 'Cancel'}
             </Button>
             {!showResults && (
-              <Button onClick={handleFormat} disabled={isFormatting || files.length === 0}>
+              <Button
+                onClick={handleFormat}
+                disabled={isFormatting || files.length === 0}
+              >
                 <Wand2 className="h-4 w-4 mr-2" />
-                {isFormatting ? "Formatting..." : "Format Files"}
+                {isFormatting ? 'Formatting...' : 'Format Files'}
               </Button>
             )}
           </div>

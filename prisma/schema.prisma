@@ -1,0 +1,344 @@
+// Prisma schema for ForSure project
+// Uses Prisma Accelerate for runtime and DIRECT_URL for migrations/introspection
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// Enums
+enum ProfileRole {
+  user
+  admin
+  moderator
+}
+
+enum ProjectStatus {
+  active
+  archived
+  draft
+  completed
+}
+
+enum ProjectVisibility {
+  public
+  private
+  unlisted
+}
+
+enum ProjectPriority {
+  low
+  medium
+  high
+  urgent
+}
+
+enum ProjectMemberRole {
+  owner
+  admin
+  member
+  viewer
+}
+
+enum TeamMemberRole {
+  owner
+  admin
+  member
+}
+
+enum TaskStatus {
+  todo
+  in_progress
+  review
+  done
+  blocked
+}
+
+enum TaskPriority {
+  low
+  medium
+  high
+  urgent
+}
+
+enum BlogPostStatus {
+  draft
+  published
+  archived
+}
+
+// Models
+model Profile {
+  id              String        @id @default(uuid()) @db.Uuid
+  email           String        @unique
+  name            String
+  password_hash   String?
+  avatar_url      String?
+  bio             String?
+  role            ProfileRole   @default(user)
+  company         String?
+  location        String?
+  website         String?
+  github_username String?
+  twitter_username String?
+  linkedin_url    String?
+  skills          String[]
+  preferences     Json          @default("{}")
+  is_verified     Boolean       @default(false)
+  is_active       Boolean       @default(true)
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt
+
+  // Relations
+  projects        Project[]     @relation("ProfileProjects")
+  project_members ProjectMember[]
+  tasks_assigned  Task[]        @relation("TaskAssignee")
+  tasks_reported  Task[]        @relation("TaskReporter")
+  teams_owned     Team[]        @relation("TeamOwner")
+  team_members    TeamMember[]
+  blog_posts      BlogPost[]
+  templates       Template[]
+  components      Component[]
+  notifications   Notification[]
+  audit_logs      AuditLog[]
+  uploads         FileUpload[]
+}
+
+model Project {
+  id                 String            @id @default(uuid()) @db.Uuid
+  name               String
+  description        String?
+  slug               String            @unique
+  status             ProjectStatus     @default(active)
+  visibility         ProjectVisibility @default(private)
+  owner_id           String            @db.Uuid
+  repository_url     String?
+  demo_url           String?
+  documentation_url  String?
+  tech_stack         String[]
+  tags               String[]
+  priority           ProjectPriority   @default(medium)
+  progress           Int               @default(0)
+  start_date         DateTime?
+  end_date           DateTime?
+  budget_allocated   Decimal?          @db.Decimal(10, 2)
+  budget_spent       Decimal?          @default(0) @db.Decimal(10, 2)
+  metadata           Json              @default("{}")
+  created_at         DateTime          @default(now())
+  updated_at         DateTime          @updatedAt
+
+  // Relations
+  owner    Profile        @relation("ProfileProjects", fields: [owner_id], references: [id], onDelete: Cascade)
+  members  ProjectMember[]
+  tasks    Task[]
+
+  @@index([owner_id])
+  @@index([status])
+  @@index([slug])
+}
+
+model ProjectMember {
+  id           String            @id @default(uuid()) @db.Uuid
+  project_id   String            @db.Uuid
+  user_id      String            @db.Uuid
+  role         ProjectMemberRole @default(member)
+  permissions  String[]
+  joined_at    DateTime          @default(now())
+
+  // Relations
+  project Project @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  user    Profile @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([project_id, user_id])
+  @@index([project_id])
+  @@index([user_id])
+}
+
+model Task {
+  id             String       @id @default(uuid()) @db.Uuid
+  project_id     String       @db.Uuid
+  title          String
+  description    String?
+  status         TaskStatus   @default(todo)
+  priority       TaskPriority @default(medium)
+  assignee_id    String?      @db.Uuid
+  reporter_id    String?      @db.Uuid
+  due_date       DateTime?
+  estimated_hours Decimal?    @db.Decimal(5, 2)
+  actual_hours    Decimal?    @db.Decimal(5, 2)
+  tags           String[]
+  metadata       Json         @default("{}")
+  created_at     DateTime     @default(now())
+  updated_at     DateTime     @updatedAt
+
+  // Relations
+  project  Project @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  assignee Profile? @relation("TaskAssignee", fields: [assignee_id], references: [id])
+  reporter Profile? @relation("TaskReporter", fields: [reporter_id], references: [id])
+
+  @@index([project_id])
+  @@index([assignee_id])
+  @@index([status])
+}
+
+model Team {
+  id          String    @id @default(uuid()) @db.Uuid
+  name        String
+  description String?
+  slug        String    @unique
+  owner_id    String    @db.Uuid
+  avatar_url  String?
+  is_public   Boolean   @default(false)
+  settings    Json      @default("{}")
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+
+  // Relations
+  owner   Profile     @relation("TeamOwner", fields: [owner_id], references: [id], onDelete: Cascade)
+  members TeamMember[]
+}
+
+model TeamMember {
+  id        String         @id @default(uuid()) @db.Uuid
+  team_id   String         @db.Uuid
+  user_id   String         @db.Uuid
+  role      TeamMemberRole @default(member)
+  joined_at DateTime       @default(now())
+
+  // Relations
+  team Team    @relation(fields: [team_id], references: [id], onDelete: Cascade)
+  user Profile @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([team_id, user_id])
+  @@index([team_id])
+  @@index([user_id])
+}
+
+model BlogPost {
+  id               String          @id @default(uuid()) @db.Uuid
+  title            String
+  slug             String          @unique
+  content          String
+  excerpt          String?
+  author_id        String          @db.Uuid
+  status           BlogPostStatus  @default(draft)
+  featured_image_url String?
+  tags             String[]
+  seo_title        String?
+  seo_description  String?
+  view_count       Int             @default(0)
+  published_at     DateTime?
+  created_at       DateTime        @default(now())
+  updated_at       DateTime        @updatedAt
+
+  // Relations
+  author Profile @relation(fields: [author_id], references: [id], onDelete: Cascade)
+
+  @@index([author_id])
+  @@index([status])
+}
+
+model Template {
+  id               String   @id @default(uuid()) @db.Uuid
+  name             String
+  description      String?
+  category         String
+  content          Json
+  preview_image_url String?
+  creator_id       String   @db.Uuid
+  is_public        Boolean  @default(false)
+  download_count   Int      @default(0)
+  tags             String[]
+  version          String   @default("1.0.0")
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  // Relations
+  creator Profile @relation(fields: [creator_id], references: [id], onDelete: Cascade)
+
+  @@index([creator_id])
+  @@index([category])
+}
+
+model FileUpload {
+  id                String   @id @default(uuid()) @db.Uuid
+  filename          String
+  original_filename String
+  file_size         Int
+  mime_type         String
+  file_url          String
+  uploader_id       String   @db.Uuid
+  entity_type       String?
+  entity_id         String?  @db.Uuid
+  metadata          Json     @default("{}")
+  created_at        DateTime @default(now())
+
+  // Relations
+  uploader Profile @relation(fields: [uploader_id], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id         String   @id @default(uuid()) @db.Uuid
+  user_id    String   @db.Uuid
+  type       String
+  title      String
+  message    String
+  data       Json     @default("{}")
+  is_read    Boolean  @default(false)
+  action_url String?
+  created_at DateTime @default(now())
+
+  // Relations
+  user Profile @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@index([is_read])
+}
+
+model Component {
+  id                String   @id @default(uuid()) @db.Uuid
+  name              String
+  slug              String   @unique
+  description       String?
+  category          String
+  tags              String[]
+  prompt            String
+  preview_image_url String?
+  download_count    Int      @default(0)
+  stars             Int      @default(0)
+  is_public         Boolean  @default(true)
+  creator_id        String   @db.Uuid
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+
+  // Relations
+  creator Profile @relation(fields: [creator_id], references: [id], onDelete: Cascade)
+
+  @@index([category])
+  @@index([creator_id])
+  @@index([slug])
+}
+
+model AuditLog {
+  id          String   @id @default(uuid()) @db.Uuid
+  user_id     String?  @db.Uuid
+  action      String
+  entity_type String
+  entity_id   String?  @db.Uuid
+  old_values  Json?
+  new_values  Json?
+  ip_address  String?  @db.Inet
+  user_agent  String?
+  created_at  DateTime @default(now())
+
+  // Relations
+  user Profile? @relation(fields: [user_id], references: [id])
+
+  @@index([user_id])
+  @@index([entity_type, entity_id])
+}

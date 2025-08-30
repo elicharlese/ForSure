@@ -15,7 +15,13 @@ export const POST = withAuth(async (request: NextRequest, { user }) => {
     }
 
     // Validate file type and size
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf']
+    const allowedTypes = [
+      'image/jpeg',
+      'image/png',
+      'image/webp',
+      'image/gif',
+      'application/pdf',
+    ]
     if (!allowedTypes.includes(file.type)) {
       return apiError('File type not allowed', 400)
     }

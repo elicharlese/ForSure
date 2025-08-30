@@ -12,20 +12,20 @@ const seedUsers: SeedUser[] = [
     email: 'admin@forsure.app',
     name: 'Admin User',
     role: 'admin',
-    bio: 'System administrator for ForSure platform'
+    bio: 'System administrator for ForSure platform',
   },
   {
     email: 'moderator@forsure.app',
     name: 'Moderator User',
     role: 'moderator',
-    bio: 'Community moderator'
+    bio: 'Community moderator',
   },
   {
     email: 'user@forsure.app',
     name: 'Test User',
     role: 'user',
-    bio: 'Regular platform user'
-  }
+    bio: 'Regular platform user',
+  },
 ]
 
 const seedProjects = [
@@ -35,7 +35,7 @@ const seedProjects = [
     slug: 'sample-project',
     status: 'active',
     visibility: 'public',
-    tags: ['sample', 'demo', 'tutorial']
+    tags: ['sample', 'demo', 'tutorial'],
   },
   {
     name: 'Advanced Dashboard',
@@ -43,27 +43,29 @@ const seedProjects = [
     slug: 'advanced-dashboard',
     status: 'active',
     visibility: 'public',
-    tags: ['dashboard', 'analytics', 'charts']
-  }
+    tags: ['dashboard', 'analytics', 'charts'],
+  },
 ]
 
 const seedBlogPosts = [
   {
     title: 'Welcome to ForSure',
-    content: 'This is an introduction to the ForSure platform and its capabilities.',
+    content:
+      'This is an introduction to the ForSure platform and its capabilities.',
     excerpt: 'Learn about ForSure platform features and how to get started.',
     slug: 'welcome-to-forsure',
     status: 'published',
-    tags: ['welcome', 'introduction', 'guide']
+    tags: ['welcome', 'introduction', 'guide'],
   },
   {
     title: 'Building Your First Project',
     content: 'Step-by-step guide to creating your first project on ForSure.',
-    excerpt: 'A comprehensive guide for beginners to start their first project.',
+    excerpt:
+      'A comprehensive guide for beginners to start their first project.',
     slug: 'building-your-first-project',
     status: 'published',
-    tags: ['tutorial', 'beginner', 'project']
-  }
+    tags: ['tutorial', 'beginner', 'project'],
+  },
 ]
 
 const seedTemplates = [
@@ -74,10 +76,10 @@ const seedTemplates = [
     content: {
       type: 'component',
       language: 'typescript',
-      code: `import React from 'react';\n\ninterface Props {\n  title: string;\n}\n\nconst Component: React.FC<Props> = ({ title }) => {\n  return <div>{title}</div>;\n};\n\nexport default Component;`
+      code: `import React from 'react';\n\ninterface Props {\n  title: string;\n}\n\nconst Component: React.FC<Props> = ({ title }) => {\n  return <div>{title}</div>;\n};\n\nexport default Component;`,
     },
     tags: ['react', 'typescript', 'component'],
-    is_public: true
+    is_public: true,
   },
   {
     name: 'Next.js API Route',
@@ -86,11 +88,11 @@ const seedTemplates = [
     content: {
       type: 'api',
       language: 'typescript',
-      code: `import { NextRequest, NextResponse } from 'next/server';\n\nexport async function GET(request: NextRequest) {\n  return NextResponse.json({ message: 'Hello World' });\n}\n\nexport async function POST(request: NextRequest) {\n  const body = await request.json();\n  return NextResponse.json({ data: body });\n}`
+      code: `import { NextRequest, NextResponse } from 'next/server';\n\nexport async function GET(request: NextRequest) {\n  return NextResponse.json({ message: 'Hello World' });\n}\n\nexport async function POST(request: NextRequest) {\n  const body = await request.json();\n  return NextResponse.json({ data: body });\n}`,
     },
     tags: ['nextjs', 'api', 'typescript'],
-    is_public: true
-  }
+    is_public: true,
+  },
 ]
 
 const seedTeams = [
@@ -103,9 +105,9 @@ const seedTeams = [
       permissions: {
         canCreateProjects: true,
         canManageMembers: true,
-        canDeleteTeam: false
-      }
-    }
+        canDeleteTeam: false,
+      },
+    },
   },
   {
     name: 'Community Contributors',
@@ -116,21 +118,22 @@ const seedTeams = [
       permissions: {
         canCreateProjects: true,
         canManageMembers: false,
-        canDeleteTeam: false
-      }
-    }
-  }
+        canDeleteTeam: false,
+      },
+    },
+  },
 ]
 
 const seedTasks = [
   {
     title: 'Set up project structure',
-    description: 'Initialize the project with proper folder structure and configuration',
+    description:
+      'Initialize the project with proper folder structure and configuration',
     status: 'done',
     priority: 'high',
     estimated_hours: 4,
     actual_hours: 3.5,
-    tags: ['setup', 'initialization']
+    tags: ['setup', 'initialization'],
   },
   {
     title: 'Implement authentication',
@@ -139,7 +142,7 @@ const seedTasks = [
     priority: 'high',
     estimated_hours: 8,
     actual_hours: 6,
-    tags: ['auth', 'security']
+    tags: ['auth', 'security'],
   },
   {
     title: 'Create user dashboard',
@@ -147,7 +150,7 @@ const seedTasks = [
     status: 'in_progress',
     priority: 'medium',
     estimated_hours: 12,
-    tags: ['frontend', 'dashboard']
+    tags: ['frontend', 'dashboard'],
   },
   {
     title: 'Add blockchain integration',
@@ -155,8 +158,8 @@ const seedTasks = [
     status: 'todo',
     priority: 'medium',
     estimated_hours: 16,
-    tags: ['blockchain', 'solana']
-  }
+    tags: ['blockchain', 'solana'],
+  },
 ]
 
 async function seedDatabase() {
@@ -173,16 +176,14 @@ async function seedDatabase() {
         .single()
 
       if (!existingUser) {
-        const { error } = await supabaseAdmin
-          .from('profiles')
-          .insert({
-            id: `seed-${user.email.split('@')[0]}`,
-            email: user.email,
-            name: user.name,
-            role: user.role,
-            bio: user.bio,
-            is_verified: true
-          })
+        const { error } = await supabaseAdmin.from('profiles').insert({
+          id: `seed-${user.email.split('@')[0]}`,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          bio: user.bio,
+          is_verified: true,
+        })
 
         if (error) {
           console.error(`Error seeding user ${user.email}:`, error)
@@ -219,7 +220,7 @@ async function seedDatabase() {
               ...project,
               owner_id: adminUser.id,
               created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString()
+              updated_at: new Date().toISOString(),
             })
             .select()
             .single()
@@ -252,7 +253,7 @@ async function seedDatabase() {
               ...team,
               owner_id: adminUser.id,
               created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString()
+              updated_at: new Date().toISOString(),
             })
             .select()
             .single()
@@ -272,18 +273,16 @@ async function seedDatabase() {
       if (createdProjects.length > 0) {
         console.log('📋 Seeding tasks...')
         const firstProject = createdProjects[0]
-        
+
         for (const task of seedTasks) {
-          const { error } = await supabaseAdmin
-            .from('tasks')
-            .insert({
-              ...task,
-              project_id: firstProject.id,
-              reporter_id: adminUser.id,
-              assignee_id: adminUser.id,
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString()
-            })
+          const { error } = await supabaseAdmin.from('tasks').insert({
+            ...task,
+            project_id: firstProject.id,
+            reporter_id: adminUser.id,
+            assignee_id: adminUser.id,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          })
 
           if (error) {
             console.error(`Error seeding task ${task.title}:`, error)
@@ -303,14 +302,12 @@ async function seedDatabase() {
           .single()
 
         if (!existingTemplate) {
-          const { error } = await supabaseAdmin
-            .from('templates')
-            .insert({
-              ...template,
-              creator_id: adminUser.id,
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString()
-            })
+          const { error } = await supabaseAdmin.from('templates').insert({
+            ...template,
+            creator_id: adminUser.id,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          })
 
           if (error) {
             console.error(`Error seeding template ${template.name}:`, error)
@@ -332,15 +329,13 @@ async function seedDatabase() {
           .single()
 
         if (!existingPost) {
-          const { error } = await supabaseAdmin
-            .from('blog_posts')
-            .insert({
-              ...post,
-              author_id: adminUser.id,
-              published_at: new Date().toISOString(),
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString()
-            })
+          const { error } = await supabaseAdmin.from('blog_posts').insert({
+            ...post,
+            author_id: adminUser.id,
+            published_at: new Date().toISOString(),
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          })
 
           if (error) {
             console.error(`Error seeding blog post ${post.title}:`, error)
@@ -354,11 +349,8 @@ async function seedDatabase() {
 
       // Seed notifications for users
       console.log('🔔 Seeding notifications...')
-      const users = await supabaseAdmin
-        .from('profiles')
-        .select('id')
-        .limit(3)
-      
+      const users = await supabaseAdmin.from('profiles').select('id').limit(3)
+
       if (users.data) {
         for (const user of users.data) {
           const notifications = [
@@ -366,9 +358,10 @@ async function seedDatabase() {
               user_id: user.id,
               type: 'welcome',
               title: 'Welcome to ForSure!',
-              message: 'Welcome to the ForSure platform. Start by exploring the dashboard.',
+              message:
+                'Welcome to the ForSure platform. Start by exploring the dashboard.',
               data: { action: 'dashboard' },
-              action_url: '/app'
+              action_url: '/app',
             },
             {
               user_id: user.id,
@@ -376,17 +369,15 @@ async function seedDatabase() {
               title: 'New Project Available',
               message: 'Check out the sample project to see ForSure in action.',
               data: { project_id: 'sample-project' },
-              action_url: '/app/projects/sample-project'
-            }
+              action_url: '/app/projects/sample-project',
+            },
           ]
 
           for (const notification of notifications) {
-            const { error } = await supabaseAdmin
-              .from('notifications')
-              .insert({
-                ...notification,
-                created_at: new Date().toISOString()
-              })
+            const { error } = await supabaseAdmin.from('notifications').insert({
+              ...notification,
+              created_at: new Date().toISOString(),
+            })
 
             if (error) {
               console.error(`Error seeding notification:`, error)
@@ -412,7 +403,7 @@ seedDatabase()
       process.exit(0)
     }
   })
-  .catch((error) => {
+  .catch(error => {
     console.error('❌ Seeding failed:', error)
     if (typeof process !== 'undefined') {
       process.exit(1)

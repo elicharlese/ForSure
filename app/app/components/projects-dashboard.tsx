@@ -1,12 +1,30 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Clock, Code, FileCode, FolderGit2, GitBranch, GitPullRequest, Plus, Search, Tag, Trash2 } from "lucide-react"
-import DashboardChat from "./dashboard-chat"
+import { useState } from 'react'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import {
+  Clock,
+  Code,
+  FileCode,
+  FolderGit2,
+  GitBranch,
+  GitPullRequest,
+  Plus,
+  Search,
+  Tag,
+  Trash2,
+} from 'lucide-react'
+import DashboardChat from './dashboard-chat'
 
 interface Project {
   id: string
@@ -43,36 +61,45 @@ export default function ProjectsDashboard({
   onStartChat,
   isLoaded,
 }: ProjectsDashboardProps) {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [activeTab, setActiveTab] = useState("all")
+  const [searchQuery, setSearchQuery] = useState('')
+  const [activeTab, setActiveTab] = useState('all')
 
-  const filteredProjects = projects.filter((project) => {
+  const filteredProjects = projects.filter(project => {
     const searchLower = searchQuery.toLowerCase()
     return (
       project.name?.toLowerCase().includes(searchLower) ||
       project.details?.description?.toLowerCase().includes(searchLower) ||
       project.details?.framework?.toLowerCase().includes(searchLower) ||
       project.details?.type?.toLowerCase().includes(searchLower) ||
-      project.details?.languages?.some((lang) => lang.toLowerCase().includes(searchLower))
+      project.details?.languages?.some(lang =>
+        lang.toLowerCase().includes(searchLower)
+      )
     )
   })
 
   // Sort projects by last updated date (most recent first)
   const sortedProjects = [...filteredProjects].sort((a, b) => {
-    const dateA = a.lastUpdated ? new Date(a.lastUpdated).getTime() : new Date(a.createdAt).getTime()
-    const dateB = b.lastUpdated ? new Date(b.lastUpdated).getTime() : new Date(b.createdAt).getTime()
+    const dateA = a.lastUpdated
+      ? new Date(a.lastUpdated).getTime()
+      : new Date(a.createdAt).getTime()
+    const dateB = b.lastUpdated
+      ? new Date(b.lastUpdated).getTime()
+      : new Date(b.createdAt).getTime()
     return dateB - dateA
   })
 
   // Get recent projects (last 7 days)
-  const recentProjects = sortedProjects.filter((project) => {
-    const projectDate = project.lastUpdated ? new Date(project.lastUpdated) : new Date(project.createdAt)
+  const recentProjects = sortedProjects.filter(project => {
+    const projectDate = project.lastUpdated
+      ? new Date(project.lastUpdated)
+      : new Date(project.createdAt)
     const sevenDaysAgo = new Date()
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
     return projectDate >= sevenDaysAgo
   })
 
-  const displayProjects = activeTab === "recent" ? recentProjects : sortedProjects
+  const displayProjects =
+    activeTab === 'recent' ? recentProjects : sortedProjects
 
   // Format relative time (e.g., "2 days ago")
   const formatRelativeTime = (dateString: string) => {
@@ -80,11 +107,15 @@ export default function ProjectsDashboard({
     const now = new Date()
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
 
-    if (diffInSeconds < 60) return "just now"
-    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`
-    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`
-    if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} days ago`
-    if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 604800)} weeks ago`
+    if (diffInSeconds < 60) return 'just now'
+    if (diffInSeconds < 3600)
+      return `${Math.floor(diffInSeconds / 60)} minutes ago`
+    if (diffInSeconds < 86400)
+      return `${Math.floor(diffInSeconds / 3600)} hours ago`
+    if (diffInSeconds < 604800)
+      return `${Math.floor(diffInSeconds / 86400)} days ago`
+    if (diffInSeconds < 2592000)
+      return `${Math.floor(diffInSeconds / 604800)} weeks ago`
 
     return date.toLocaleDateString()
   }
@@ -96,18 +127,26 @@ export default function ProjectsDashboard({
         <div>
           <h2 className="text-xl font-semibold tracking-tight">Quick Start</h2>
           <p className="text-sm text-muted-foreground">
-            Chat with ForSure AI to quickly create a new project, or browse your existing projects below.
+            Chat with ForSure AI to quickly create a new project, or browse your
+            existing projects below.
           </p>
         </div>
-        <DashboardChat onProjectCreate={onQuickCreateProject} onStartChat={onStartChat} />
+        <DashboardChat
+          onProjectCreate={onQuickCreateProject}
+          onStartChat={onStartChat}
+        />
       </div>
 
       {/* Projects Section */}
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h2 className="text-xl font-semibold tracking-tight">Project Manager</h2>
-            <p className="text-sm text-muted-foreground">Manage your existing ForSure projects and file structures.</p>
+            <h2 className="text-xl font-semibold tracking-tight">
+              Project Manager
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              Manage your existing ForSure projects and file structures.
+            </p>
           </div>
           <Button onClick={onNewProject} variant="outline" className="shrink-0">
             <Plus className="mr-2 h-4 w-4" />
@@ -121,7 +160,7 @@ export default function ProjectsDashboard({
             placeholder="Search projects..."
             className="h-9"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
           />
         </div>
 
@@ -129,21 +168,21 @@ export default function ProjectsDashboard({
         <div className="space-y-4">
           <div className="flex space-x-1 bg-muted p-1 rounded-lg w-fit">
             <button
-              onClick={() => setActiveTab("all")}
+              onClick={() => setActiveTab('all')}
               className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
-                activeTab === "all"
-                  ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
+                activeTab === 'all'
+                  ? 'bg-background text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               All Projects ({projects.length})
             </button>
             <button
-              onClick={() => setActiveTab("recent")}
+              onClick={() => setActiveTab('recent')}
               className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
-                activeTab === "recent"
-                  ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
+                activeTab === 'recent'
+                  ? 'bg-background text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               Recent ({recentProjects.length})
@@ -152,7 +191,7 @@ export default function ProjectsDashboard({
 
           <div className="mt-6">
             {isLoaded && displayProjects.length === 0 ? (
-              activeTab === "recent" ? (
+              activeTab === 'recent' ? (
                 <div className="flex flex-col items-center justify-center p-8 text-center">
                   <FileCode className="h-10 w-10 text-muted-foreground mb-4" />
                   <h3 className="text-lg font-medium">No recent projects</h3>
@@ -195,7 +234,7 @@ function ProjectGrid({
 }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {projects.map((project) => (
+      {projects.map(project => (
         <ProjectCard
           key={project.id}
           project={project}
@@ -229,13 +268,13 @@ function ProjectCard({
           <div>
             <CardTitle className="text-lg">{project.details.name}</CardTitle>
             <CardDescription className="line-clamp-1">
-              {project.details.description || "No description provided"}
+              {project.details.description || 'No description provided'}
             </CardDescription>
           </div>
           <Button
             variant="ghost"
             size="icon"
-            onClick={(e) => {
+            onClick={e => {
               e.stopPropagation()
               onDelete()
             }}
@@ -268,7 +307,7 @@ function ProjectCard({
           )}
         </div>
         <div className="flex flex-wrap gap-1">
-          {project.details.languages.map((lang) => (
+          {project.details.languages.map(lang => (
             <Badge key={lang} variant="secondary" className="text-xs">
               {lang}
             </Badge>

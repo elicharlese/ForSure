@@ -1,17 +1,24 @@
-import Link from "next/link"
-import DocsCodeBlock from "@/components/docs-code-block"
+import Link from 'next/link'
+import DocsCodeBlock from '@/components/docs-code-block'
 
 export default function CLIPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight mb-2">CLI Reference</h1>
-        <p className="text-lg text-muted-foreground">Learn how to use the ForSure command-line interface.</p>
+        <h1 className="text-3xl font-bold tracking-tight mb-2">
+          CLI Reference
+        </h1>
+        <p className="text-lg text-muted-foreground">
+          Learn how to use the ForSure command-line interface.
+        </p>
       </div>
 
       <div className="space-y-4">
         <h2 className="text-2xl font-semibold tracking-tight">Basic Usage</h2>
-        <p>The ForSure CLI provides commands for generating file structures from ForSure files:</p>
+        <p>
+          The ForSure CLI provides commands for generating file structures from
+          ForSure files:
+        </p>
         <DocsCodeBlock code={`forsure [command] [options]`} language="bash" />
       </div>
 
@@ -20,25 +27,39 @@ export default function CLIPage() {
 
         <h3 className="text-xl font-medium">generate</h3>
         <p>Generates a file structure from a ForSure file:</p>
-        <DocsCodeBlock code={`forsure generate <file> --output <directory>`} language="bash" />
+        <DocsCodeBlock
+          code={`forsure generate <file> --output <directory>`}
+          language="bash"
+        />
         <p>Example:</p>
-        <DocsCodeBlock code={`forsure generate project.forsure --output ./my-project`} language="bash" />
+        <DocsCodeBlock
+          code={`forsure generate project.forsure --output ./my-project`}
+          language="bash"
+        />
 
         <h3 className="text-xl font-medium">validate</h3>
         <p>Validates a ForSure file without generating the structure:</p>
         <DocsCodeBlock code={`forsure validate <file>`} language="bash" />
         <p>Example:</p>
-        <DocsCodeBlock code={`forsure validate project.forsure`} language="bash" />
+        <DocsCodeBlock
+          code={`forsure validate project.forsure`}
+          language="bash"
+        />
 
         <h3 className="text-xl font-medium">init</h3>
         <p>Creates a new ForSure file with a basic structure:</p>
         <DocsCodeBlock code={`forsure init [filename]`} language="bash" />
         <p>Example:</p>
-        <DocsCodeBlock code={`forsure init my-project.forsure`} language="bash" />
+        <DocsCodeBlock
+          code={`forsure init my-project.forsure`}
+          language="bash"
+        />
       </div>
 
       <div className="space-y-4">
-        <h2 className="text-2xl font-semibold tracking-tight">Common Options</h2>
+        <h2 className="text-2xl font-semibold tracking-tight">
+          Common Options
+        </h2>
         <table className="w-full border-collapse">
           <thead>
             <tr className="border-b">
@@ -57,7 +78,9 @@ export default function CLIPage() {
             </tr>
             <tr className="border-b">
               <td className="py-2 px-4 font-mono text-sm">--dry-run, -d</td>
-              <td className="py-2 px-4">Show what would be generated without actually creating files</td>
+              <td className="py-2 px-4">
+                Show what would be generated without actually creating files
+              </td>
             </tr>
             <tr className="border-b">
               <td className="py-2 px-4 font-mono text-sm">--verbose, -v</td>
@@ -75,16 +98,28 @@ export default function CLIPage() {
         <h2 className="text-2xl font-semibold tracking-tight">Examples</h2>
 
         <h3 className="text-xl font-medium">Generate a project structure</h3>
-        <DocsCodeBlock code={`forsure generate project.forsure --output ./my-project`} language="bash" />
+        <DocsCodeBlock
+          code={`forsure generate project.forsure --output ./my-project`}
+          language="bash"
+        />
 
         <h3 className="text-xl font-medium">Validate a ForSure file</h3>
-        <DocsCodeBlock code={`forsure validate project.forsure`} language="bash" />
+        <DocsCodeBlock
+          code={`forsure validate project.forsure`}
+          language="bash"
+        />
 
         <h3 className="text-xl font-medium">Generate with verbose output</h3>
-        <DocsCodeBlock code={`forsure generate project.forsure --output ./my-project --verbose`} language="bash" />
+        <DocsCodeBlock
+          code={`forsure generate project.forsure --output ./my-project --verbose`}
+          language="bash"
+        />
 
         <h3 className="text-xl font-medium">Force overwrite existing files</h3>
-        <DocsCodeBlock code={`forsure generate project.forsure --output ./my-project --force`} language="bash" />
+        <DocsCodeBlock
+          code={`forsure generate project.forsure --output ./my-project --force`}
+          language="bash"
+        />
       </div>
 
       <div className="space-y-4">
@@ -105,7 +140,10 @@ export default function CLIPage() {
           fileName=".forsurerc.json"
         />
         <p>Learn more about configuration options:</p>
-        <Link href="/docs/cli/configuration" className="text-primary hover:underline">
+        <Link
+          href="/docs/cli/configuration"
+          className="text-primary hover:underline"
+        >
           CLI Configuration →
         </Link>
       </div>
@@ -115,7 +153,10 @@ export default function CLIPage() {
         <p>Now that you understand the CLI, you can:</p>
         <ul className="list-disc pl-6 space-y-2">
           <li>
-            <Link href="/docs/cli/options" className="text-primary hover:underline">
+            <Link
+              href="/docs/cli/options"
+              className="text-primary hover:underline"
+            >
               Explore all CLI options
             </Link>
           </li>
@@ -125,7 +166,10 @@ export default function CLIPage() {
             </Link>
           </li>
           <li>
-            <Link href="/docs/examples" className="text-primary hover:underline">
+            <Link
+              href="/docs/examples"
+              className="text-primary hover:underline"
+            >
               See more examples
             </Link>
           </li>

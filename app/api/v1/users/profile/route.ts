@@ -26,7 +26,7 @@ export const GET = withAuth(async (request: NextRequest, { user }) => {
 export const PUT = withAuth(async (request: NextRequest, { user }) => {
   try {
     const body = await request.json()
-    
+
     const validation = validateRequestBody(body, updateProfileSchema)
     if (!validation.success) {
       return apiError('Validation failed', 422, validation.errors)

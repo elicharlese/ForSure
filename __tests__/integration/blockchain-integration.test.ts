@@ -1,5 +1,4 @@
-import '@testing-library/jest-dom'
-import { NextRequest } from 'next/server'
+// Node tests: avoid '@testing-library/jest-dom' and NextRequest; use plain objects
 import { POST, GET, PUT } from '@/app/api/v1/blockchain/wallet/route'
 
 // Mock environment variables
@@ -7,43 +6,53 @@ const mockEnv = {
   NEXT_PUBLIC_SUPABASE_URL: 'https://test.supabase.co',
   NEXT_PUBLIC_SUPABASE_ANON_KEY: 'test-anon-key',
   SUPABASE_SERVICE_ROLE_KEY: 'test-service-role-key',
-  JWT_SECRET: 'test-jwt-secret'
-}
-
-// Mock Supabase Admin
-const mockSupabaseAdmin = {
-  from: jest.fn(() => ({
-    select: jest.fn().mockReturnThis(),
-    insert: jest.fn().mockReturnThis(),
-    update: jest.fn().mockReturnThis(),
-    eq: jest.fn().mockReturnThis(),
-    single: jest.fn(),
-  })),
+  JWT_SECRET: 'test-jwt-secret',
 }
 
 // Mock modules
-jest.mock('@/lib/supabase', () => ({
-  supabaseAdmin: mockSupabaseAdmin
-}))
+jest.mock('@/lib/supabase', () => {
+  const tableOps: any = {}
+  tableOps.select = jest.fn(() => tableOps)
+  tableOps.insert = jest.fn(() => tableOps)
+  tableOps.update = jest.fn(() => tableOps)
+  tableOps.eq = jest.fn(() => tableOps)
+  tableOps.single = jest.fn()
+  const supabaseAdmin = {
+    from: jest.fn(() => tableOps),
+  }
+  return { supabaseAdmin }
+})
 
 jest.mock('@/lib/auth-middleware', () => ({
-  withAuth: (handler: any) => (request: any, context: any) => handler(request, { user: mockUser })
+  withAuth: (handler: any) => (request: any, context: any) =>
+    handler(request, { user: mockUser }),
 }))
 
 jest.mock('@/lib/rate-limit', () => ({
-  withRateLimit: (handler: any) => (request: any, context: any) => handler(request, context)
+  withRateLimit: (handler: any) => (request: any, context: any) =>
+    handler(request, context),
 }))
 
 jest.mock('@/lib/api-utils', () => ({
-  apiResponse: (data: any) => new Response(JSON.stringify(data), { status: 200 }),
-  apiError: (message: string, status: number) => new Response(JSON.stringify({ error: message }), { status }),
-  validateRequestBody: jest.fn()
+  apiResponse: (data: any, status: number = 200) => ({
+    status,
+    json: async () => data,
+  }),
+  apiError: (message: string, status: number) => ({
+    status,
+    json: async () => ({ error: message }),
+  }),
+  // Default: accept body as-is; individual tests can override with mockReturnValueOnce
+  validateRequestBody: jest.fn((body: any) => ({ success: true, data: body })),
 }))
+
+// Access the supabaseAdmin mock instance
+const { supabaseAdmin: mockSupabaseAdmin } = require('@/lib/supabase')
 
 const mockUser = {
   id: 'user-123',
   email: 'test@example.com',
-  name: 'Test User'
+  name: 'Test User',
 }
 
 describe('Blockchain Integration Tests', () => {
@@ -63,26 +72,18 @@ describe('Blockchain Integration Tests', () => {
         name: 'Test Wallet',
         public_key: 'test-public-key',
         balance: 0,
-        blockchain: 'solana'
+        blockchain: 'solana',
       }
 
-      // Mock no existing wallet
-      mockSupabaseAdmin.from().select().eq().single.mockResolvedValueOnce({
-        data: null,
-        error: { message: 'No wallet found' }
-      })
-
-      // Mock successful wallet creation
-      mockSupabaseAdmin.from().insert().select().single.mockResolvedValueOnce({
+      // Mock successful wallet creation (insert().select().single())
+      mockSupabaseAdmin.from().single.mockResolvedValueOnce({
         data: mockWallet,
-        error: null
+        error: null,
       })
 
-      const createRequest = new NextRequest('http://localhost:3000/api/v1/blockchain/wallet', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: 'Test Wallet' })
-      })
+      const createRequest = {
+        json: async () => ({ name: 'Test Wallet' }),
+      } as any
 
       const createResponse = await POST(createRequest)
       const createData = await createResponse.json()
@@ -91,20 +92,16 @@ describe('Blockchain Integration Tests', () => {
       expect(createData.wallet.name).toBe('Test Wallet')
 
       // Step 2: Check wallet balance
-      mockSupabaseAdmin.from().select().eq().single.mockResolvedValueOnce({
+      mockSupabaseAdmin.from().single.mockResolvedValueOnce({
         data: { ...mockWallet, balance: 10.5 },
-        error: null
+        error: null,
       })
 
-      // Mock balance update
-      mockSupabaseAdmin.from().update().eq.mockResolvedValueOnce({
-        data: null,
-        error: null
-      })
+      // No need to mock return; we only assert call args for update
 
-      const balanceRequest = new NextRequest('http://localhost:3000/api/v1/blockchain/wallet?walletId=wallet-123', {
-        method: 'GET'
-      })
+      const balanceRequest = {
+        url: 'http://localhost:3000/api/v1/blockchain/wallet?walletId=wallet-123',
+      } as any
 
       const balanceResponse = await GET(balanceRequest)
       const balanceData = await balanceResponse.json()
@@ -119,37 +116,31 @@ describe('Blockchain Integration Tests', () => {
         data: {
           fromWallet: 'wallet-123',
           toAddress: 'recipient-address',
-          amount: 5.0
-        }
+          amount: 5.0,
+        },
       })
 
       // Mock wallet with sufficient balance
-      mockSupabaseAdmin.from().select().eq().single.mockResolvedValueOnce({
+      mockSupabaseAdmin.from().single.mockResolvedValueOnce({
         data: { ...mockWallet, balance: 10.5 },
-        error: null
+        error: null,
       })
 
       // Mock transaction logging
       mockSupabaseAdmin.from().insert.mockResolvedValueOnce({
         data: null,
-        error: null
+        error: null,
       })
 
-      // Mock balance update
-      mockSupabaseAdmin.from().update().eq.mockResolvedValueOnce({
-        data: null,
-        error: null
-      })
+      // No need to mock update return
 
-      const transferRequest = new NextRequest('http://localhost:3000/api/v1/blockchain/wallet', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      const transferRequest = {
+        json: async () => ({
           fromWallet: 'wallet-123',
           toAddress: 'recipient-address',
-          amount: 5.0
-        })
-      })
+          amount: 5.0,
+        }),
+      } as any
 
       const transferResponse = await PUT(transferRequest)
       const transferData = await transferResponse.json()
@@ -167,29 +158,27 @@ describe('Blockchain Integration Tests', () => {
         data: {
           fromWallet: 'wallet-123',
           toAddress: 'recipient-address',
-          amount: 15.0
-        }
+          amount: 15.0,
+        },
       })
 
       // Mock wallet with insufficient balance
-      mockSupabaseAdmin.from().select().eq().single.mockResolvedValueOnce({
+      mockSupabaseAdmin.from().single.mockResolvedValueOnce({
         data: {
           id: 'wallet-123',
           user_id: 'user-123',
-          balance: 5.0
+          balance: 5.0,
         },
-        error: null
+        error: null,
       })
 
-      const transferRequest = new NextRequest('http://localhost:3000/api/v1/blockchain/wallet', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      const transferRequest = {
+        json: async () => ({
           fromWallet: 'wallet-123',
           toAddress: 'recipient-address',
-          amount: 15.0
-        })
-      })
+          amount: 15.0,
+        }),
+      } as any
 
       const transferResponse = await PUT(transferRequest)
       const transferData = await transferResponse.json()
@@ -205,25 +194,23 @@ describe('Blockchain Integration Tests', () => {
         data: {
           fromWallet: 'nonexistent-wallet',
           toAddress: 'recipient-address',
-          amount: 5.0
-        }
+          amount: 5.0,
+        },
       })
 
       // Mock wallet not found
-      mockSupabaseAdmin.from().select().eq().single.mockResolvedValueOnce({
+      mockSupabaseAdmin.from().single.mockResolvedValueOnce({
         data: null,
-        error: { message: 'Wallet not found' }
+        error: { message: 'Wallet not found' },
       })
 
-      const transferRequest = new NextRequest('http://localhost:3000/api/v1/blockchain/wallet', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      const transferRequest = {
+        json: async () => ({
           fromWallet: 'nonexistent-wallet',
           toAddress: 'recipient-address',
-          amount: 5.0
-        })
-      })
+          amount: 5.0,
+        }),
+      } as any
 
       const transferResponse = await PUT(transferRequest)
       const transferData = await transferResponse.json()
@@ -242,42 +229,36 @@ describe('Blockchain Integration Tests', () => {
         data: {
           fromWallet: 'wallet-123',
           toAddress: 'recipient-address',
-          amount: 2.5
-        }
+          amount: 2.5,
+        },
       })
 
       // Mock wallet
-      mockSupabaseAdmin.from().select().eq().single.mockResolvedValueOnce({
+      mockSupabaseAdmin.from().single.mockResolvedValueOnce({
         data: {
           id: 'wallet-123',
           user_id: 'user-123',
           balance: 10.0,
-          public_key: 'test-public-key'
+          public_key: 'test-public-key',
         },
-        error: null
+        error: null,
       })
 
       // Mock transaction logging
       mockSupabaseAdmin.from().insert.mockResolvedValueOnce({
         data: null,
-        error: null
+        error: null,
       })
 
-      // Mock balance update
-      mockSupabaseAdmin.from().update().eq.mockResolvedValueOnce({
-        data: null,
-        error: null
-      })
+      // No need to mock update return
 
-      const transferRequest = new NextRequest('http://localhost:3000/api/v1/blockchain/wallet', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      const transferRequest = {
+        json: async () => ({
           fromWallet: 'wallet-123',
           toAddress: 'recipient-address',
-          amount: 2.5
-        })
-      })
+          amount: 2.5,
+        }),
+      } as any
 
       await PUT(transferRequest)
 
@@ -291,48 +272,41 @@ describe('Blockchain Integration Tests', () => {
           amount: 2.5,
           type: 'transfer',
           status: 'confirmed',
-          blockchain: 'solana'
+          blockchain: 'solana',
         })
       )
 
       // Verify balance was updated
       expect(mockSupabaseAdmin.from().update).toHaveBeenCalledWith({
         balance: 7.5,
-        updated_at: expect.any(String)
+        updated_at: expect.any(String),
       })
     })
   })
 
   describe('Error Handling', () => {
     it('should handle database errors gracefully', async () => {
-      // Mock database error during wallet creation
-      mockSupabaseAdmin.from().select().eq().single.mockResolvedValueOnce({
+      // Mock database error during wallet creation (insert().select().single())
+      mockSupabaseAdmin.from().single.mockResolvedValueOnce({
         data: null,
-        error: { message: 'No wallet found' }
+        error: { message: 'Database connection failed' },
       })
 
-      mockSupabaseAdmin.from().insert().select().single.mockResolvedValueOnce({
-        data: null,
-        error: { message: 'Database connection failed' }
-      })
-
-      const createRequest = new NextRequest('http://localhost:3000/api/v1/blockchain/wallet', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: 'Test Wallet' })
-      })
+      const createRequest = {
+        json: async () => ({ name: 'Test Wallet' }),
+      } as any
 
       const createResponse = await POST(createRequest)
       const createData = await createResponse.json()
 
       expect(createResponse.status).toBe(500)
-      expect(createData.error).toBe('Internal server error')
+      expect(createData.error).toBe('Failed to create wallet')
     })
 
     it('should handle missing wallet ID in balance check', async () => {
-      const balanceRequest = new NextRequest('http://localhost:3000/api/v1/blockchain/wallet', {
-        method: 'GET'
-      })
+      const balanceRequest = {
+        url: 'http://localhost:3000/api/v1/blockchain/wallet',
+      } as any
 
       const balanceResponse = await GET(balanceRequest)
       const balanceData = await balanceResponse.json()

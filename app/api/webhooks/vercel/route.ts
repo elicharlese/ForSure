@@ -5,11 +5,11 @@ import { supabaseAdmin } from '@/lib/supabase'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    
+
     // Verify the webhook signature if needed
     const signature = request.headers.get('x-vercel-signature')
     // TODO: Implement signature verification for production
-    
+
     const { type, data } = body
 
     switch (type) {
@@ -38,27 +38,25 @@ export async function POST(request: NextRequest) {
 
 async function handleDeploymentCreated(data: any) {
   console.log('Deployment created:', data.url)
-  
+
   // Log deployment event
-  await supabaseAdmin
-    .from('deployment_logs')
-    .insert({
-      deployment_id: data.id,
-      url: data.url,
-      status: 'created',
-      created_at: new Date().toISOString()
-    })
+  await supabaseAdmin.from('deployment_logs').insert({
+    deployment_id: data.id,
+    url: data.url,
+    status: 'created',
+    created_at: new Date().toISOString(),
+  })
 }
 
 async function handleDeploymentReady(data: any) {
   console.log('Deployment ready:', data.url)
-  
+
   // Update deployment status
   await supabaseAdmin
     .from('deployment_logs')
     .update({
       status: 'ready',
-      ready_at: new Date().toISOString()
+      ready_at: new Date().toISOString(),
     })
     .eq('deployment_id', data.id)
 
@@ -68,14 +66,14 @@ async function handleDeploymentReady(data: any) {
 
 async function handleDeploymentError(data: any) {
   console.error('Deployment error:', data.url, data.error)
-  
+
   // Update deployment status
   await supabaseAdmin
     .from('deployment_logs')
     .update({
       status: 'error',
       error_message: data.error,
-      error_at: new Date().toISOString()
+      error_at: new Date().toISOString(),
     })
     .eq('deployment_id', data.id)
 
@@ -97,12 +95,10 @@ async function notifyDeploymentReady(data: any) {
       title: 'Deployment Ready',
       content: `Deployment ${data.url} is now ready`,
       read: false,
-      created_at: new Date().toISOString()
+      created_at: new Date().toISOString(),
     }))
 
-    await supabaseAdmin
-      .from('notifications')
-      .insert(notifications)
+    await supabaseAdmin.from('notifications').insert(notifications)
   }
 }
 
@@ -120,11 +116,9 @@ async function notifyDeploymentError(data: any) {
       title: 'Deployment Error',
       content: `Deployment ${data.url} failed: ${data.error}`,
       read: false,
-      created_at: new Date().toISOString()
+      created_at: new Date().toISOString(),
     }))
 
-    await supabaseAdmin
-      .from('notifications')
-      .insert(notifications)
+    await supabaseAdmin.from('notifications').insert(notifications)
   }
 }

@@ -1,14 +1,26 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { useState } from "react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select"
+import { useState } from 'react'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from '@/components/ui/select'
 import {
   Clock,
   Code,
@@ -31,7 +43,7 @@ import {
   Zap,
   Lightbulb,
   Rocket,
-} from "lucide-react"
+} from 'lucide-react'
 
 interface Project {
   id: string
@@ -48,7 +60,7 @@ interface Project {
   branches?: number
   tags?: number
   favorite?: boolean
-  status?: "active" | "completed" | "archived" | "draft"
+  status?: 'active' | 'completed' | 'archived' | 'draft'
   category?: string
 }
 
@@ -71,53 +83,57 @@ export default function EnhancedDashboard({
   onStartChat,
   isLoaded,
 }: EnhancedDashboardProps) {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [chatInput, setChatInput] = useState("")
-  const [sortBy, setSortBy] = useState("lastUpdated")
-  const [filterCategory, setFilterCategory] = useState("all")
-  const [filterStatus, setFilterStatus] = useState("all")
+  const [searchQuery, setSearchQuery] = useState('')
+  const [chatInput, setChatInput] = useState('')
+  const [sortBy, setSortBy] = useState('lastUpdated')
+  const [filterCategory, setFilterCategory] = useState('all')
+  const [filterStatus, setFilterStatus] = useState('all')
   const [favorites, setFavorites] = useState<string[]>([])
   const [expandedIdeas, setExpandedIdeas] = useState<string[]>([])
-  const [activeProjectTab, setActiveProjectTab] = useState("all")
+  const [activeProjectTab, setActiveProjectTab] = useState('all')
 
   // Project ideas to help users get started
   const projectIdeas = [
     {
-      id: "idea-1",
-      title: "E-commerce Platform",
-      description: "Build a modern e-commerce platform with product catalog, cart, and checkout functionality.",
-      frameworks: ["Next.js", "React"],
-      complexity: "Medium",
+      id: 'idea-1',
+      title: 'E-commerce Platform',
+      description:
+        'Build a modern e-commerce platform with product catalog, cart, and checkout functionality.',
+      frameworks: ['Next.js', 'React'],
+      complexity: 'Medium',
     },
     {
-      id: "idea-2",
-      title: "Personal Blog",
-      description: "Create a personal blog with markdown support, categories, and comments.",
-      frameworks: ["Next.js", "Gatsby"],
-      complexity: "Low",
+      id: 'idea-2',
+      title: 'Personal Blog',
+      description:
+        'Create a personal blog with markdown support, categories, and comments.',
+      frameworks: ['Next.js', 'Gatsby'],
+      complexity: 'Low',
     },
     {
-      id: "idea-3",
-      title: "Task Management App",
-      description: "Develop a task management application with drag-and-drop interface and team collaboration.",
-      frameworks: ["React", "Vue.js"],
-      complexity: "Medium",
+      id: 'idea-3',
+      title: 'Task Management App',
+      description:
+        'Develop a task management application with drag-and-drop interface and team collaboration.',
+      frameworks: ['React', 'Vue.js'],
+      complexity: 'Medium',
     },
     {
-      id: "idea-4",
-      title: "API Backend Service",
-      description: "Build a RESTful API service with authentication, rate limiting, and database integration.",
-      frameworks: ["Node.js", "Express"],
-      complexity: "Medium",
+      id: 'idea-4',
+      title: 'API Backend Service',
+      description:
+        'Build a RESTful API service with authentication, rate limiting, and database integration.',
+      frameworks: ['Node.js', 'Express'],
+      complexity: 'Medium',
     },
   ]
 
   // Chat suggestions
   const chatSuggestions = [
-    "I want to build a React e-commerce app",
-    "Create a Next.js blog with TypeScript",
-    "Build a Node.js API for mobile app",
-    "Make a Vue.js dashboard project",
+    'I want to build a React e-commerce app',
+    'Create a Next.js blog with TypeScript',
+    'Build a Node.js API for mobile app',
+    'Make a Vue.js dashboard project',
   ]
 
   // Format relative time (e.g., "2 days ago")
@@ -126,20 +142,24 @@ export default function EnhancedDashboard({
     const now = new Date()
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
 
-    if (diffInSeconds < 60) return "just now"
-    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`
-    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`
-    if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} days ago`
-    if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 604800)} weeks ago`
+    if (diffInSeconds < 60) return 'just now'
+    if (diffInSeconds < 3600)
+      return `${Math.floor(diffInSeconds / 60)} minutes ago`
+    if (diffInSeconds < 86400)
+      return `${Math.floor(diffInSeconds / 3600)} hours ago`
+    if (diffInSeconds < 604800)
+      return `${Math.floor(diffInSeconds / 86400)} days ago`
+    if (diffInSeconds < 2592000)
+      return `${Math.floor(diffInSeconds / 604800)} weeks ago`
 
     return date.toLocaleDateString()
   }
 
   // Toggle favorite status
   const toggleFavorite = (projectId: string) => {
-    setFavorites((prev) => {
+    setFavorites(prev => {
       if (prev.includes(projectId)) {
-        return prev.filter((id) => id !== projectId)
+        return prev.filter(id => id !== projectId)
       } else {
         return [...prev, projectId]
       }
@@ -148,9 +168,9 @@ export default function EnhancedDashboard({
 
   // Toggle expanded idea
   const toggleExpandIdea = (ideaId: string) => {
-    setExpandedIdeas((prev) => {
+    setExpandedIdeas(prev => {
       if (prev.includes(ideaId)) {
-        return prev.filter((id) => id !== ideaId)
+        return prev.filter(id => id !== ideaId)
       } else {
         return [...prev, ideaId]
       }
@@ -159,7 +179,7 @@ export default function EnhancedDashboard({
 
   // Filter and sort projects
   const filteredProjects = projects
-    .filter((project) => {
+    .filter(project => {
       // Search filter
       const searchLower = searchQuery.toLowerCase()
       const matchesSearch =
@@ -167,27 +187,35 @@ export default function EnhancedDashboard({
         project.details?.description?.toLowerCase().includes(searchLower) ||
         project.details?.framework?.toLowerCase().includes(searchLower) ||
         project.details?.type?.toLowerCase().includes(searchLower) ||
-        project.details?.languages?.some((lang) => lang.toLowerCase().includes(searchLower))
+        project.details?.languages?.some(lang =>
+          lang.toLowerCase().includes(searchLower)
+        )
 
       // Category filter
-      const matchesCategory = filterCategory === "all" || project.category === filterCategory
+      const matchesCategory =
+        filterCategory === 'all' || project.category === filterCategory
 
       // Status filter
-      const matchesStatus = filterStatus === "all" || project.status === filterStatus
+      const matchesStatus =
+        filterStatus === 'all' || project.status === filterStatus
 
       return matchesSearch && matchesCategory && matchesStatus
     })
     .sort((a, b) => {
       // Sort by selected criteria
-      if (sortBy === "name") {
+      if (sortBy === 'name') {
         return a.name.localeCompare(b.name)
-      } else if (sortBy === "created") {
+      } else if (sortBy === 'created') {
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      } else if (sortBy === "lastUpdated") {
-        const dateA = a.lastUpdated ? new Date(a.lastUpdated).getTime() : new Date(a.createdAt).getTime()
-        const dateB = b.lastUpdated ? new Date(b.lastUpdated).getTime() : new Date(b.createdAt).getTime()
+      } else if (sortBy === 'lastUpdated') {
+        const dateA = a.lastUpdated
+          ? new Date(a.lastUpdated).getTime()
+          : new Date(a.createdAt).getTime()
+        const dateB = b.lastUpdated
+          ? new Date(b.lastUpdated).getTime()
+          : new Date(b.createdAt).getTime()
         return dateB - dateA
-      } else if (sortBy === "favorite") {
+      } else if (sortBy === 'favorite') {
         const aFav = favorites.includes(a.id) ? 1 : 0
         const bFav = favorites.includes(b.id) ? 1 : 0
         return bFav - aFav
@@ -196,15 +224,19 @@ export default function EnhancedDashboard({
     })
 
   // Get recent projects (last 7 days)
-  const recentProjects = filteredProjects.filter((project) => {
-    const projectDate = project.lastUpdated ? new Date(project.lastUpdated) : new Date(project.createdAt)
+  const recentProjects = filteredProjects.filter(project => {
+    const projectDate = project.lastUpdated
+      ? new Date(project.lastUpdated)
+      : new Date(project.createdAt)
     const sevenDaysAgo = new Date()
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
     return projectDate >= sevenDaysAgo
   })
 
   // Get favorite projects
-  const favoriteProjects = filteredProjects.filter((project) => favorites.includes(project.id))
+  const favoriteProjects = filteredProjects.filter(project =>
+    favorites.includes(project.id)
+  )
 
   // Handle chat submission
   const handleChatSubmit = (e: React.FormEvent) => {
@@ -215,14 +247,14 @@ export default function EnhancedDashboard({
     const initialMessages = [
       {
         id: Date.now().toString(),
-        role: "user",
+        role: 'user',
         content: chatInput,
       },
     ]
 
     // Transition to split screen with these messages
     onStartChat(initialMessages)
-    setChatInput("")
+    setChatInput('')
   }
 
   // Handle suggestion click
@@ -235,9 +267,9 @@ export default function EnhancedDashboard({
     // Create a project from the idea
     const projectData = {
       name: idea.title,
-      type: "Web App",
+      type: 'Web App',
       framework: idea.frameworks[0],
-      languages: ["JavaScript", "TypeScript"],
+      languages: ['JavaScript', 'TypeScript'],
       description: idea.description,
     }
 
@@ -251,7 +283,8 @@ export default function EnhancedDashboard({
         <div className="max-w-3xl mx-auto text-center">
           <h1 className="text-2xl font-bold mb-2">Welcome to ForSure AI</h1>
           <p className="text-muted-foreground mb-6">
-            Start building your project structure with AI assistance or browse your existing projects.
+            Start building your project structure with AI assistance or browse
+            your existing projects.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button onClick={onNewProject} size="lg" className="gap-2">
@@ -267,8 +300,9 @@ export default function EnhancedDashboard({
                 const initialMessages = [
                   {
                     id: Date.now().toString(),
-                    role: "assistant",
-                    content: "Welcome to ForSure AI! How can I help you build your project today?",
+                    role: 'assistant',
+                    content:
+                      'Welcome to ForSure AI! How can I help you build your project today?',
                   },
                 ]
                 // Start the chat with initial messages and transition to split screen
@@ -317,15 +351,26 @@ export default function EnhancedDashboard({
               <CardContent>
                 {recentProjects.length > 0 ? (
                   <div className="space-y-4">
-                    {recentProjects.slice(0, 3).map((project) => (
-                      <div key={project.id} className="flex items-center justify-between border-b pb-3 last:border-0">
+                    {recentProjects.slice(0, 3).map(project => (
+                      <div
+                        key={project.id}
+                        className="flex items-center justify-between border-b pb-3 last:border-0"
+                      >
                         <div>
-                          <h4 className="font-medium">{project.details.name}</h4>
+                          <h4 className="font-medium">
+                            {project.details.name}
+                          </h4>
                           <p className="text-sm text-muted-foreground">
-                            {formatRelativeTime(project.lastUpdated || project.createdAt)}
+                            {formatRelativeTime(
+                              project.lastUpdated || project.createdAt
+                            )}
                           </p>
                         </div>
-                        <Button size="sm" variant="ghost" onClick={() => onSelectProject(project.id)}>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => onSelectProject(project.id)}
+                        >
                           Open
                         </Button>
                       </div>
@@ -341,7 +386,9 @@ export default function EnhancedDashboard({
                 <Button
                   variant="outline"
                   className="w-full"
-                  onClick={() => document.getElementById("projects-tab")?.click()}
+                  onClick={() =>
+                    document.getElementById('projects-tab')?.click()
+                  }
                 >
                   View All Projects
                 </Button>
@@ -366,7 +413,9 @@ export default function EnhancedDashboard({
                     <Button
                       variant="outline"
                       className="justify-start"
-                      onClick={() => document.getElementById("ideas-tab")?.click()}
+                      onClick={() =>
+                        document.getElementById('ideas-tab')?.click()
+                      }
                     >
                       <Lightbulb className="h-4 w-4 mr-2" />
                       Browse Project Ideas
@@ -374,7 +423,9 @@ export default function EnhancedDashboard({
                     <Button
                       variant="outline"
                       className="justify-start"
-                      onClick={() => document.getElementById("chat-tab")?.click()}
+                      onClick={() =>
+                        document.getElementById('chat-tab')?.click()
+                      }
                     >
                       <MessageCircle className="h-4 w-4 mr-2" />
                       Chat with AI
@@ -393,8 +444,12 @@ export default function EnhancedDashboard({
                   <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full mb-3">
                     <FolderGit2 className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                   </div>
-                  <div className="text-2xl font-bold">{filteredProjects.length}</div>
-                  <p className="text-sm text-muted-foreground">Total Projects</p>
+                  <div className="text-2xl font-bold">
+                    {filteredProjects.length}
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Total Projects
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -404,8 +459,12 @@ export default function EnhancedDashboard({
                   <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-full mb-3">
                     <Clock className="h-6 w-6 text-green-600 dark:text-green-400" />
                   </div>
-                  <div className="text-2xl font-bold">{recentProjects.length}</div>
-                  <p className="text-sm text-muted-foreground">Recent Projects</p>
+                  <div className="text-2xl font-bold">
+                    {recentProjects.length}
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Recent Projects
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -415,8 +474,12 @@ export default function EnhancedDashboard({
                   <div className="bg-amber-100 dark:bg-amber-900/30 p-3 rounded-full mb-3">
                     <Star className="h-6 w-6 text-amber-600 dark:text-amber-400" />
                   </div>
-                  <div className="text-2xl font-bold">{favoriteProjects.length}</div>
-                  <p className="text-sm text-muted-foreground">Favorite Projects</p>
+                  <div className="text-2xl font-bold">
+                    {favoriteProjects.length}
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Favorite Projects
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -427,9 +490,14 @@ export default function EnhancedDashboard({
                     <GitBranch className="h-6 w-6 text-purple-600 dark:text-purple-400" />
                   </div>
                   <div className="text-2xl font-bold">
-                    {filteredProjects.reduce((total, project) => total + (project.branches || 0), 0)}
+                    {filteredProjects.reduce(
+                      (total, project) => total + (project.branches || 0),
+                      0
+                    )}
                   </div>
-                  <p className="text-sm text-muted-foreground">Total Branches</p>
+                  <p className="text-sm text-muted-foreground">
+                    Total Branches
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -438,27 +506,41 @@ export default function EnhancedDashboard({
           {/* Featured Project Ideas */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold tracking-tight">Featured Project Ideas</h2>
-              <Button variant="link" onClick={() => document.getElementById("ideas-tab")?.click()}>
+              <h2 className="text-xl font-semibold tracking-tight">
+                Featured Project Ideas
+              </h2>
+              <Button
+                variant="link"
+                onClick={() => document.getElementById('ideas-tab')?.click()}
+              >
                 View All
               </Button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {projectIdeas.slice(0, 2).map((idea) => (
+              {projectIdeas.slice(0, 2).map(idea => (
                 <Card key={idea.id} className="overflow-hidden">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg">{idea.title}</CardTitle>
-                    <CardDescription className="line-clamp-2">{idea.description}</CardDescription>
+                    <CardDescription className="line-clamp-2">
+                      {idea.description}
+                    </CardDescription>
                   </CardHeader>
                   <CardContent className="pb-2">
                     <div className="flex flex-wrap gap-2 mb-2">
-                      {idea.frameworks.map((framework) => (
-                        <Badge key={framework} variant="outline" className="flex items-center gap-1">
+                      {idea.frameworks.map(framework => (
+                        <Badge
+                          key={framework}
+                          variant="outline"
+                          className="flex items-center gap-1"
+                        >
                           <Code className="h-3 w-3" />
                           {framework}
                         </Badge>
                       ))}
-                      <Badge variant="outline" className="flex items-center gap-1">
+                      <Badge
+                        variant="outline"
+                        className="flex items-center gap-1"
+                      >
                         <Layers className="h-3 w-3" />
                         {idea.complexity}
                       </Badge>
@@ -502,7 +584,7 @@ export default function EnhancedDashboard({
                 placeholder="Search projects..."
                 className="h-9"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
               />
             </div>
             <div className="flex gap-2">
@@ -542,11 +624,11 @@ export default function EnhancedDashboard({
           <div className="border-b">
             <div className="flex space-x-8">
               <button
-                onClick={() => setActiveProjectTab("all")}
+                onClick={() => setActiveProjectTab('all')}
                 className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeProjectTab === "all"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
+                  activeProjectTab === 'all'
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-muted-foreground hover:text-foreground'
                 }`}
               >
                 <div className="flex items-center gap-2">
@@ -558,11 +640,11 @@ export default function EnhancedDashboard({
                 </div>
               </button>
               <button
-                onClick={() => setActiveProjectTab("recent")}
+                onClick={() => setActiveProjectTab('recent')}
                 className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeProjectTab === "recent"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
+                  activeProjectTab === 'recent'
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-muted-foreground hover:text-foreground'
                 }`}
               >
                 <div className="flex items-center gap-2">
@@ -574,11 +656,11 @@ export default function EnhancedDashboard({
                 </div>
               </button>
               <button
-                onClick={() => setActiveProjectTab("favorites")}
+                onClick={() => setActiveProjectTab('favorites')}
                 className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeProjectTab === "favorites"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
+                  activeProjectTab === 'favorites'
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-muted-foreground hover:text-foreground'
                 }`}
               >
                 <div className="flex items-center gap-2">
@@ -590,18 +672,21 @@ export default function EnhancedDashboard({
                 </div>
               </button>
               <button
-                onClick={() => setActiveProjectTab("archived")}
+                onClick={() => setActiveProjectTab('archived')}
                 className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeProjectTab === "archived"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
+                  activeProjectTab === 'archived'
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-muted-foreground hover:text-foreground'
                 }`}
               >
                 <div className="flex items-center gap-2">
                   <Bookmark className="h-4 w-4" />
                   <span>Archived</span>
                   <Badge variant="secondary" className="ml-1">
-                    {filteredProjects.filter((p) => p.status === "archived").length}
+                    {
+                      filteredProjects.filter(p => p.status === 'archived')
+                        .length
+                    }
                   </Badge>
                 </div>
               </button>
@@ -610,7 +695,7 @@ export default function EnhancedDashboard({
 
           {/* Tab Content */}
           <div className="mt-6">
-            {activeProjectTab === "all" && (
+            {activeProjectTab === 'all' && (
               <>
                 {isLoaded && filteredProjects.length === 0 ? (
                   <EmptyProjectsState onNewProject={onNewProject} />
@@ -627,7 +712,7 @@ export default function EnhancedDashboard({
               </>
             )}
 
-            {activeProjectTab === "recent" && (
+            {activeProjectTab === 'recent' && (
               <>
                 {isLoaded && recentProjects.length === 0 ? (
                   <div className="flex flex-col items-center justify-center p-8 text-center">
@@ -654,13 +739,17 @@ export default function EnhancedDashboard({
               </>
             )}
 
-            {activeProjectTab === "favorites" && (
+            {activeProjectTab === 'favorites' && (
               <>
                 {isLoaded && favoriteProjects.length === 0 ? (
                   <div className="flex flex-col items-center justify-center p-8 text-center">
                     <Star className="h-10 w-10 text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-medium">No favorite projects</h3>
-                    <p className="text-muted-foreground mt-2 mb-4">Mark projects as favorites to see them here.</p>
+                    <h3 className="text-lg font-medium">
+                      No favorite projects
+                    </h3>
+                    <p className="text-muted-foreground mt-2 mb-4">
+                      Mark projects as favorites to see them here.
+                    </p>
                   </div>
                 ) : (
                   <ProjectGrid
@@ -675,17 +764,25 @@ export default function EnhancedDashboard({
               </>
             )}
 
-            {activeProjectTab === "archived" && (
+            {activeProjectTab === 'archived' && (
               <>
-                {isLoaded && filteredProjects.filter((p) => p.status === "archived").length === 0 ? (
+                {isLoaded &&
+                filteredProjects.filter(p => p.status === 'archived').length ===
+                  0 ? (
                   <div className="flex flex-col items-center justify-center p-8 text-center">
                     <Bookmark className="h-10 w-10 text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-medium">No archived projects</h3>
-                    <p className="text-muted-foreground mt-2 mb-4">Archived projects will appear here.</p>
+                    <h3 className="text-lg font-medium">
+                      No archived projects
+                    </h3>
+                    <p className="text-muted-foreground mt-2 mb-4">
+                      Archived projects will appear here.
+                    </p>
                   </div>
                 ) : (
                   <ProjectGrid
-                    projects={filteredProjects.filter((p) => p.status === "archived")}
+                    projects={filteredProjects.filter(
+                      p => p.status === 'archived'
+                    )}
                     onSelectProject={onSelectProject}
                     onDeleteProject={onDeleteProject}
                     formatRelativeTime={formatRelativeTime}
@@ -707,29 +804,41 @@ export default function EnhancedDashboard({
                 Project Ideas
               </h2>
               <p className="text-sm text-muted-foreground">
-                Get inspired with these project ideas or use them as starting points.
+                Get inspired with these project ideas or use them as starting
+                points.
               </p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {projectIdeas.map((idea) => (
+            {projectIdeas.map(idea => (
               <Card key={idea.id} className="overflow-hidden">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg">{idea.title}</CardTitle>
-                  <CardDescription className={expandedIdeas.includes(idea.id) ? "" : "line-clamp-2"}>
+                  <CardDescription
+                    className={
+                      expandedIdeas.includes(idea.id) ? '' : 'line-clamp-2'
+                    }
+                  >
                     {idea.description}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="pb-2">
                   <div className="flex flex-wrap gap-2 mb-2">
-                    {idea.frameworks.map((framework) => (
-                      <Badge key={framework} variant="outline" className="flex items-center gap-1">
+                    {idea.frameworks.map(framework => (
+                      <Badge
+                        key={framework}
+                        variant="outline"
+                        className="flex items-center gap-1"
+                      >
                         <Code className="h-3 w-3" />
                         {framework}
                       </Badge>
                     ))}
-                    <Badge variant="outline" className="flex items-center gap-1">
+                    <Badge
+                      variant="outline"
+                      className="flex items-center gap-1"
+                    >
                       <Layers className="h-3 w-3" />
                       {idea.complexity}
                     </Badge>
@@ -742,7 +851,9 @@ export default function EnhancedDashboard({
                     onClick={() => toggleExpandIdea(idea.id)}
                     className="text-xs text-muted-foreground"
                   >
-                    {expandedIdeas.includes(idea.id) ? "Show less" : "Show more"}
+                    {expandedIdeas.includes(idea.id)
+                      ? 'Show less'
+                      : 'Show more'}
                   </Button>
                   <Button size="sm" onClick={() => handleIdeaSelect(idea)}>
                     <Zap className="h-3 w-3 mr-1" />
@@ -776,7 +887,7 @@ export default function EnhancedDashboard({
                     id="chat-input"
                     placeholder="Describe your project idea or ask a question..."
                     value={chatInput}
-                    onChange={(e) => setChatInput(e.target.value)}
+                    onChange={e => setChatInput(e.target.value)}
                     className="flex-1"
                   />
                   <Button type="submit" disabled={!chatInput.trim()}>
@@ -785,7 +896,9 @@ export default function EnhancedDashboard({
                 </div>
 
                 <div>
-                  <p className="text-sm text-muted-foreground mb-2">Try these suggestions:</p>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Try these suggestions:
+                  </p>
                   <div className="flex flex-wrap gap-2">
                     {chatSuggestions.map((suggestion, index) => (
                       <Badge
@@ -815,7 +928,8 @@ export default function EnhancedDashboard({
                     </div>
                     <h3 className="font-medium mb-2">Project Structure</h3>
                     <p className="text-sm text-muted-foreground">
-                      Describe your project and AI will help you create the optimal file structure.
+                      Describe your project and AI will help you create the
+                      optimal file structure.
                     </p>
                   </div>
                 </CardContent>
@@ -828,7 +942,8 @@ export default function EnhancedDashboard({
                     </div>
                     <h3 className="font-medium mb-2">Technology Advice</h3>
                     <p className="text-sm text-muted-foreground">
-                      Get recommendations on frameworks, libraries, and best practices for your project.
+                      Get recommendations on frameworks, libraries, and best
+                      practices for your project.
                     </p>
                   </div>
                 </CardContent>
@@ -841,7 +956,8 @@ export default function EnhancedDashboard({
                     </div>
                     <h3 className="font-medium mb-2">Project Organization</h3>
                     <p className="text-sm text-muted-foreground">
-                      Learn how to organize your code for maintainability and scalability.
+                      Learn how to organize your code for maintainability and
+                      scalability.
                     </p>
                   </div>
                 </CardContent>
@@ -871,7 +987,7 @@ function ProjectGrid({
 }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {projects.map((project) => (
+      {projects.map(project => (
         <ProjectCard
           key={project.id}
           project={project}
@@ -907,16 +1023,16 @@ function ProjectCard({
   // Get status badge color
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "active":
-        return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-      case "completed":
-        return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
-      case "archived":
-        return "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400"
-      case "draft":
-        return "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400"
+      case 'active':
+        return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+      case 'completed':
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+      case 'archived':
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400'
+      case 'draft':
+        return 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400'
       default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400"
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400'
     }
   }
 
@@ -928,20 +1044,22 @@ function ProjectCard({
             <div className="flex items-center gap-2">
               <CardTitle className="text-lg">{project.details.name}</CardTitle>
               {project.status && (
-                <span className={`text-xs px-2 py-0.5 rounded-full ${getStatusColor(project.status)}`}>
+                <span
+                  className={`text-xs px-2 py-0.5 rounded-full ${getStatusColor(project.status)}`}
+                >
                   {project.status}
                 </span>
               )}
             </div>
             <CardDescription className="line-clamp-1">
-              {project.details.description || "No description provided"}
+              {project.details.description || 'No description provided'}
             </CardDescription>
           </div>
           <div className="flex gap-1">
             <Button
               variant="ghost"
               size="icon"
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation()
                 onToggleFavorite()
               }}
@@ -955,7 +1073,7 @@ function ProjectCard({
             <Button
               variant="ghost"
               size="icon"
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation()
                 onDelete()
               }}

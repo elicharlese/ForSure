@@ -1,17 +1,20 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { ArrowRight } from "lucide-react"
-import CodeExample from "@/components/code-example"
-import AnimateOnScroll from "@/components/animate-on-scroll"
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { ArrowRight } from 'lucide-react'
+import CodeExample from '@/components/code-example'
+import AnimateOnScroll from '@/components/animate-on-scroll'
 
 export default function ExamplesPage() {
   return (
     <div className="container py-12 max-w-6xl">
       <div className="space-y-12">
         <div>
-          <h1 className="text-4xl font-bold tracking-tight mb-4">ForSure Examples</h1>
+          <h1 className="text-4xl font-bold tracking-tight mb-4">
+            ForSure Examples
+          </h1>
           <p className="text-xl text-muted-foreground">
-            Explore real-world examples of ForSure in action across different project types.
+            Explore real-world examples of ForSure in action across different
+            project types.
           </p>
         </div>
 
@@ -21,7 +24,9 @@ export default function ExamplesPage() {
               href="#web-app"
               className="bg-white dark:bg-secondary-dark/30 rounded-lg p-6 shadow-sm border border-primary/10 hover:border-primary/30 transition-all hover:shadow-md hover:shadow-primary/5 hover:-translate-y-1 duration-300"
             >
-              <h2 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">Web Applications</h2>
+              <h2 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
+                Web Applications
+              </h2>
               <p className="text-secondary/80 dark:text-primary-light/70 mb-4">
                 Examples for React, Next.js, Vue, and other web frameworks.
               </p>
@@ -33,9 +38,12 @@ export default function ExamplesPage() {
               href="#backend"
               className="bg-white dark:bg-secondary-dark/30 rounded-lg p-6 shadow-sm border border-primary/10 hover:border-primary/30 transition-all hover:shadow-md hover:shadow-primary/5 hover:-translate-y-1 duration-300"
             >
-              <h2 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">Backend Services</h2>
+              <h2 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
+                Backend Services
+              </h2>
               <p className="text-secondary/80 dark:text-primary-light/70 mb-4">
-                Examples for Node.js, Express, Django, and other backend frameworks.
+                Examples for Node.js, Express, Django, and other backend
+                frameworks.
               </p>
             </Link>
           </AnimateOnScroll>
@@ -45,9 +53,12 @@ export default function ExamplesPage() {
               href="#mobile"
               className="bg-white dark:bg-secondary-dark/30 rounded-lg p-6 shadow-sm border border-primary/10 hover:border-primary/30 transition-all hover:shadow-md hover:shadow-primary/5 hover:-translate-y-1 duration-300"
             >
-              <h2 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">Mobile Applications</h2>
+              <h2 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
+                Mobile Applications
+              </h2>
               <p className="text-secondary/80 dark:text-primary-light/70 mb-4">
-                Examples for React Native, Flutter, and native mobile development.
+                Examples for React Native, Flutter, and native mobile
+                development.
               </p>
             </Link>
           </AnimateOnScroll>
@@ -58,7 +69,9 @@ export default function ExamplesPage() {
           <AnimateOnScroll type="fade">
             <div className="border-b pb-4 mb-8">
               <h2 className="text-3xl font-bold">Web Application Examples</h2>
-              <p className="text-muted-foreground mt-2">ForSure files for common web application project structures.</p>
+              <p className="text-muted-foreground mt-2">
+                ForSure files for common web application project structures.
+              </p>
             </div>
           </AnimateOnScroll>
 
@@ -66,14 +79,17 @@ export default function ExamplesPage() {
             <AnimateOnScroll type="slideUp">
               <div className="bg-white dark:bg-secondary-dark/30 rounded-lg overflow-hidden border border-primary/10">
                 <div className="bg-secondary/10 dark:bg-primary/10 p-4 border-b border-primary/10 flex justify-between items-center">
-                  <h3 className="text-xl font-bold">Next.js App Router Project</h3>
+                  <h3 className="text-xl font-bold">
+                    Next.js App Router Project
+                  </h3>
                   <Button asChild variant="outline" size="sm">
                     <Link href="/templates">View Template</Link>
                   </Button>
                 </div>
                 <div className="p-6">
                   <p className="text-muted-foreground mb-6">
-                    A modern Next.js project using the App Router, with a focus on organization and scalability.
+                    A modern Next.js project using the App Router, with a focus
+                    on organization and scalability.
                   </p>
                   <CodeExample
                     code={`# nextjs-app.forsure
@@ -141,7 +157,8 @@ root:
                 </div>
                 <div className="p-6">
                   <p className="text-muted-foreground mb-6">
-                    A React project using Vite for fast development and optimized production builds.
+                    A React project using Vite for fast development and
+                    optimized production builds.
                   </p>
                   <CodeExample
                     code={`# react-vite.forsure
@@ -206,7 +223,9 @@ root:
           <AnimateOnScroll type="fade">
             <div className="border-b pb-4 mb-8">
               <h2 className="text-3xl font-bold">Backend Service Examples</h2>
-              <p className="text-muted-foreground mt-2">ForSure files for common backend service project structures.</p>
+              <p className="text-muted-foreground mt-2">
+                ForSure files for common backend service project structures.
+              </p>
             </div>
           </AnimateOnScroll>
 
@@ -221,7 +240,8 @@ root:
                 </div>
                 <div className="p-6">
                   <p className="text-muted-foreground mb-6">
-                    A Node.js API using Express, with a focus on modularity and maintainability.
+                    A Node.js API using Express, with a focus on modularity and
+                    maintainability.
                   </p>
                   <CodeExample
                     code={`# express-api.forsure
@@ -313,7 +333,8 @@ root:
                 </div>
                 <div className="p-6">
                   <p className="text-muted-foreground mb-6">
-                    A Python API using Django REST Framework, with a focus on scalability and security.
+                    A Python API using Django REST Framework, with a focus on
+                    scalability and security.
                   </p>
                   <CodeExample
                     code={`# django-api.forsure
@@ -395,7 +416,9 @@ root:
         <section id="mobile" className="scroll-mt-20">
           <AnimateOnScroll type="fade">
             <div className="border-b pb-4 mb-8">
-              <h2 className="text-3xl font-bold">Mobile Application Examples</h2>
+              <h2 className="text-3xl font-bold">
+                Mobile Application Examples
+              </h2>
               <p className="text-muted-foreground mt-2">
                 ForSure files for common mobile application project structures.
               </p>
@@ -413,7 +436,8 @@ root:
                 </div>
                 <div className="p-6">
                   <p className="text-muted-foreground mb-6">
-                    A React Native project for cross-platform mobile development.
+                    A React Native project for cross-platform mobile
+                    development.
                   </p>
                   <CodeExample
                     code={`# react-native.forsure
@@ -504,7 +528,9 @@ root:
                   </Button>
                 </div>
                 <div className="p-6">
-                  <p className="text-muted-foreground mb-6">A Flutter project for cross-platform mobile development.</p>
+                  <p className="text-muted-foreground mb-6">
+                    A Flutter project for cross-platform mobile development.
+                  </p>
                   <CodeExample
                     code={`# flutter.forsure
 root:
@@ -601,9 +627,12 @@ root:
 
         <AnimateOnScroll type="fade">
           <div className="bg-muted dark:bg-muted/10 p-8 rounded-lg text-center space-y-4">
-            <h2 className="text-2xl font-bold">Ready to Create Your Own Project Structure?</h2>
+            <h2 className="text-2xl font-bold">
+              Ready to Create Your Own Project Structure?
+            </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Get started with ForSure today and define your project structure with confidence.
+              Get started with ForSure today and define your project structure
+              with confidence.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
               <Button asChild>

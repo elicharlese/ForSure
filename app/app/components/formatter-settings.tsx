@@ -1,12 +1,24 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import type { FormatterOptions } from "../services/code-formatter"
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog'
+import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import type { FormatterOptions } from '../services/code-formatter'
 
 interface FormatterSettingsProps {
   isOpen: boolean
@@ -15,8 +27,15 @@ interface FormatterSettingsProps {
   onSave: (options: FormatterOptions) => void
 }
 
-export function FormatterSettings({ isOpen, onClose, options, onSave }: FormatterSettingsProps) {
-  const [formatterOptions, setFormatterOptions] = useState<FormatterOptions>({ ...options })
+export function FormatterSettings({
+  isOpen,
+  onClose,
+  options,
+  onSave,
+}: FormatterSettingsProps) {
+  const [formatterOptions, setFormatterOptions] = useState<FormatterOptions>({
+    ...options,
+  })
 
   const handleSave = () => {
     onSave(formatterOptions)
@@ -24,7 +43,7 @@ export function FormatterSettings({ isOpen, onClose, options, onSave }: Formatte
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Dialog open={isOpen} onOpenChange={open => !open && onClose()}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Code Formatter Settings</DialogTitle>
@@ -34,7 +53,12 @@ export function FormatterSettings({ isOpen, onClose, options, onSave }: Formatte
             <Label htmlFor="tabSize">Tab Size</Label>
             <Select
               value={formatterOptions.tabSize.toString()}
-              onValueChange={(value) => setFormatterOptions({ ...formatterOptions, tabSize: Number.parseInt(value) })}
+              onValueChange={value =>
+                setFormatterOptions({
+                  ...formatterOptions,
+                  tabSize: Number.parseInt(value),
+                })
+              }
             >
               <SelectTrigger id="tabSize">
                 <SelectValue placeholder="Select tab size" />
@@ -51,7 +75,12 @@ export function FormatterSettings({ isOpen, onClose, options, onSave }: Formatte
             <Switch
               id="insertSpaces"
               checked={formatterOptions.insertSpaces}
-              onCheckedChange={(checked) => setFormatterOptions({ ...formatterOptions, insertSpaces: checked })}
+              onCheckedChange={checked =>
+                setFormatterOptions({
+                  ...formatterOptions,
+                  insertSpaces: checked,
+                })
+              }
             />
           </div>
           <div className="grid grid-cols-2 items-center gap-4">
@@ -59,7 +88,12 @@ export function FormatterSettings({ isOpen, onClose, options, onSave }: Formatte
             <Switch
               id="singleQuotes"
               checked={formatterOptions.singleQuotes}
-              onCheckedChange={(checked) => setFormatterOptions({ ...formatterOptions, singleQuotes: checked })}
+              onCheckedChange={checked =>
+                setFormatterOptions({
+                  ...formatterOptions,
+                  singleQuotes: checked,
+                })
+              }
             />
           </div>
           <div className="grid grid-cols-2 items-center gap-4">
@@ -67,7 +101,12 @@ export function FormatterSettings({ isOpen, onClose, options, onSave }: Formatte
             <Switch
               id="trailingComma"
               checked={formatterOptions.trailingComma}
-              onCheckedChange={(checked) => setFormatterOptions({ ...formatterOptions, trailingComma: checked })}
+              onCheckedChange={checked =>
+                setFormatterOptions({
+                  ...formatterOptions,
+                  trailingComma: checked,
+                })
+              }
             />
           </div>
           <div className="grid grid-cols-2 items-center gap-4">
@@ -75,7 +114,12 @@ export function FormatterSettings({ isOpen, onClose, options, onSave }: Formatte
             <Switch
               id="semicolons"
               checked={formatterOptions.semicolons}
-              onCheckedChange={(checked) => setFormatterOptions({ ...formatterOptions, semicolons: checked })}
+              onCheckedChange={checked =>
+                setFormatterOptions({
+                  ...formatterOptions,
+                  semicolons: checked,
+                })
+              }
             />
           </div>
           <div className="grid grid-cols-2 items-center gap-4">
@@ -83,7 +127,12 @@ export function FormatterSettings({ isOpen, onClose, options, onSave }: Formatte
             <Switch
               id="bracketSpacing"
               checked={formatterOptions.bracketSpacing}
-              onCheckedChange={(checked) => setFormatterOptions({ ...formatterOptions, bracketSpacing: checked })}
+              onCheckedChange={checked =>
+                setFormatterOptions({
+                  ...formatterOptions,
+                  bracketSpacing: checked,
+                })
+              }
             />
           </div>
           <div className="grid grid-cols-2 items-center gap-4">
@@ -91,15 +140,23 @@ export function FormatterSettings({ isOpen, onClose, options, onSave }: Formatte
             <Switch
               id="jsxBracketSameLine"
               checked={formatterOptions.jsxBracketSameLine}
-              onCheckedChange={(checked) => setFormatterOptions({ ...formatterOptions, jsxBracketSameLine: checked })}
+              onCheckedChange={checked =>
+                setFormatterOptions({
+                  ...formatterOptions,
+                  jsxBracketSameLine: checked,
+                })
+              }
             />
           </div>
           <div className="grid grid-cols-2 items-center gap-4">
             <Label htmlFor="arrowParens">Arrow Function Parentheses</Label>
             <Select
               value={formatterOptions.arrowParens}
-              onValueChange={(value) =>
-                setFormatterOptions({ ...formatterOptions, arrowParens: value as "avoid" | "always" })
+              onValueChange={value =>
+                setFormatterOptions({
+                  ...formatterOptions,
+                  arrowParens: value as 'avoid' | 'always',
+                })
               }
             >
               <SelectTrigger id="arrowParens">

@@ -1,11 +1,11 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Clipboard, Check } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism"
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Clipboard, Check } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
 interface CodeExampleProps {
   code: string
@@ -13,7 +13,11 @@ interface CodeExampleProps {
   className?: string
 }
 
-export default function CodeExample({ code, language = "forsure", className }: CodeExampleProps) {
+export default function CodeExample({
+  code,
+  language = 'forsure',
+  className,
+}: CodeExampleProps) {
   const [copied, setCopied] = useState(false)
 
   const copyToClipboard = () => {
@@ -23,7 +27,12 @@ export default function CodeExample({ code, language = "forsure", className }: C
   }
 
   return (
-    <div className={cn("relative rounded-lg overflow-hidden code-window", className)}>
+    <div
+      className={cn(
+        'relative rounded-lg overflow-hidden code-window',
+        className
+      )}
+    >
       <div className="flex items-center justify-between px-4 py-2 bg-secondary-dark/80 border-b border-primary/30">
         <span className="text-xs font-mono text-primary">{language}</span>
         <Button
@@ -46,17 +55,17 @@ export default function CodeExample({ code, language = "forsure", className }: C
         </Button>
       </div>
       <SyntaxHighlighter
-        language={language || "text"}
+        language={language || 'text'}
         style={vscDarkPlus}
         customStyle={{
           margin: 0,
-          padding: "1rem",
+          padding: '1rem',
           borderRadius: 0,
-          fontSize: "0.875rem",
-          backgroundColor: "transparent",
+          fontSize: '0.875rem',
+          backgroundColor: 'transparent',
         }}
         wrapLongLines={true}
-        showLineNumbers={language !== "bash" && language !== "text"}
+        showLineNumbers={language !== 'bash' && language !== 'text'}
       >
         {code}
       </SyntaxHighlighter>
